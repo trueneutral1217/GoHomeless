@@ -3,8 +3,11 @@
 
 #include "Texture.h"
 
-const int title_button_width = 160;
-const int title_button_height = 120;
+//buttons on the title screen + back button for screens like options
+const int TOTAL_BUTTONS = 6;
+
+const int BUTTON_WIDTH = 160;
+const int BUTTON_HEIGHT = 120;
 
 class button
 {
@@ -17,20 +20,21 @@ class button
 
 		int getPositionX();
 		int getPositionY();
+		//int getWidth();
+		//int getHeight();
 
 		//Handles mouse event
 		int handleEvent( int gameState, std::string buttonName, SDL_Event* e );
 
         Texture buttonTexture;
-        //if button is clicked
-        bool clicked;
+
 		//void render(texture gButtonTexture,SDL_Renderer* gRenderer);
 
 		std::string buttonName;
 
 	private:
 		//Top left point of button image location
-		SDL_Point mPosition;
+		SDL_Point position;
 
 };
 

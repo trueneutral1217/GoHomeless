@@ -3,7 +3,8 @@
 
 #include "Texture.h"
 
-
+//Particle count
+const int TOTAL_PARTICLES = 200;
 
 
 class Particle

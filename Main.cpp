@@ -10,19 +10,13 @@
 #include "particle.h"
 #include "chapter.h"
 
-//Particle count
-const int TOTAL_PARTICLES = 200;
-//number of dialog lines
-//const int TOTAL_SCRIPTS = 8;
-//number of dialog pages
-//const int TOTAL_PAGES = 8;
+
 
 const int TOTAL_DATA = 3;
 //Screen dimension constants
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
-//buttons on the title screen + back button for screens like options
-const int TOTAL_BUTTONS = 6;
+
 //number of game states
 const int TOTAL_STATES = 5;
 const int SCREEN_FPS=60;
@@ -70,10 +64,10 @@ bool hideDialogBox = false;
 Mix_Music *music = NULL;
 
 //The sound effects that will be used
-Mix_Chunk *gScratch = NULL;
-Mix_Chunk *gHigh = NULL;
-Mix_Chunk *gMedium = NULL;
-Mix_Chunk *gLow = NULL;
+Mix_Chunk *sound0 = NULL;
+Mix_Chunk *sound1 = NULL;
+Mix_Chunk *sound2 = NULL;
+Mix_Chunk *sound3 = NULL;
 
 TTF_Font *font = NULL;
 //Rendered texture
@@ -100,6 +94,8 @@ int currentScript;
 Particle particles[ TOTAL_PARTICLES ];
 
 chapter chapter1;
+
+bool setScriptTextures();
 
 void renderParticles();
 
@@ -192,7 +188,35 @@ bool init()
 	return success;
 }
 
+bool setScriptTextures(){
+    bool success = true;
+    //Render text
+    SDL_Color textColor = { 55, 55, 55 };
+    for(int j=0;j<TOTAL_PAGES;j++){
+            for(int i=0;i<TOTAL_SCRIPTS;i++){
+                if( !scriptTexture[j][i].loadFromRenderedText( chapter1.scriptString[j][i].str().c_str(), textColor,font, renderer ) )
+                {
+                    printf( "Failed to render text texture!\n" );
+                    success = false;
+                }
+            }
+        }
+        return success;
+}
 
+/*//still trying to figure out how to get the next chapter's strings loaded.
+bool setScriptStrings()
+{
+    //chapter1.loadChapter2Strings(chapter1.scriptString)
+    /*
+    for(int j=0;j<TOTAL_PAGES;j++)
+    {
+        for(int i=0;i<TOTAL_SCRIPTS;i++)
+        {
+            chapter1.scriptString[j][i]
+        }
+    }
+}*/
 
 bool loadMedia()
 {
@@ -404,29 +428,29 @@ bool loadMedia()
 	}
 
 	//Load sound effects
-	gScratch = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
-	if( gScratch == NULL )
+	sound3 = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
+	if( sound3 == NULL )
 	{
 		printf( "Failed to load scratch sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
 		success = false;
 	}
 
-	gHigh = Mix_LoadWAV( "sounds/titleitemselect2.wav" );
-	if( gHigh == NULL )
+	sound0 = Mix_LoadWAV( "sounds/titleitemselect2.wav" );
+	if( sound0 == NULL )
 	{
 		printf( "Failed to load high sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
 		success = false;
 	}
 
-	gMedium = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
-	if( gMedium == NULL )
+	sound1 = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
+	if( sound1 == NULL )
 	{
 		printf( "Failed to load medium sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
 		success = false;
 	}
 
-	gLow = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
-	if( gLow == NULL )
+	sound2 = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
+	if( sound2 == NULL )
 	{
 		printf( "Failed to load low sound effect! SDL_mixer Error: %s\n", Mix_GetError() );
 		success = false;
@@ -440,17 +464,8 @@ bool loadMedia()
     }
     else
     {
-        //Render text
-        SDL_Color textColor = { 55, 55, 55 };
-        for(int j=0;j<TOTAL_PAGES;j++){
-            for(int i=0;i<TOTAL_SCRIPTS;i++){
-                if( !scriptTexture[j][i].loadFromRenderedText( chapter1.scriptString[j][i].str().c_str(), textColor,font, renderer ) )
-                {
-                    printf( "Failed to render text texture!\n" );
-                    success = false;
-                }
-            }
-        }
+
+        success = setScriptTextures();
 
     }
 
@@ -520,14 +535,14 @@ for(int i=0;i<TAO_ANIMATION_FRAMES;i++){
 	dialogBox.free();
 
 	//Free the sound effects
-	Mix_FreeChunk( gScratch );
-	Mix_FreeChunk( gHigh );
-	Mix_FreeChunk( gMedium );
-	Mix_FreeChunk( gLow );
-	gScratch = NULL;
-	gHigh = NULL;
-	gMedium = NULL;
-	gLow = NULL;
+	Mix_FreeChunk( sound0 );
+	Mix_FreeChunk( sound1 );
+	Mix_FreeChunk( sound2 );
+	Mix_FreeChunk( sound3 );
+	sound0 = NULL;
+	sound1 = NULL;
+	sound2 = NULL;
+	sound3 = NULL;
 
 	textTexture.free();
 
@@ -571,7 +586,6 @@ int main( int argc, char* args[] )
 			//Main loop flag
 			bool quit = false;
 
-
 			/*for( int i = 0; i < TOTAL_PARTICLES; ++i )
         {
             particles[ i ] = new Particle(100,100,gRedTexture,gBlueTexture,gGreenTexture);
@@ -590,7 +604,8 @@ int main( int argc, char* args[] )
 
 			//timer for dialog for chapter1
 			timer chapter1Timer;
-            chapter1Timer.start();
+            //if(gameState==5)
+            //    chapter1Timer.start();
             timer animationTimer;
             animationTimer.start();
 
@@ -617,6 +632,7 @@ int main( int argc, char* args[] )
 				//Handle events on queue
 				while( SDL_PollEvent( &e ) != 0 )
 				{
+
 					//User requests quit
 					if( e.type == SDL_QUIT )
 					{
@@ -626,50 +642,53 @@ int main( int argc, char* args[] )
                     if(e.type == SDL_MOUSEBUTTONDOWN){
                         if(gameState == 5)
                         {
-                            if(currentPage==7 && currentScript==7){
-                                    currentPage=0;
-                                    currentScript=0;
-                                    gameState=2;
-                                    chapter1complete=1;
-                                    chapter1Timer.stop();
-                                    std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-                                    std::cout << "\n currentPage: " << std::to_string( currentPage );
-                                    std::cout << "\n currentScript: " << std::to_string( currentScript );
-                            }
-                            if (currentScript<TOTAL_SCRIPTS-1 && !buttons[0].clicked)
-                            {
-                                currentScript++;
+                            if(currentPage==TOTAL_PAGES-1 && currentScript==TOTAL_SCRIPTS-1){
+                                currentPage=0;
+                                currentScript=0;
+                                gameState=2;
+                                chapter1complete=1;
                                 chapter1Timer.stop();
-                                chapter1Timer.start();
-                                printf("\n \n line 633 under total scripts:");
+                                printf("\n \n currentPage & currentScript = 7");
                                 std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
                                 std::cout << "\n currentPage: " << std::to_string( currentPage );
                                 std::cout << "\n currentScript: " << std::to_string( currentScript );
                             }
+                            else if (currentScript<TOTAL_SCRIPTS-1)
+                            {
+                                currentScript++;
+                                chapter1Timer.stop();
+                                chapter1Timer.start();
+                                printf("\n \n left mouse down total scripts loop");
+                                std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
+                                std::cout << "\n currentPage: " << std::to_string( currentPage );
+                                std::cout << "\n currentScript: " << std::to_string( currentScript );
+                            }
+                            else if(currentPage<TOTAL_PAGES-1){
+                                currentPage++;
+                                currentScript=0;
+                                printf("\n \n left mouse down total pages loop");
+                                std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
+                                std::cout << "\n currentPage: " << std::to_string( currentPage );
+                                std::cout << "\n currentScript: " << std::to_string( currentScript );
+                                chapter1Timer.stop();
+                                chapter1Timer.start();
+                            }
+
+                            /*
                             else
                             {
                                 //player didn't click back button
-                                if(!buttons[0].clicked){
-
-                                    if(currentPage<TOTAL_PAGES-1)
-                                    {
-                                        currentPage++;
-                                        currentScript=0;
-                                        printf("\n \n line 643 under total pages");
-                                        std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-                                        std::cout << "\n currentPage: " << std::to_string( currentPage );
-                                        std::cout << "\n currentScript: " << std::to_string( currentScript );
-                                        chapter1Timer.stop();
-                                        chapter1Timer.start();
-                                    }
-                                }
-                                else
-                                {
+                                if(buttons[0].clicked){// it isn't picking up the clicked thing.
                                     //currentPage=0;
-                                    printf(" end of chapter 1 dialog return to game state = 0 \n");
-                                    currentScript--;
+                                    //printf(" end of chapter 1 dialog return to game state = 0 \n");
+                                    if(currentScript != 7)
+                                        currentScript--;
+                                    if(currentScript == 7)
+                                        currentPage--;
                                     gameState = 1;
-                                    chapter1Timer.stop();
+                                    //chapter1Timer.stop();
+                                    //this doesn't run at back button down
+                                    printf("\n \n mouse clicked back button");
                                     std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
                                     std::cout << "\n currentPage: " << std::to_string( currentPage );
                                     std::cout << "\n currentScript: " << std::to_string( currentScript );
@@ -677,7 +696,10 @@ int main( int argc, char* args[] )
                                 }
 
 
+
+
                             }
+                            */
                         }
                         if(gameState == 1)//new game chapter select
                         {
@@ -685,23 +707,21 @@ int main( int argc, char* args[] )
                             currentPage = 0;
                             currentScript = 0;
                             chapter1complete = 0;
-                            chapter1Timer.stop();
-                            chapter1Timer.start();
+
                         }
                         if(gameState == 2){//load game chapter select
-                            //currentScript--;
-                            chapter1Timer.stop();
-                            chapter1Timer.start();
+                            if(currentPage<TOTAL_PAGES-1)
+                            {
+                                if(currentPage!=0)
+                                {
+                                    if(currentScript ==0)
+                                    {//compensate for clicking back button at end of page.
+                                        currentPage--;
+                                        currentScript=7;
+                                    }
+                                }
+                            }
                         }
-                        /*
-                        if(gameState == 5 && chapter1Timer.isStarted() && chapter1Timer.getTicks()<21000)//chapter 1
-                        {
-                            //don't ask me why but setTicks must be negative to increase timer.
-                            std::cout << "\n chapter 1 timer ticks before set ticks: " << chapter1Timer.getTicks();
-                            //chapter1Timer.setTicks(-3000);//if ch1 is running and player wants to speed up text.
-                            //std::cout << "\n chapter 1 timer ticks after set ticks: " << chapter1Timer.getTicks();
-                            //printf("chapter 1 timer ticks",chapter1Timer.getTicks());
-                        }*/
                     }
 
 					//Handle key press
@@ -712,10 +732,8 @@ int main( int argc, char* args[] )
 
 
                             case SDLK_SPACE:
-                                if(gameState == 5){
-
-
-
+                                if(gameState == 5)
+                                {
                                     if(currentScript<TOTAL_SCRIPTS-1)
                                     {
                                         currentScript++;
@@ -737,6 +755,7 @@ int main( int argc, char* args[] )
                                             printf("end of chapter 1 dialog return to game state = 0 \n");
                                             gameState = 2;
                                             chapter1complete=1;
+
                                         }
 
                                     }
@@ -744,31 +763,32 @@ int main( int argc, char* args[] )
                                 break;
 
 
-							//Play high sound effect
+							//sound tests
+
 							case SDLK_1:
-							Mix_PlayChannel( -1, gHigh, 0 );
+							Mix_PlayChannel( -1, sound0, 0 );
 							break;
 
-							//Play medium sound effect
+							//Play sound effect
 							case SDLK_2:
-							Mix_PlayChannel( -1, gMedium, 0 );
+							Mix_PlayChannel( -1, sound1, 0 );
 							break;
 
-							//Play low sound effect
 							case SDLK_3:
-							Mix_PlayChannel( -1, gLow, 0 );
+							Mix_PlayChannel( -1, sound2, 0 );
 							break;
 
-							//Play scratch sound effect
 							case SDLK_4:
-							Mix_PlayChannel( -1, gScratch, 0 );
+							Mix_PlayChannel( -1, sound3, 0 );
 							break;
 
 							case SDLK_h:
-							if(hideDialogBox == false){
+							if(hideDialogBox == false)
+                            {
                                 hideDialogBox = true;
 							}
-							else{
+							else
+                            {
                                 hideDialogBox = false;
 							}
 							printf("\n h pressed \n");
@@ -814,7 +834,6 @@ int main( int argc, char* args[] )
 
 
 					}
-
 				}
 
 				//Calculate and correct fps
@@ -838,9 +857,9 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( renderer );
 
-
                 if(gameState == 0)//Title Screen
                 {
+                    chapter1Timer.stop();
                     titleTexture.render( 0, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
 
                     renderParticles();
@@ -855,14 +874,18 @@ int main( int argc, char* args[] )
                             buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
                 }
-                else if(gameState == 1){//chapter select screen
+                else if(gameState == 1)
+                {//new gamme chapter select screen
+                    chapter1Timer.stop();
                     chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     //chapter 1 button
                     buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //back button
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
-                else if(gameState == 2){
+                else if(gameState == 2)
+                {
+                    chapter1Timer.stop();
                         //chapter select screen
                     chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //chapter 1 button
@@ -870,12 +893,17 @@ int main( int argc, char* args[] )
                     //back button
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
-                else if(gameState == 3){
+                else if(gameState == 3)
+                {
+                    //options screen
                     optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 5)
                 {
+                    if(chapter1Timer.isStarted()==false)
+                        chapter1Timer.start();
+                    //printf("chapter1 timer should be started.");
                     //Chapter 1
                     for(int j = 0; j<TOTAL_PAGES;j++){
                         //render background & dialog box before script lines
@@ -931,7 +959,8 @@ int main( int argc, char* args[] )
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
                 }
-                else{
+                else
+                {
                     creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
@@ -955,29 +984,21 @@ int main( int argc, char* args[] )
                 }
 
                 //set script line
-                if(chapter1Timer.getTicks()/1000 > 1){//implement timer auto script option.
+                if(chapter1Timer.getTicks()/1000 > 1)
+                {//implement timer auto script option.
                     if(currentScript<TOTAL_SCRIPTS-1){
                         currentScript++;
                         chapter1Timer.stop();
                         chapter1Timer.start();
+                        printf("\n \n timer tick");
                         std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
                         std::cout << "\n currentPage: " << std::to_string( currentPage );
                         std::cout << "\n currentScript: " << std::to_string( currentScript );
-                    }/*
-                    else
-                    {
-                        if(currentPage < TOTAL_PAGES-1){
-                            currentPage+=1;
-                        }
-                        else
-                        {
-                            currentPage=0;
-                        }
-                        currentScript=0;
+                    }
+                    if(currentScript == TOTAL_SCRIPTS-1){
                         chapter1Timer.stop();
-                        chapter1Timer.start();
-                    }*/
-			}
+                    }
+                }
 
 				//Cycle animation
 				if( aniFrame >= TAO_ANIMATION_FRAMES )

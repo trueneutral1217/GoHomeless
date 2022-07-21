@@ -2,10 +2,10 @@
 
 button::button()
 {
-	mPosition.x = 0;
-	mPosition.y = 0;
+	position.x = 0;
+	position.y = 0;
     buttonName = "";
-    clicked = false;
+
     //buttonTexture = NULL;
 
 }
@@ -17,17 +17,17 @@ button::~button()
 
 void button::setPosition( int x, int y )
 {
-	mPosition.x = x;
-	mPosition.y = y;
+	position.x = x;
+	position.y = y;
 }
 
 int button::getPositionX()
 {
-    return mPosition.x;
+    return position.x;
 }
 int button::getPositionY()
 {
-    return mPosition.y;
+    return position.y;
 }
 
 int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e )
@@ -43,22 +43,22 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e )
 		bool inside = true;
 
 		//Mouse is left of the button
-		if( x < mPosition.x )
+		if( x < position.x )
 		{
 			inside = false;
 		}
 		//Mouse is right of the button
-		else if( x > mPosition.x + title_button_width )
+		else if( x > position.x + BUTTON_WIDTH )
 		{
 			inside = false;
 		}
 		//Mouse above the button
-		else if( y < mPosition.y )
+		else if( y < position.y )
 		{
 			inside = false;
 		}
 		//Mouse below the button
-		else if( y > mPosition.y + title_button_height )
+		else if( y > position.y + BUTTON_HEIGHT )
 		{
 			inside = false;
 		}
@@ -78,44 +78,37 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e )
                     case SDL_MOUSEBUTTONDOWN:
 
                         if(buttonName=="new" && gameState==0){
-                            printf("\n new game button pressed \n");
+                            printf("\n \n new game button pressed \n \n");
                             gameState = 1;
-                            clicked = true;
                         }
                         else if(buttonName=="load" && gameState==0){
-                            printf("\n load game button pressed \n");
+                            printf("\n \n load game button pressed \n \n");
                             gameState = 2; //Note, this will need to be changed once saving game implemented
-                            clicked = true;
                         }
                         else if(buttonName=="credits" && gameState==0){
-                            printf("\n credits button pressed \n");
+                            printf("\n \n credits button pressed \n \n");
                             gameState = 4;
-                            clicked = true;
                         }
                         else if(buttonName=="options" && gameState==0){
-                            printf("\n options button pressed \n");
+                            printf("\n \n options button pressed \n \n");
                             gameState = 3;
-                            clicked = true;
                         }
                         else if(buttonName=="back" && gameState != 0){
-                            printf("\n back button pressed \n");
+                            printf("\n \n back button pressed \n \n");
                             gameState = 0;
-                            clicked = true;
                         }
                         else if(buttonName=="chapter1" && gameState==1){
-                            printf("\n chapter 1 button pressed \n");
+                            printf("\n \n chapter 1 button pressed \n \n");
                             gameState = 5;
-                            clicked = true;
                         }
                         else if(buttonName=="chapter1" && gameState==2){
-                            printf("\n chapter 1 button pressed \n");
+                            printf("\n \n chapter 1 button pressed \n \n");
                             gameState = 5;
-                            clicked = true;
                         }
                     break;
-                    case SDL_MOUSEBUTTONUP:
-                        clicked = false;
-                        break;
+                    //case SDL_MOUSEBUTTONUP:
+                     //   clicked = false;
+                     //   break;
                 }
 
 		}

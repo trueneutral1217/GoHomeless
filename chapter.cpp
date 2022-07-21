@@ -1,15 +1,8 @@
 #include "chapter.h"
 
 chapter::chapter()
-{/*
-    for(int i = 0; i < TOTAL_PAGES;i++)
-    {
-        for(int j = 0; j < TOTAL_SCRIPTS;j++)
-        {
-            scriptString[i][j].str("");
-        }
-    }*/
-    //chapter 1, page 1
+{
+
 	scriptString[0][0].str( "5 years ago, I stopped working regular jobs." );
 	scriptString[0][1].str("Since then I've mostly begged for money on the street corner");
 	scriptString[0][2].str("with cardboard signs that say things like 'Anything Helps'.");
@@ -97,16 +90,86 @@ chapter::~chapter()
     }
 }
 
-bool loadStrings()
+bool loadChapter2Strings(std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS])
 {
     //Loading success flag
 	bool success = true;
 
+//chapter 2 page 1
+    scriptString[0][0].str("1");
+    scriptString[0][1].str("2");
+    scriptString[0][2].str("3");
+    scriptString[0][3].str("4");
+    scriptString[0][4].str("5");
+    scriptString[0][5].str("6");
+    scriptString[0][6].str("7");
+    scriptString[0][7].str("                                Press LMB or Enter to continue...");
+//chapter 2, page 2
+    scriptString[1][0].str("1");
+    scriptString[1][1].str("2");
+    scriptString[1][2].str("3");
+    scriptString[1][3].str("4");
+    scriptString[1][4].str("5");
+    scriptString[1][5].str("6");
+    scriptString[1][6].str("7");
+    scriptString[1][7].str("                                Press LMB or Enter to continue...");
+//chapter 2, page 3
+    scriptString[2][0].str("1");
+    scriptString[2][1].str("2");
+    scriptString[2][2].str("3");
+    scriptString[2][3].str("4");
+    scriptString[2][4].str("5");
+    scriptString[2][5].str("6");
+    scriptString[2][6].str("7");
+    scriptString[2][7].str("                                Press LMB or Enter to continue...");
 
+//chapter 2, page 4
+    scriptString[3][0].str("1");
+    scriptString[3][1].str("2");
+    scriptString[3][2].str("3");
+    scriptString[3][3].str("4");
+    scriptString[3][4].str("5");
+    scriptString[3][5].str("6");
+    scriptString[3][6].str("7");
+    scriptString[3][7].str("                                Press LMB or Enter to continue...");
 
-	//scriptTexture[0].scriptString="5 years ago, I stopped working regular jobs.";
-	//scriptTexture[1].scriptString="Since then I've mostly begged for money on the street corner with cardboard signs that say things like 'Anything Helps'.";
-    //std::cout << "button name: " << gButtons[0].buttonName;
+//chapter 2, page 5
+    scriptString[4][0].str("1");
+    scriptString[4][1].str("2");
+    scriptString[4][2].str("3");
+    scriptString[4][3].str("4");
+    scriptString[4][4].str("5");
+    scriptString[4][5].str("6");
+    scriptString[4][6].str("7");
+    scriptString[4][7].str("                                Press LMB or Enter to continue...");
+//chapter 2, page 6
+    scriptString[5][0].str("1");
+    scriptString[5][1].str("2");
+    scriptString[5][2].str("3");
+    scriptString[5][3].str("4");
+    scriptString[5][4].str("5");
+    scriptString[5][5].str("6");
+    scriptString[5][6].str("7");
+    scriptString[5][7].str("                                Press LMB or Enter to continue...");
+//chapter 2, page 7
+    scriptString[6][0].str("1");
+    scriptString[6][1].str("2");
+    scriptString[6][2].str("3");
+    scriptString[6][3].str("4");
+    scriptString[6][4].str("5");
+    scriptString[6][5].str("6");
+    scriptString[6][6].str("7");
+    scriptString[6][7].str("                                Press LMB or Enter to continue...");
+//chapter 2, page 8
+    scriptString[7][0].str("1");
+    scriptString[7][1].str("2");
+    scriptString[7][2].str("3");
+    scriptString[7][3].str("4");
+    scriptString[7][4].str("5");
+    scriptString[7][5].str("6");
+    scriptString[7][6].str("7");
+    scriptString[7][7].str(" *End of Chapter 1* Press LMB or Enter to return to select screen.");
+
 
     return success;
 

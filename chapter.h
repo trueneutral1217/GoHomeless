@@ -21,7 +21,7 @@ class chapter
         std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS];
 
         //Load Strings
-        bool loadStrings();
+        bool loadStrings(std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS]);
 
     private:
 
