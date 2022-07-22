@@ -70,6 +70,8 @@ Particle particles[ TOTAL_PARTICLES ];
 chapter chapter1;
 //load scriptTextures full of scriptStrings
 bool setScriptTextures();
+//tests savegame variables, usually when altered, saved, or loaded.
+void testSaveVariables();
 //render particles to screen
 void renderParticles();
 //tracks the state of the game for rendering etc.
@@ -171,19 +173,12 @@ bool setScriptTextures(){
         return success;
 }
 
-/*//still trying to figure out how to get the next chapter's strings loaded.
-bool setScriptStrings()
+void testSaveVariables()
 {
-    //chapter1.loadChapter2Strings(chapter1.scriptString)
-    /*
-    for(int j=0;j<TOTAL_PAGES;j++)
-    {
-        for(int i=0;i<TOTAL_SCRIPTS;i++)
-        {
-            chapter1.scriptString[j][i]
-        }
-    }
-}*/
+    std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
+    std::cout << "\n currentPage: " << std::to_string( currentPage );
+    std::cout << "\n currentScript: " << std::to_string( currentScript );
+}
 
 bool loadMedia()
 {
@@ -234,28 +229,23 @@ bool loadMedia()
         currentScript = gData[2];
         SDL_RWclose( file );
     }
-    std::cout << "\n chapter1complete: " << std::to_string( gData[ 0 ] );
-    std::cout << "\n currentPage: " << std::to_string( gData[ 1 ] );
-    std::cout << "\n currentScript: " << std::to_string( gData[ 2 ] );
+    testSaveVariables();
     //load tao animation images
-    success = tao[0].loadFromFile("images/animations/tao/tao1.png",renderer);
-    success = tao[1].loadFromFile("images/animations/tao/tao2.png",renderer);
-    success = tao[2].loadFromFile("images/animations/tao/tao3.png",renderer);
-    success = tao[3].loadFromFile("images/animations/tao/tao4.png",renderer);
-    success = tao[4].loadFromFile("images/animations/tao/tao5.png",renderer);
-    success = tao[5].loadFromFile("images/animations/tao/tao6.png",renderer);
-    success = tao[6].loadFromFile("images/animations/tao/tao7.png",renderer);
-    success = tao[7].loadFromFile("images/animations/tao/tao8.png",renderer);
-    //load button texture images
-    success = buttons[0].buttonTexture.loadFromFile( "images/buttons/Back.png",renderer );
-    success = buttons[1].buttonTexture.loadFromFile( "images/buttons/NewGame.png",renderer );
-    success = buttons[2].buttonTexture.loadFromFile( "images/buttons/LoadGame.png",renderer );
-    success = buttons[3].buttonTexture.loadFromFile( "images/buttons/Options.png",renderer );
-    success = buttons[4].buttonTexture.loadFromFile( "images/buttons/Credits.png",renderer );
-    success = buttons[5].buttonTexture.loadFromFile( "images/buttons/chapter1.png",renderer );
-    //set button positions
+    for(int i = 0; i<TAO_ANIMATION_FRAMES;i++)
+    {
+        int a = i+1;
+        std::stringstream ss;
+        ss << "images/animations/tao/tao" << a << ".png";
+        std::string str = ss.str();
+        success = tao[i].loadFromFile(str,renderer);
+    }
+    //set button positions & image textures
     for( int i = 0; i < TOTAL_BUTTONS; ++i )
     {
+        std::stringstream ss;
+        ss << "images/buttons/" << buttons[i].buttonName << ".png";
+        std::string str = ss.str();
+        success = buttons[i].buttonTexture.loadFromFile( str,renderer );
         buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
     }
     buttons[0].setPosition(600,20);
@@ -302,7 +292,7 @@ bool loadMedia()
 
 void close()
 {
-    //Open data for writing
+    //save game variables to file
     SDL_RWops* file = SDL_RWFromFile( "savegame/save.gsf", "w+b" );
     if( file != NULL )
     {
@@ -310,9 +300,7 @@ void close()
         gData[0] = chapter1complete;
         gData[1] = currentPage;
         gData[2] = currentScript;
-        std::cout << "\n chapter1complete: " << std::to_string( gData[ 0 ] );
-        std::cout << "\n currentPage: " << std::to_string( gData[ 1 ] );
-        std::cout << "\n currentScript: " << std::to_string( gData[ 2 ] );
+        testSaveVariables();
         for( int i = 0; i < TOTAL_DATA; ++i )
         {
             SDL_RWwrite( file, &gData[ i ], sizeof(Sint32), 1 );
@@ -446,26 +434,20 @@ int main( int argc, char* args[] )
                                 chapter1complete=1;
                                 chapter1Timer.stop();
                                 printf("\n \n currentPage & currentScript = 7");
-                                std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-                                std::cout << "\n currentPage: " << std::to_string( currentPage );
-                                std::cout << "\n currentScript: " << std::to_string( currentScript );
+                                testSaveVariables();
                             }
                             else if (currentScript<TOTAL_SCRIPTS-1)
                             {
                                 currentScript++;
                                 chapter1Timer.restart();
                                 printf("\n \n left mouse down total scripts loop");
-                                std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-                                std::cout << "\n currentPage: " << std::to_string( currentPage );
-                                std::cout << "\n currentScript: " << std::to_string( currentScript );
+                                testSaveVariables();
                             }
                             else if(currentPage<TOTAL_PAGES-1){
                                 currentPage++;
                                 currentScript=0;
                                 printf("\n \n left mouse down total pages loop");
-                                std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-                                std::cout << "\n currentPage: " << std::to_string( currentPage );
-                                std::cout << "\n currentScript: " << std::to_string( currentScript );
+                                testSaveVariables();
                                 chapter1Timer.restart();
                             }
                         }
@@ -485,6 +467,11 @@ int main( int argc, char* args[] )
                                         currentPage--;
                                         currentScript=7;
                                     }
+                                }
+                                if(currentScript != 0 && currentScript!=7)
+                                {
+                                    currentScript--;
+                                    printf("\n %d \n",currentScript);
                                 }
                             }
                         }
@@ -713,9 +700,7 @@ int main( int argc, char* args[] )
                         currentScript++;
                         chapter1Timer.restart();
                         printf("\n \n timer tick");
-                        std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-                        std::cout << "\n currentPage: " << std::to_string( currentPage );
-                        std::cout << "\n currentScript: " << std::to_string( currentScript );
+                        testSaveVariables();
                     }
                     if(currentScript == TOTAL_SCRIPTS-1){
                         chapter1Timer.stop();
