@@ -453,8 +453,7 @@ int main( int argc, char* args[] )
                             else if (currentScript<TOTAL_SCRIPTS-1)
                             {
                                 currentScript++;
-                                chapter1Timer.stop();
-                                chapter1Timer.start();
+                                chapter1Timer.restart();
                                 printf("\n \n left mouse down total scripts loop");
                                 std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
                                 std::cout << "\n currentPage: " << std::to_string( currentPage );
@@ -467,8 +466,7 @@ int main( int argc, char* args[] )
                                 std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
                                 std::cout << "\n currentPage: " << std::to_string( currentPage );
                                 std::cout << "\n currentScript: " << std::to_string( currentScript );
-                                chapter1Timer.stop();
-                                chapter1Timer.start();
+                                chapter1Timer.restart();
                             }
                         }
                         if(gameState == 1)//new game chapter select
@@ -502,8 +500,7 @@ int main( int argc, char* args[] )
                                     if(currentScript<TOTAL_SCRIPTS-1)
                                     {
                                         currentScript++;
-                                        chapter1Timer.stop();
-                                        chapter1Timer.start();
+                                        chapter1Timer.restart();
                                     }
                                     else
                                     {
@@ -511,8 +508,7 @@ int main( int argc, char* args[] )
                                         {
                                             currentPage++;
                                             currentScript=0;
-                                            chapter1Timer.stop();
-                                            chapter1Timer.start();
+                                            chapter1Timer.restart();
                                         }
                                         else
                                         {
@@ -715,8 +711,7 @@ int main( int argc, char* args[] )
                 {//implement timer auto script option.
                     if(currentScript<TOTAL_SCRIPTS-1){
                         currentScript++;
-                        chapter1Timer.stop();
-                        chapter1Timer.start();
+                        chapter1Timer.restart();
                         printf("\n \n timer tick");
                         std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
                         std::cout << "\n currentPage: " << std::to_string( currentPage );

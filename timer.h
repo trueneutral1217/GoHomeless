@@ -13,6 +13,7 @@ class timer
 		//The various clock actions
 		void start();
 		void stop();
+		void restart();//stop,start timer.
 		void pause();
 		void unpause();
 

@@ -23,6 +23,28 @@ void timer::start()
 	pausedTicks = 0;
 }
 
+void timer::restart()
+{
+    //Stop the timer
+    started = false;
+
+    //Unpause the timer
+    paused = false;
+
+	//Clear tick variables
+	startTicks = 0;
+	pausedTicks = 0;
+    //Start the timer
+    started = true;
+
+    //Unpause the timer
+    paused = false;
+
+    //Get the current clock time
+    startTicks = SDL_GetTicks();
+	pausedTicks = 0;
+}
+
 void timer::stop()
 {
     //Stop the timer
