@@ -26,6 +26,7 @@ void Particle::createParticle(SDL_Renderer* renderer)
     }
 }
 
+
 void Particle::render(SDL_Renderer* renderer, int renderColor)
 {
     //Show image

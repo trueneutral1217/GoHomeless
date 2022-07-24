@@ -9,20 +9,19 @@
 #include "timer.h"
 #include "particle.h"
 #include "chapter.h"
+#include "saveGame.h"
 //declare and set constant variables
-const int TOTAL_DATA = 3;
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const int TOTAL_STATES = 5;
 const int SCREEN_FPS=60;
 const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
 const int TAO_ANIMATION_FRAMES = 8;
+const int TOTAL_SOUNDS = 4;
 //Starts up SDL and creates window
 bool init();
 //Loads media
 bool loadMedia();
-//declare the textures for the scripts used in chapters
-Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
 //Frees media and shuts down SDL
 void close();
 //The window renderer
@@ -36,6 +35,7 @@ Texture creditsTexture;
 Texture optionsTexture;
 Texture loadGameTexture;
 Texture chapterSelectTexture;
+//chapter1bg textures needs to be cleaned up, maybe made into an array.
 Texture chapter1BG;
 Texture chapter1BG2;
 Texture chapter1BG3;
@@ -47,29 +47,23 @@ bool hideDialogBox = false;
 //declare music
 Mix_Music *music = NULL;
 //declare sound effects
+//Mix_Chunk sound[TOTAL_SOUNDS];
+
 Mix_Chunk *sound0 = NULL;
 Mix_Chunk *sound1 = NULL;
 Mix_Chunk *sound2 = NULL;
 Mix_Chunk *sound3 = NULL;
-//declare font
-TTF_Font *font = NULL;
+
 //Buttons objects
 button buttons[ TOTAL_BUTTONS ];
 //animation textures
 Texture tao[TAO_ANIMATION_FRAMES];
-//file read/write stuff
-Sint32 gData[ TOTAL_DATA ];
-SDL_RWops* file = SDL_RWFromFile( "savegame/save.gsf", "r+b" );
-//savegame variables
-int chapter1complete;
-int currentPage;
-int currentScript;
+//savegame handler
+saveGame savegame;
 //particle objects
 Particle particles[ TOTAL_PARTICLES ];
 //declare chapter1
 chapter chapter1;
-//load scriptTextures full of scriptStrings
-bool setScriptTextures();
 //tests savegame variables, usually when altered, saved, or loaded.
 void testSaveVariables();
 //render particles to screen
@@ -157,27 +151,11 @@ bool init()
 	return success;
 }
 
-bool setScriptTextures(){
-    bool success = true;
-    //Render text
-    SDL_Color textColor = { 55, 55, 55 };
-    for(int j=0;j<TOTAL_PAGES;j++){
-            for(int i=0;i<TOTAL_SCRIPTS;i++){
-                if( !scriptTexture[j][i].loadFromRenderedText( chapter1.scriptString[j][i].str().c_str(), textColor,font, renderer ) )
-                {
-                    printf( "Failed to render text texture!\n" );
-                    success = false;
-                }
-            }
-        }
-        return success;
-}
-
 void testSaveVariables()
 {
-    std::cout << "\n chapter1complete: " << std::to_string( chapter1complete );
-    std::cout << "\n currentPage: " << std::to_string( currentPage );
-    std::cout << "\n currentScript: " << std::to_string( currentScript );
+    std::cout << "\n currentChapter: " << std::to_string( chapter1.currentChapter );
+    std::cout << "\n currentPage: " << std::to_string( chapter1.currentPage );
+    std::cout << "\n currentScript: " << std::to_string( chapter1.currentScript );
 }
 
 bool loadMedia()
@@ -190,45 +168,13 @@ bool loadMedia()
 	buttons[3].buttonName="options";
 	buttons[4].buttonName="credits";
 	buttons[5].buttonName="chapter1";
-    if( file == NULL )
-    {
-        printf( "\n Warning: Unable to open file! SDL Error: %s\n", SDL_GetError() );
-        //Create file for writing
-        file = SDL_RWFromFile( "savegame/save.gsf", "w+b" );
-        if( file != NULL )
-        {
-            printf( "\n New file created!\n" );
-            //write savegame defaults as 0.
-            for( int i = 0; i < TOTAL_DATA; ++i )
-            {
-                gData[ i ] = 0;
-                SDL_RWwrite( file, &gData[ i ], sizeof(Sint32), 1 );
-            }
-            chapter1complete=0;
-            currentPage=0;
-            currentScript=0;
-            //Close file handler
-            SDL_RWclose( file );
-        }
-        else
-        {
-            printf( "Error: Unable to create file! SDL Error: %s\n", SDL_GetError() );
-            success = false;
-        }
-    }//File exists
-    else
-    {
-        printf( "Loading Save Game Data...!\n" );
-        for( int i = 0; i < TOTAL_DATA; ++i )
-        {
-            SDL_RWread( file, &gData[ i ], sizeof(Sint32), 1 );
-        }
-        //load data from file into savegame variables
-        chapter1complete= gData[0];
-        currentPage=gData[1];
-        currentScript = gData[2];
-        SDL_RWclose( file );
-    }
+
+	savegame.readFile();
+
+    chapter1.currentChapter= savegame.gData[0];
+    chapter1.currentPage= savegame.gData[1];
+    chapter1.currentScript = savegame.gData[2];
+
     testSaveVariables();
     //load tao animation images
     for(int i = 0; i<TAO_ANIMATION_FRAMES;i++)
@@ -259,6 +205,8 @@ bool loadMedia()
 	success = loadGameTexture.loadFromFile( "images/loadgamescreen.png",renderer );
 	success = chapterSelectTexture.loadFromFile( "images/chapterSelect.png",renderer );
     //load chapter 1 background textures
+    success = chapter1.setBGTextures(renderer);
+    /*
     success = chapter1BG.loadFromFile( "images/signflying800x600.png",renderer );
     success = chapter1BG2.loadFromFile( "images/parkbench.png",renderer );
     success = chapter1BG3.loadFromFile( "images/bluewave.png",renderer );
@@ -267,7 +215,7 @@ bool loadMedia()
     success = chapter1BG6.loadFromFile( "images/America2.png",renderer );
    // success = chapter1BG7.loadFromFile( "images/.png",renderer );
    // success = chapter1BG8.loadFromFile( "images/.png",renderer );
-
+*/
    //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
     //set dialog box alpha (about 75% opaque @ 192)
@@ -275,14 +223,25 @@ bool loadMedia()
 	//Load music
 	music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
 	//Load sound effects
+	/*
+	for(int i = 0; i<TOTAL_SOUNDS;i++)
+    {
+        std::stringstream ss;
+        ss << "sounds/titleitemselect" << (i+1) << ".wav";
+        std::string str = ss.str();
+
+        sound[i] = Mix_LoadWAV(str);
+	}*/
+	//load sounds (still working on new way).
 	sound0 = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
 	sound1 = Mix_LoadWAV( "sounds/titleitemselect2.wav" );
 	sound2 = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
 	sound3 = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
-	//load the font
-	font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
-	//load script textures from chapter scriptString
-    success = setScriptTextures();
+    //load font
+	chapter1.loadFont();
+
+	//chapter1.loadChapterStrings(renderer);
+
     if(success == false)
     {
         printf("something didn't load right in loadmedia.");
@@ -292,26 +251,8 @@ bool loadMedia()
 
 void close()
 {
-    //save game variables to file
-    SDL_RWops* file = SDL_RWFromFile( "savegame/save.gsf", "w+b" );
-    if( file != NULL )
-    {
-        //Save data
-        gData[0] = chapter1complete;
-        gData[1] = currentPage;
-        gData[2] = currentScript;
-        testSaveVariables();
-        for( int i = 0; i < TOTAL_DATA; ++i )
-        {
-            SDL_RWwrite( file, &gData[ i ], sizeof(Sint32), 1 );
-        }
-        //Close file handler
-        SDL_RWclose( file );
-    }
-    else
-    {
-        printf( "Error: Unable to save file! %s\n", SDL_GetError() );
-    }
+    savegame.writeFile(chapter1.currentChapter,chapter1.currentPage,chapter1.currentScript);
+    testSaveVariables();
     //free the button textures
     for(int i = 0; i<TOTAL_BUTTONS;i++)
     {
@@ -322,13 +263,19 @@ void close()
     {
         for(int i=0;i<TOTAL_SCRIPTS;i++)
         {
-            scriptTexture[j][i].free();
+            chapter1.scriptTexture[j][i].free();
         }
     }
     //free the tao animation textures
     for(int i=0;i<TAO_ANIMATION_FRAMES;i++){
         tao[i].free();
     }
+    /*
+    for(int i=0;i<TOTAL_SOUNDS;i++)
+    {
+        Mix_FreeChunk( sound[i] );
+        sound[i]=NULL;
+    }*/
     //free the title image
     title.free();
     //free the background textures
@@ -337,15 +284,12 @@ void close()
 	loadGameTexture.free();
 	optionsTexture.free();
 	creditsTexture.free();
-	chapter1BG.free();
-	chapter1BG2.free();
-	chapter1BG3.free();
-	chapter1BG4.free();
-	chapter1BG5.free();
-	chapter1BG6.free();
+    chapter1.freeBGTextures();
+
 	//free the dialog box for chapters
 	dialogBox.free();
 	//Free the sound effects
+
 	Mix_FreeChunk( sound0 );
 	Mix_FreeChunk( sound1 );
 	Mix_FreeChunk( sound2 );
@@ -355,8 +299,8 @@ void close()
 	sound2 = NULL;
 	sound3 = NULL;
 	//free the font
-	TTF_CloseFont( font );
-    font = NULL;
+	TTF_CloseFont( chapter1.font );
+    chapter1.font = NULL;
 	//Free the music
 	Mix_FreeMusic( music );
 	music = NULL;
@@ -395,8 +339,6 @@ int main( int argc, char* args[] )
 
             //Set text color as black
 			SDL_Color textColor = { 0, 0, 0, 255 };
-            //The frames per second timer
-			timer fpsTimer;
 			//The frames per second cap timer
 			timer capTimer;
 			//timer for dialog for chapter1
@@ -408,7 +350,6 @@ int main( int argc, char* args[] )
 			int aniFrame = 0;
 			//Start counting frames per second
 			int countedFrames = 0;
-			fpsTimer.start();
 			//Event handler
 			SDL_Event e;
 			//While application is running
@@ -427,51 +368,45 @@ int main( int argc, char* args[] )
                     if(e.type == SDL_MOUSEBUTTONDOWN){
                         if(gameState == 5)
                         {
-                            if(currentPage==TOTAL_PAGES-1 && currentScript==TOTAL_SCRIPTS-1){
-                                currentPage=0;
-                                currentScript=0;
+                            if(chapter1.currentPage==TOTAL_PAGES-1 && chapter1.currentScript==TOTAL_SCRIPTS-1){
+                                chapter1.completeChapter(renderer);
                                 gameState=2;
-                                chapter1complete=1;
                                 chapter1Timer.stop();
-                                printf("\n \n currentPage & currentScript = 7");
-                                testSaveVariables();
+                                //printf("\n \n currentPage & currentScript = 7");
+                                //testSaveVariables();
                             }
-                            else if (currentScript<TOTAL_SCRIPTS-1)
+                            else if (chapter1.currentScript<TOTAL_SCRIPTS-1)
                             {
-                                currentScript++;
+                                chapter1.scriptIncrement();
                                 chapter1Timer.restart();
-                                printf("\n \n left mouse down total scripts loop");
-                                testSaveVariables();
+                                //printf("\n \n left mouse down total scripts loop");
+                                //testSaveVariables();
                             }
-                            else if(currentPage<TOTAL_PAGES-1){
-                                currentPage++;
-                                currentScript=0;
-                                printf("\n \n left mouse down total pages loop");
-                                testSaveVariables();
+                            else if(chapter1.currentPage<TOTAL_PAGES-1){
+                                chapter1.pageIncrement();
+                                //printf("\n \n left mouse down total pages loop");
+                                //testSaveVariables();
                                 chapter1Timer.restart();
                             }
                         }
                         if(gameState == 1)//new game chapter select
                         {
-                            currentPage = 0;
-                            currentScript = 0;
-                            chapter1complete = 0;
+                            chapter1.resetChapters(renderer);
                         }
                         if(gameState == 2){//load game chapter select
-                            if(currentPage<TOTAL_PAGES-1)
+                            if(chapter1.currentPage<TOTAL_PAGES-1)
                             {
-                                if(currentPage!=0)
+                                if(chapter1.currentPage!=0)
                                 {
-                                    if(currentScript ==0)
+                                    if(chapter1.currentScript ==0)
                                     {//compensate for clicking back button at end of page.
-                                        currentPage--;
-                                        currentScript=7;
+                                        chapter1.backPage();
                                     }
                                 }
-                                if(currentScript != 0 && currentScript!=7)
+                                if(chapter1.currentScript != 0 && chapter1.currentScript!=7)
                                 {
-                                    currentScript--;
-                                    printf("\n %d \n",currentScript);
+                                    chapter1.backScript();
+                                    //printf("\n %d \n",chapter1.currentScript);
                                 }
                             }
                         }
@@ -484,25 +419,24 @@ int main( int argc, char* args[] )
                             case SDLK_SPACE:
                                 if(gameState == 5)
                                 {
-                                    if(currentScript<TOTAL_SCRIPTS-1)
+                                    if(chapter1.currentScript<TOTAL_SCRIPTS-1)
                                     {
-                                        currentScript++;
+                                        chapter1.scriptIncrement();
                                         chapter1Timer.restart();
                                     }
                                     else
                                     {
-                                        if(currentPage<TOTAL_PAGES-1)
+                                        if(chapter1.currentPage<TOTAL_PAGES-1)
                                         {
-                                            currentPage++;
-                                            currentScript=0;
+                                            chapter1.pageIncrement();
                                             chapter1Timer.restart();
                                         }
                                         else
                                         {
                                             //currentPage=0;
-                                            printf("end of chapter 1 dialog return to game state = 0 \n");
+                                            //printf("end of chapter 1 dialog return to game state = 0 \n");
                                             gameState = 2;
-                                            chapter1complete=1;
+                                            chapter1.completeChapter(renderer);
                                         }
                                     }
                                 }
@@ -569,12 +503,6 @@ int main( int argc, char* args[] )
 						gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e );
 					}
 				}
-				//Calculate and correct fps
-				float avgFPS = countedFrames / ( fpsTimer.getTicks() / 1000.f );
-				if( avgFPS > 2000000 )
-				{
-					avgFPS = 0;
-				}
 				//Clear screen
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( renderer );
@@ -624,19 +552,24 @@ int main( int argc, char* args[] )
                     //Chapter 1
                     for(int j = 0; j<TOTAL_PAGES;j++){
                         //render background & dialog box before script lines
-                        switch(currentPage %6){
-                            case 0:chapter1BG.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        switch(chapter1.currentPage %TOTAL_PAGES){
+                            case 0:chapter1.chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 1:chapter1BG2.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 1:chapter1.chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 2:chapter1BG3.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 2:chapter1.chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 3:chapter1BG4.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 3:chapter1.chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 4:chapter1BG5.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 4:chapter1.chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 5:chapter1BG6.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 5:chapter1.chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
+                            case 6:chapter1.chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                                    break;
+                            case 7:chapter1.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                                    break;
+
 
                         }
                         //if player presses 'h' to hide dialog box or not.
@@ -646,9 +579,9 @@ int main( int argc, char* args[] )
                         }
                         for(int i = 0; i<TOTAL_SCRIPTS;i++){
                             //render script lines
-                            if(i <= currentScript)
+                            if(i <= chapter1.currentScript)
                             {
-                                scriptTexture[currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                                chapter1.scriptTexture[chapter1.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                             }
                         }
                     }
@@ -690,19 +623,20 @@ int main( int argc, char* args[] )
                 if(animationTimer.getTicks() / 500 > 1)
                 {
                     ++aniFrame;
-                    animationTimer.stop();
-                    animationTimer.start();
+                    animationTimer.restart();
                 }
                 //set script line
                 if(chapter1Timer.getTicks()/1000 > 1)
                 {//implement timer auto script option.
-                    if(currentScript<TOTAL_SCRIPTS-1){
-                        currentScript++;
+                    if(chapter1.currentScript<TOTAL_SCRIPTS-1)
+                    {
+                        chapter1.scriptIncrement();
                         chapter1Timer.restart();
-                        printf("\n \n timer tick");
-                        testSaveVariables();
+                        //printf("\n \n timer tick");
+                        //testSaveVariables();
                     }
-                    if(currentScript == TOTAL_SCRIPTS-1){
+                    if(chapter1.currentScript == TOTAL_SCRIPTS-1)
+                    {
                         chapter1Timer.stop();
                     }
                 }

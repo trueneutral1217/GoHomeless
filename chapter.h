@@ -7,6 +7,8 @@
 const int TOTAL_SCRIPTS = 8;
 //number of dialog pages for chapter 1.
 const int TOTAL_PAGES = 8;
+//number of dialogs
+const int TOTAL_CHAPTERS=2;
 
 class chapter
 {
@@ -15,13 +17,40 @@ class chapter
         chapter();
         //destructor
         ~chapter();
+        //declare font
+        TTF_Font *font;
 
-        //Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
+        //tracks chapter progress.  used to save/load and display properly
+        int currentScript;
+        int currentPage;
+        int currentChapter;
+
+        Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
+        Texture chapter1BG[TOTAL_PAGES];
 
         std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS];
 
         //Load Strings
-        bool loadStrings(std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS]);
+        void loadChapterStrings(SDL_Renderer* renderer);
+
+        void scriptIncrement();
+        void pageIncrement();
+        void backScript();
+        void backPage();
+        void completeChapter(SDL_Renderer* renderer);
+        void resetChapters(SDL_Renderer* renderer);
+        void resetPages();
+        void resetScripts();
+
+        //
+        std::string bgFileName[TOTAL_PAGES];
+        void freeBGTextures();
+        void setFileNames();
+        bool setScriptTextures(SDL_Renderer* renderer);
+        bool setBGTextures(SDL_Renderer* renderer);
+        void loadFont();
+
+
 
     private:
 
