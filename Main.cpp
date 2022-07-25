@@ -199,23 +199,13 @@ bool loadMedia()
 	//game title image
 	success = title.loadFromFile( "images/title.png",renderer );
 	//load background image files for non-chapter1 backgrounds
-	success = titleTexture.loadFromFile( "images/defaulttitlescreen.png",renderer );
+	success = titleTexture.loadFromFile( "images/skidrow.png",renderer );
 	success = creditsTexture.loadFromFile( "images/creditsscreen.png",renderer );
 	success = optionsTexture.loadFromFile( "images/optionsscreen.png",renderer);
 	success = loadGameTexture.loadFromFile( "images/loadgamescreen.png",renderer );
-	success = chapterSelectTexture.loadFromFile( "images/chapterSelect.png",renderer );
+	success = chapterSelectTexture.loadFromFile( "images/busstop.png",renderer );
     //load chapter 1 background textures
     success = chapter1.setBGTextures(renderer);
-    /*
-    success = chapter1BG.loadFromFile( "images/signflying800x600.png",renderer );
-    success = chapter1BG2.loadFromFile( "images/parkbench.png",renderer );
-    success = chapter1BG3.loadFromFile( "images/bluewave.png",renderer );
-    success = chapter1BG4.loadFromFile( "images/please.png",renderer );
-    success = chapter1BG5.loadFromFile( "images/biblioteca.png",renderer );
-    success = chapter1BG6.loadFromFile( "images/America2.png",renderer );
-   // success = chapter1BG7.loadFromFile( "images/.png",renderer );
-   // success = chapter1BG8.loadFromFile( "images/.png",renderer );
-*/
    //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
     //set dialog box alpha (about 75% opaque @ 192)
