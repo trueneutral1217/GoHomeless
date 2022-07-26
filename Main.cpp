@@ -149,7 +149,7 @@ bool init()
 		{
 			printf( "\n Warning: Linear texture filtering not enabled!" );
 		}
-		window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN  | SDL_WINDOW_RESIZABLE  );
 		if( window == NULL )
 		{
 
@@ -576,7 +576,7 @@ int main( int argc, char* args[] )
 						//}
                         //else{
 
-                            gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window );
+                            gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
 
 
                             /*if(i==6 or i==7)

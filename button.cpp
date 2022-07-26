@@ -31,25 +31,29 @@ int button::getPositionY()
     return position.y;
 }
 
-bool button::setFullScreenOn()
+bool button::setFullScreenOn(SDL_Window* window,SDL_Renderer* renderer)
 {
     fullScreen = true;
+    SDL_SetWindowFullscreen( window, SDL_TRUE );
     //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+    //renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+
     //SDL_Delay(5000);
     return fullScreen;
 }
 
-bool button::setFullScreenOff()
+bool button::setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer)
 {
     fullScreen = false;
-
-    //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+    SDL_SetWindowFullscreen( window, SDL_FALSE );
     //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
+    //renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
+
     //SDL_Delay(5000);
     return fullScreen;
 }
 
-int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window )
+int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
 {
 	//If mouse event happened
 	if( e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP )
@@ -127,7 +131,7 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                         else if(buttonName=="fullScreenOn" && gameState==3)
                         {
                             printf("\n \n fullScreenOn button pressed \n \n");
-                            setFullScreenOff();
+                            setFullScreenOff(window,renderer);
                             //buttonName="fullScreenOff";
                             gameState = 3;
                         }
@@ -136,12 +140,12 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n fullScreenOff button pressed \n \n");
                             if(fullScreen)
                             {
-                                setFullScreenOff();
+                                setFullScreenOff(window,renderer);
                                 //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
                             }
                             else
                             {
-                                setFullScreenOn();
+                                setFullScreenOn(window,renderer);
                                 //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
 
                             }
