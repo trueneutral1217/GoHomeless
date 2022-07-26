@@ -43,10 +43,9 @@ Texture chapter1BG4;
 Texture chapter1BG5;
 Texture chapter1BG6;
 Texture dialogBox;
+//user presses 'h' to hide the dialogbox, or dialog box & text, or neither.
 bool hideDialogBox = false;
-bool hideDialog = false;
 bool hideDialogAndBox = false;
-bool hideNone = true;
 bool fullScreen = false;
 //declare music
 Mix_Music *music = NULL;
@@ -260,7 +259,7 @@ bool loadMedia()
    //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
     //set dialog box alpha (about 75% opaque @ 192)
-    dialogBox.setAlpha(192);
+    dialogBox.setAlpha(255);
 	//Load music
 	music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
 	//Load sound effects
@@ -378,8 +377,11 @@ int main( int argc, char* args[] )
 			//starting music
             //Mix_PlayMusic( music, -1 );
 
+            //set text color as white
+			SDL_Color textColor = { 255, 255, 255, 255 };
             //Set text color as black
-			SDL_Color textColor = { 0, 0, 0, 255 };
+			textColor = { 0, 0, 0, 255 };
+
 			//The frames per second cap timer
 			timer capTimer;
 			//timer for dialog for chapter1
@@ -503,13 +505,19 @@ int main( int argc, char* args[] )
 							Mix_PlayChannel( -1, sound3, 0 );
 							break;
 							case SDLK_h:
-							if(hideDialogBox == false)
+							if(hideDialogBox == false && hideDialogAndBox == false)
                             {
                                 hideDialogBox = true;
+                                hideDialogAndBox = false;
 							}
-							else
+							else if(hideDialogBox == true && hideDialogAndBox == false)
                             {
-                                hideDialogBox = false;
+                                hideDialogAndBox = true;
+                                hideDialogBox = true;
+							}else if(hideDialogBox == true && hideDialogAndBox == true)
+							{
+							    hideDialogAndBox=false;
+							    hideDialogBox=false;
 							}
 							printf("\n h pressed \n");
                             std::cout << "hideDialogBox: " << hideDialogBox;
@@ -662,12 +670,14 @@ int main( int argc, char* args[] )
 
                         }
                         //if player presses 'h' to hide dialog box or not.
-                        if(hideDialogBox == false || hideDialogAndBox==false){
+                        if(hideDialogBox == false){
                             dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
-                        if(hideDialog==false || hideDialogAndBox==false){
+                        if(hideDialogAndBox==false){
                             for(int i = 0; i<TOTAL_SCRIPTS;i++){
                                 //render script lines
+
+
                                 if(i <= chapter1.currentScript)
                                 {
                                     chapter1.scriptTexture[chapter1.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);

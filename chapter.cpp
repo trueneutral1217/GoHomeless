@@ -162,6 +162,7 @@ void chapter::resetChapters(SDL_Renderer* renderer)
 }
 void chapter::loadChapterStrings(SDL_Renderer* renderer)
 {
+
 	if(currentChapter==0)
     {
         //chapter 1, page 1
@@ -351,11 +352,32 @@ bool chapter::setBGTextures(SDL_Renderer* renderer){
 bool chapter::setScriptTextures(SDL_Renderer* renderer){
     bool success = true;
     //Render text
-    SDL_Color textColor = { 55, 55, 55 };
+    SDL_Color textColor;
     //make sure loading current strings
 
+
     for(int j=0;j<TOTAL_PAGES;j++){
+            textColor = {55,55,55};
+            if(j==0)
+            {
+                //green
+                //textColor = {0,255,0};
+
+                //pink
+                //textColor = {255,0,255};
+            }
+            if(j==3 || j==4 || j==6)
+            {
+                //white?
+                textColor = {255,255,255};
+            }
+            if(j==5)
+            {
+                //red
+                textColor = {255,0,0};
+            }
             for(int i=0;i<TOTAL_SCRIPTS;i++){
+
                 if( !scriptTexture[j][i].loadFromRenderedText( scriptString[j][i].str().c_str(), textColor,font, renderer ) )
                 {
                     printf( "Failed to render text texture!\n" );
