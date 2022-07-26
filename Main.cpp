@@ -44,6 +44,10 @@ Texture chapter1BG5;
 Texture chapter1BG6;
 Texture dialogBox;
 bool hideDialogBox = false;
+bool hideDialog = false;
+bool hideDialogAndBox = false;
+bool hideNone = true;
+bool fullScreen = false;
 //declare music
 Mix_Music *music = NULL;
 //declare sound effects
@@ -68,6 +72,10 @@ chapter chapter1;
 void testSaveVariables();
 //render particles to screen
 void renderParticles();
+
+bool setButtonTextures(bool success);
+
+void fullScreenButtonTextureToggle();
 //tracks the state of the game for rendering etc.
 int gameState;
 
@@ -88,6 +96,39 @@ for( int i = 0; i < TOTAL_PARTICLES; ++i )
     particles[i].render(renderer,particles[i].renderColor);
 }
 
+}
+
+bool setButtonTextures(bool success)
+{
+    for( int i = 0; i < TOTAL_BUTTONS; ++i )
+    {
+        std::stringstream ss;
+        ss << "images/buttons/" << buttons[i].buttonName << ".png";
+        std::string str = ss.str();
+        success = buttons[i].buttonTexture.loadFromFile( str,renderer );
+        buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
+    }
+    buttons[0].setPosition(600,20);
+    buttons[5].setPosition(20,20);
+    buttons[6].setPosition(20,100);
+    return success;
+}
+
+void fullScreenButtonTextureToggle()
+{
+    if(buttons[6].fullScreen)
+    {
+        buttons[6].buttonTexture.loadFromFile("images/buttons/fullScreenOn.png", renderer);
+        //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+    //
+    }
+    else
+    {
+        buttons[6].buttonTexture.loadFromFile("images/buttons/fullScreenOff.png", renderer);
+        //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
+
+    }
+    buttons[6].buttonTexture.render(buttons[6].getPositionX(),buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
 
 //initializes audio,video, etc.
@@ -112,6 +153,8 @@ bool init()
 		window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		if( window == NULL )
 		{
+
+		    //SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE | SDL_RESIZABLE | SDL_FULLSCREEN )
 			printf( "\n Window could not be created! SDL Error: %s\n", SDL_GetError() );
 			success = false;
 		}
@@ -168,6 +211,8 @@ bool loadMedia()
 	buttons[3].buttonName="options";
 	buttons[4].buttonName="credits";
 	buttons[5].buttonName="chapter1";
+	buttons[6].buttonName="fullScreenOff";
+	//buttons[7].buttonName="fullScreenOff";
 
 	savegame.readFile();
 
@@ -186,7 +231,8 @@ bool loadMedia()
         success = tao[i].loadFromFile(str,renderer);
     }
     //set button positions & image textures
-    for( int i = 0; i < TOTAL_BUTTONS; ++i )
+    success = setButtonTextures(success);
+    /*for( int i = 0; i < TOTAL_BUTTONS; ++i )
     {
         std::stringstream ss;
         ss << "images/buttons/" << buttons[i].buttonName << ".png";
@@ -196,14 +242,19 @@ bool loadMedia()
     }
     buttons[0].setPosition(600,20);
     buttons[5].setPosition(20,20);
+    buttons[6].setPosition(20,100);
+    */
 	//game title image
 	success = title.loadFromFile( "images/title.png",renderer );
 	//load background image files for non-chapter1 backgrounds
 	success = titleTexture.loadFromFile( "images/skidrow.png",renderer );
-	success = creditsTexture.loadFromFile( "images/creditsscreen.png",renderer );
-	success = optionsTexture.loadFromFile( "images/optionsscreen.png",renderer);
+	//success = creditsTexture.loadFromFile( "images/creditsscreen.png",renderer );
+	//success = optionsTexture.loadFromFile( "images/optionsscreen.png",renderer);
 	success = loadGameTexture.loadFromFile( "images/loadgamescreen.png",renderer );
 	success = chapterSelectTexture.loadFromFile( "images/busstop.png",renderer );
+	success = creditsTexture.loadFromFile( "images/brickwall.png",renderer );
+	success = optionsTexture.loadFromFile("images/maritime.png",renderer );
+	//success = .loadFromFile( "images/busstop.png",renderer );
     //load chapter 1 background textures
     success = chapter1.setBGTextures(renderer);
    //load dialog box image
@@ -431,6 +482,12 @@ int main( int argc, char* args[] )
                                     }
                                 }
                                 break;
+                            case SDLK_ESCAPE:
+                            if(gameState==0)
+                            {
+                                quit=true;
+                            }
+                            break;
 							//sound tests
 							case SDLK_1:
 							Mix_PlayChannel( -1, sound0, 0 );
@@ -490,7 +547,36 @@ int main( int argc, char* args[] )
 					//Handle button events
 					for( int i = 0; i < TOTAL_BUTTONS; ++i )
 					{
-						gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e );
+						//if(gameState == 3){
+                           // if(i==0){
+                            //    gameState = buttons[i].handleEvent(gameState,buttons[i].buttonName, &e );
+                           // }
+/*
+                            else if(i==6){
+                                if(fullScreen == false)
+                                {
+                                    fullScreen = buttons[i].setFullScreenOff();
+                                }
+                            }
+                            else if(i==7)
+                            {
+                                if(fullScreen)
+                                {
+                                    fullScreen = buttons[i].setFullScreenOn();
+                                }
+                            }*/
+						//}
+                        //else{
+
+                            gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window );
+
+
+                            /*if(i==6 or i==7)
+                            {
+                                fullScreen = buttons[i].fullScreen
+                            }*/
+                        //}
+
 					}
 				}
 				//Clear screen
@@ -502,11 +588,11 @@ int main( int argc, char* args[] )
                     chapter1Timer.stop();
                     titleTexture.render( 0, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     renderParticles();
-                    title.render(200, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    title.render(200, 100,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //render title screen buttons
                     for(int i=1;i<TOTAL_BUTTONS;i++)
                     {
-                        if(i!=5)//5 is back button
+                        if(i<5)//5 is back button
                             buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
                 }
@@ -534,6 +620,19 @@ int main( int argc, char* args[] )
                     //options screen
                     optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+                    //THIS AREA NEEDS WORK, attempting to get the button to change when pressed before changing window
+                    //Debugging was killing me, so yeah.
+                    fullScreenButtonTextureToggle();
+                    /*
+                    if(!buttons[7].fullScreen)
+                    {
+                        buttons[6].buttonTexture.render(buttons[6].getPositionX(),buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    }
+                    else if(buttons[6].fullScreen)
+                    {
+                        buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    }*/
                 }
                 else if(gameState == 5)
                 {
@@ -563,15 +662,16 @@ int main( int argc, char* args[] )
 
                         }
                         //if player presses 'h' to hide dialog box or not.
-                        if(hideDialogBox == false){
+                        if(hideDialogBox == false || hideDialogAndBox==false){
                             dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
                         }
-                        for(int i = 0; i<TOTAL_SCRIPTS;i++){
-                            //render script lines
-                            if(i <= chapter1.currentScript)
-                            {
-                                chapter1.scriptTexture[chapter1.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        if(hideDialog==false || hideDialogAndBox==false){
+                            for(int i = 0; i<TOTAL_SCRIPTS;i++){
+                                //render script lines
+                                if(i <= chapter1.currentScript)
+                                {
+                                    chapter1.scriptTexture[chapter1.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                                }
                             }
                         }
                     }

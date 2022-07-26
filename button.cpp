@@ -5,6 +5,7 @@ button::button()
 	position.x = 0;
 	position.y = 0;
     buttonName = "";
+    fullScreen=false;
 
     //buttonTexture = NULL;
 
@@ -30,7 +31,25 @@ int button::getPositionY()
     return position.y;
 }
 
-int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e )
+bool button::setFullScreenOn()
+{
+    fullScreen = true;
+    //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+    //SDL_Delay(5000);
+    return fullScreen;
+}
+
+bool button::setFullScreenOff()
+{
+    fullScreen = false;
+
+    //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+    //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
+    //SDL_Delay(5000);
+    return fullScreen;
+}
+
+int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window )
 {
 	//If mouse event happened
 	if( e->type == SDL_MOUSEMOTION || e->type == SDL_MOUSEBUTTONDOWN || e->type == SDL_MOUSEBUTTONUP )
@@ -104,6 +123,31 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e )
                         else if(buttonName=="chapter1" && gameState==2){
                             printf("\n \n chapter 1 button pressed \n \n");
                             gameState = 5;
+                        }
+                        else if(buttonName=="fullScreenOn" && gameState==3)
+                        {
+                            printf("\n \n fullScreenOn button pressed \n \n");
+                            setFullScreenOff();
+                            //buttonName="fullScreenOff";
+                            gameState = 3;
+                        }
+                        else if(buttonName=="fullScreenOff" && gameState==3)
+                        {
+                            printf("\n \n fullScreenOff button pressed \n \n");
+                            if(fullScreen)
+                            {
+                                setFullScreenOff();
+                                //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
+                            }
+                            else
+                            {
+                                setFullScreenOn();
+                                //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
+
+                            }
+
+                            //buttonName="fullScreenOn";
+                            gameState = 3;
                         }
                     break;
                     //case SDL_MOUSEBUTTONUP:
