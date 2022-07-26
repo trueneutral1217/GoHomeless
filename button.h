@@ -21,8 +21,6 @@ class button
 		int getPositionX();
 		int getPositionY();
 		bool fullScreen;
-		//int getWidth();
-		//int getHeight();
 
 		//Handles mouse event
 		int handleEvent( int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
@@ -32,7 +30,6 @@ class button
         bool setFullScreenOn(SDL_Window* window,SDL_Renderer* renderer);
         bool setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer);
 
-		//void render(texture gButtonTexture,SDL_Renderer* gRenderer);
 
 		std::string buttonName;
 

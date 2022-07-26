@@ -52,6 +52,8 @@
 		</Unit>
 		<Unit filename="GoHomeless.cbp" />
 		<Unit filename="Main.cpp" />
+		<Unit filename="audio.cpp" />
+		<Unit filename="audio.h" />
 		<Unit filename="button.cpp" />
 		<Unit filename="button.h" />
 		<Unit filename="chapter.cpp" />

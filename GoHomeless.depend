@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1658813480 source:c:\gohomeless\gohomeless\button.cpp
+1658868692 source:c:\gohomeless\gohomeless\button.cpp
 	"button.h"
 
-1658867443 c:\gohomeless\gohomeless\button.h
+1658868692 c:\gohomeless\gohomeless\button.h
 	"Texture.h"
 
 1658195594 c:\gohomeless\gohomeless\texture.h
@@ -444,7 +444,7 @@
 1658611749 c:\gohomeless\gohomeless\chapter.h
 	"Texture.h"
 
-1658867008 source:c:\gohomeless\gohomeless\chapter.cpp
+1658870960 source:c:\gohomeless\gohomeless\chapter.cpp
 	"chapter.h"
 
 1658610009 c:\gohomeless\gohomeless\savegame.h
@@ -452,4 +452,10 @@
 
 1658610050 source:c:\gohomeless\gohomeless\savegame.cpp
 	"saveGame.h"
+
+1658873229 source:c:\gohomeless\gohomeless\audio.cpp
+	"audio.h"
+
+1658873052 c:\gohomeless\gohomeless\audio.h
+	<SDL_mixer.h>
 

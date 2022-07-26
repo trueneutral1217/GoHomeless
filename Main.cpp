@@ -1,9 +1,10 @@
 //SDL and system libraries
-#include <SDL_mixer.h>
 #include <iostream>
 #include <assert.h>
 #include <stddef.h>
+#include <vector>
 //local classes
+#include "audio.h"
 #include "button.h"
 #include "Texture.h"
 #include "timer.h"
@@ -48,14 +49,14 @@ bool hideDialogBox = false;
 bool hideDialogAndBox = false;
 bool fullScreen = false;
 //declare music
-Mix_Music *music = NULL;
+//Mix_Music *music = NULL;
 //declare sound effects
 //Mix_Chunk sound[TOTAL_SOUNDS];
 
-Mix_Chunk *sound0 = NULL;
-Mix_Chunk *sound1 = NULL;
-Mix_Chunk *sound2 = NULL;
-Mix_Chunk *sound3 = NULL;
+//Mix_Chunk *sound0 = NULL;
+//Mix_Chunk *sound1 = NULL;
+//Mix_Chunk *sound2 = NULL;
+//Mix_Chunk *sound3 = NULL;
 
 //Buttons objects
 button buttons[ TOTAL_BUTTONS ];
@@ -63,6 +64,8 @@ button buttons[ TOTAL_BUTTONS ];
 Texture tao[TAO_ANIMATION_FRAMES];
 //savegame handler
 saveGame savegame;
+audio music;
+std::vector<audio> sounds;
 //particle objects
 Particle particles[ TOTAL_PARTICLES ];
 //declare chapter1
@@ -71,30 +74,28 @@ chapter chapter1;
 void testSaveVariables();
 //render particles to screen
 void renderParticles();
-
+//sets buttonTexture by buttonName
 bool setButtonTextures(bool success);
-
+//determines which texture to show in options screen, red or green.
 void fullScreenButtonTextureToggle();
 //tracks the state of the game for rendering etc.
 int gameState;
 
 void renderParticles(){
-//Go through particles
-for( int i = 0; i < TOTAL_PARTICLES; ++i )
-{
-    //Delete and replace dead particles
-    if( particles[i].isDead() )
+    //Go through particles
+    for( int i = 0; i < TOTAL_PARTICLES; ++i )
     {
-        particles[i].createParticle(renderer);
+        //Delete and replace dead particles
+        if( particles[i].isDead() )
+        {
+            particles[i].createParticle(renderer);
+        }
     }
-}
-
-//Show particles
-for( int i = 0; i < TOTAL_PARTICLES; ++i )
-{
-    particles[i].render(renderer,particles[i].renderColor);
-}
-
+    //Show particles
+    for( int i = 0; i < TOTAL_PARTICLES; ++i )
+    {
+        particles[i].render(renderer,particles[i].renderColor);
+    }
 }
 
 bool setButtonTextures(bool success)
@@ -115,17 +116,15 @@ bool setButtonTextures(bool success)
 
 void fullScreenButtonTextureToggle()
 {
+    buttons[6].buttonTexture.free();
     if(buttons[6].fullScreen)
     {
+
         buttons[6].buttonTexture.loadFromFile("images/buttons/fullScreenOn.png", renderer);
-        //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
-    //
     }
     else
     {
         buttons[6].buttonTexture.loadFromFile("images/buttons/fullScreenOff.png", renderer);
-        //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
-
     }
     buttons[6].buttonTexture.render(buttons[6].getPositionX(),buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
@@ -211,7 +210,6 @@ bool loadMedia()
 	buttons[4].buttonName="credits";
 	buttons[5].buttonName="chapter1";
 	buttons[6].buttonName="fullScreenOff";
-	//buttons[7].buttonName="fullScreenOff";
 
 	savegame.readFile();
 
@@ -231,29 +229,14 @@ bool loadMedia()
     }
     //set button positions & image textures
     success = setButtonTextures(success);
-    /*for( int i = 0; i < TOTAL_BUTTONS; ++i )
-    {
-        std::stringstream ss;
-        ss << "images/buttons/" << buttons[i].buttonName << ".png";
-        std::string str = ss.str();
-        success = buttons[i].buttonTexture.loadFromFile( str,renderer );
-        buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
-    }
-    buttons[0].setPosition(600,20);
-    buttons[5].setPosition(20,20);
-    buttons[6].setPosition(20,100);
-    */
 	//game title image
 	success = title.loadFromFile( "images/title.png",renderer );
 	//load background image files for non-chapter1 backgrounds
 	success = titleTexture.loadFromFile( "images/skidrow.png",renderer );
-	//success = creditsTexture.loadFromFile( "images/creditsscreen.png",renderer );
-	//success = optionsTexture.loadFromFile( "images/optionsscreen.png",renderer);
 	success = loadGameTexture.loadFromFile( "images/loadgamescreen.png",renderer );
 	success = chapterSelectTexture.loadFromFile( "images/busstop.png",renderer );
 	success = creditsTexture.loadFromFile( "images/brickwall.png",renderer );
 	success = optionsTexture.loadFromFile("images/maritime.png",renderer );
-	//success = .loadFromFile( "images/busstop.png",renderer );
     //load chapter 1 background textures
     success = chapter1.setBGTextures(renderer);
    //load dialog box image
@@ -261,7 +244,7 @@ bool loadMedia()
     //set dialog box alpha (about 75% opaque @ 192)
     dialogBox.setAlpha(255);
 	//Load music
-	music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
+//	music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
 	//Load sound effects
 	/*
 	for(int i = 0; i<TOTAL_SOUNDS;i++)
@@ -273,10 +256,10 @@ bool loadMedia()
         sound[i] = Mix_LoadWAV(str);
 	}*/
 	//load sounds (still working on new way).
-	sound0 = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
-	sound1 = Mix_LoadWAV( "sounds/titleitemselect2.wav" );
-	sound2 = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
-	sound3 = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
+//	sound0 = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
+//	sound1 = Mix_LoadWAV( "sounds/titleitemselect2.wav" );
+//	sound2 = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
+//	sound3 = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
     //load font
 	chapter1.loadFont();
 
@@ -310,12 +293,6 @@ void close()
     for(int i=0;i<TAO_ANIMATION_FRAMES;i++){
         tao[i].free();
     }
-    /*
-    for(int i=0;i<TOTAL_SOUNDS;i++)
-    {
-        Mix_FreeChunk( sound[i] );
-        sound[i]=NULL;
-    }*/
     //free the title image
     title.free();
     //free the background textures
@@ -330,20 +307,20 @@ void close()
 	dialogBox.free();
 	//Free the sound effects
 
-	Mix_FreeChunk( sound0 );
-	Mix_FreeChunk( sound1 );
-	Mix_FreeChunk( sound2 );
-	Mix_FreeChunk( sound3 );
-	sound0 = NULL;
-	sound1 = NULL;
-	sound2 = NULL;
-	sound3 = NULL;
+	//Mix_FreeChunk( sound0 );
+	//Mix_FreeChunk( sound1 );
+	//Mix_FreeChunk( sound2 );
+	//Mix_FreeChunk( sound3 );
+	//sound0 = NULL;
+	//sound1 = NULL;
+	//sound2 = NULL;
+	//sound3 = NULL;
 	//free the font
 	TTF_CloseFont( chapter1.font );
     chapter1.font = NULL;
 	//Free the music
-	Mix_FreeMusic( music );
-	music = NULL;
+	//Mix_FreeMusic( music );
+	//music = NULL;
 	//Destroy window
 	SDL_DestroyRenderer( renderer );
 	SDL_DestroyWindow( window );
@@ -381,7 +358,8 @@ int main( int argc, char* args[] )
 			SDL_Color textColor = { 255, 255, 255, 255 };
             //Set text color as black
 			textColor = { 0, 0, 0, 255 };
-
+			chapter1.loadChapterStrings(renderer);
+            music.loadMusic();
 			//The frames per second cap timer
 			timer capTimer;
 			//timer for dialog for chapter1
@@ -409,7 +387,7 @@ int main( int argc, char* args[] )
 						quit = true;
 					}
                     if(e.type == SDL_MOUSEBUTTONDOWN){
-                        if(gameState == 5)
+                        if(gameState == 5) //Chapter 1
                         {
                             if(chapter1.currentPage==TOTAL_PAGES-1 && chapter1.currentScript==TOTAL_SCRIPTS-1){
                                 chapter1.completeChapter(renderer);
@@ -476,8 +454,6 @@ int main( int argc, char* args[] )
                                         }
                                         else
                                         {
-                                            //currentPage=0;
-                                            //printf("end of chapter 1 dialog return to game state = 0 \n");
                                             gameState = 2;
                                             chapter1.completeChapter(renderer);
                                         }
@@ -492,17 +468,17 @@ int main( int argc, char* args[] )
                             break;
 							//sound tests
 							case SDLK_1:
-							Mix_PlayChannel( -1, sound0, 0 );
+							//Mix_PlayChannel( -1, sound0, 0 );
 							break;
 							//Play sound effect
 							case SDLK_2:
-							Mix_PlayChannel( -1, sound1, 0 );
+							//Mix_PlayChannel( -1, sound1, 0 );
 							break;
 							case SDLK_3:
-							Mix_PlayChannel( -1, sound2, 0 );
+							//Mix_PlayChannel( -1, sound2, 0 );
 							break;
 							case SDLK_4:
-							Mix_PlayChannel( -1, sound3, 0 );
+							//Mix_PlayChannel( -1, sound3, 0 );
 							break;
 							case SDLK_h:
 							if(hideDialogBox == false && hideDialogAndBox == false)
@@ -524,6 +500,8 @@ int main( int argc, char* args[] )
 							break;
 							case SDLK_9:
 							//If there is no music playing
+							music.playMusic();
+							/*
 							if( Mix_PlayingMusic() == 0 )
 							{
 								//Play the music
@@ -545,46 +523,18 @@ int main( int argc, char* args[] )
 									Mix_PauseMusic();
 								}
 							}
+							*/
 							break;
 							case SDLK_0:
 							//Stop the music
-							Mix_HaltMusic();
+							//Mix_HaltMusic();
 							break;
 						}
 					}
 					//Handle button events
 					for( int i = 0; i < TOTAL_BUTTONS; ++i )
 					{
-						//if(gameState == 3){
-                           // if(i==0){
-                            //    gameState = buttons[i].handleEvent(gameState,buttons[i].buttonName, &e );
-                           // }
-/*
-                            else if(i==6){
-                                if(fullScreen == false)
-                                {
-                                    fullScreen = buttons[i].setFullScreenOff();
-                                }
-                            }
-                            else if(i==7)
-                            {
-                                if(fullScreen)
-                                {
-                                    fullScreen = buttons[i].setFullScreenOn();
-                                }
-                            }*/
-						//}
-                        //else{
-
-                            gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
-
-
-                            /*if(i==6 or i==7)
-                            {
-                                fullScreen = buttons[i].fullScreen
-                            }*/
-                        //}
-
+                        gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
 					}
 				}
 				//Clear screen
@@ -600,12 +550,12 @@ int main( int argc, char* args[] )
                     //render title screen buttons
                     for(int i=1;i<TOTAL_BUTTONS;i++)
                     {
-                        if(i<5)//5 is back button
+                        if(i<5)//5 is back button 6 is fullscreen button
                             buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
                 }
                 else if(gameState == 1)
-                {//new gamme chapter select screen
+                {//new game chapter select screen
                     chapter1Timer.stop();
                     chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     //chapter 1 button
@@ -628,24 +578,14 @@ int main( int argc, char* args[] )
                     //options screen
                     optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-                    //THIS AREA NEEDS WORK, attempting to get the button to change when pressed before changing window
-                    //Debugging was killing me, so yeah.
                     fullScreenButtonTextureToggle();
-                    /*
-                    if(!buttons[7].fullScreen)
-                    {
-                        buttons[6].buttonTexture.render(buttons[6].getPositionX(),buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    }
-                    else if(buttons[6].fullScreen)
-                    {
-                        buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    }*/
                 }
                 else if(gameState == 5)
                 {
                     if(chapter1Timer.isStarted()==false)
+                    {
                         chapter1Timer.start();
+                    }
                     //Chapter 1
                     for(int j = 0; j<TOTAL_PAGES;j++){
                         //render background & dialog box before script lines
@@ -666,8 +606,6 @@ int main( int argc, char* args[] )
                                     break;
                             case 7:chapter1.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-
-
                         }
                         //if player presses 'h' to hide dialog box or not.
                         if(hideDialogBox == false){
@@ -676,8 +614,6 @@ int main( int argc, char* args[] )
                         if(hideDialogAndBox==false){
                             for(int i = 0; i<TOTAL_SCRIPTS;i++){
                                 //render script lines
-
-
                                 if(i <= chapter1.currentScript)
                                 {
                                     chapter1.scriptTexture[chapter1.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);

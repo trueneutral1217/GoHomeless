@@ -7,8 +7,6 @@ button::button()
     buttonName = "";
     fullScreen=false;
 
-    //buttonTexture = NULL;
-
 }
 
 button::~button()
@@ -35,10 +33,6 @@ bool button::setFullScreenOn(SDL_Window* window,SDL_Renderer* renderer)
 {
     fullScreen = true;
     SDL_SetWindowFullscreen( window, SDL_TRUE );
-    //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
-    //renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-
-    //SDL_Delay(5000);
     return fullScreen;
 }
 
@@ -46,10 +40,6 @@ bool button::setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer)
 {
     fullScreen = false;
     SDL_SetWindowFullscreen( window, SDL_FALSE );
-    //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
-    //renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED );
-
-    //SDL_Delay(5000);
     return fullScreen;
 }
 
@@ -94,8 +84,6 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
 		//Mouse is inside button
 		else
 		{
-            //std::cout << "button name: " << buttonName;
-
                 switch( e->type )
                 {
                     case SDL_MOUSEBUTTONDOWN:
@@ -106,7 +94,7 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                         }
                         else if(buttonName=="load" && gameState==0){
                             printf("\n \n load game button pressed \n \n");
-                            gameState = 2; //Note, this will need to be changed once saving game implemented
+                            gameState = 2;
                         }
                         else if(buttonName=="credits" && gameState==0){
                             printf("\n \n credits button pressed \n \n");
@@ -132,7 +120,6 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                         {
                             printf("\n \n fullScreenOn button pressed \n \n");
                             setFullScreenOff(window,renderer);
-                            //buttonName="fullScreenOff";
                             gameState = 3;
                         }
                         else if(buttonName=="fullScreenOff" && gameState==3)
@@ -141,33 +128,17 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             if(fullScreen)
                             {
                                 setFullScreenOff(window,renderer);
-                                //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_SHOWN );
                             }
                             else
                             {
                                 setFullScreenOn(window,renderer);
-                                //window = SDL_CreateWindow( "Go Homeless!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_FULLSCREEN);
-
                             }
-
-                            //buttonName="fullScreenOn";
                             gameState = 3;
                         }
                     break;
-                    //case SDL_MOUSEBUTTONUP:
-                     //   clicked = false;
-                     //   break;
                 }
 
 		}
 	}
 	return gameState;
 }
-/*
-void button::render(texture gButtonTexture,SDL_Renderer* gRenderer)
-{
-	//Show current button sprite
-	buttonTexture = gButtonTexture;
-	buttonTexture.render( mPosition.x, mPosition.y,NULL,0.0,NULL,SDL_FLIP_NONE,gRenderer );
-}
-*/

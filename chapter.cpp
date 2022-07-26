@@ -5,83 +5,6 @@ chapter::chapter()
     currentChapter = 0;
     currentPage = 0;
     currentScript = 0;
-
-    /*
-    //chapter 2 page 1
-    scriptString[0][0].str("");
-    scriptString[0][1].str("");
-    scriptString[0][2].str("");
-    scriptString[0][3].str("");
-    scriptString[0][4].str("");
-    scriptString[0][5].str("");
-    scriptString[0][6].str("");
-    scriptString[0][7].str("");
-//chapter 2, page 2
-    scriptString[1][0].str("");
-    scriptString[1][1].str("");
-    scriptString[1][2].str("");
-    scriptString[1][3].str("");
-    scriptString[1][4].str("");
-    scriptString[1][5].str("");
-    scriptString[1][6].str("");
-    scriptString[1][7].str("");
-//chapter 2, page 3
-    scriptString[2][0].str("");
-    scriptString[2][1].str("");
-    scriptString[2][2].str("");
-    scriptString[2][3].str("");
-    scriptString[2][4].str("");
-    scriptString[2][5].str("");
-    scriptString[2][6].str("");
-    scriptString[2][7].str("");
-
-//chapter 2, page 4
-    scriptString[3][0].str("1");
-    scriptString[3][1].str("2");
-    scriptString[3][2].str("3");
-    scriptString[3][3].str("4");
-    scriptString[3][4].str("5");
-    scriptString[3][5].str("6");
-    scriptString[3][6].str("7");
-    scriptString[3][7].str("                                Press LMB or Enter to continue...");
-
-//chapter 2, page 5
-    scriptString[4][0].str("");
-    scriptString[4][1].str("");
-    scriptString[4][2].str("");
-    scriptString[4][3].str("");
-    scriptString[4][4].str("");
-    scriptString[4][5].str("");
-    scriptString[4][6].str("");
-    scriptString[4][7].str("");
-//chapter 2, page 6
-    scriptString[5][0].str("");
-    scriptString[5][1].str("");
-    scriptString[5][2].str("");
-    scriptString[5][3].str("");
-    scriptString[5][4].str("");
-    scriptString[5][5].str("");
-    scriptString[5][6].str("");
-    scriptString[5][7].str("");
-//chapter 2, page 7
-    scriptString[6][0].str("");
-    scriptString[6][1].str("");
-    scriptString[6][2].str("");
-    scriptString[6][3].str("");
-    scriptString[6][4].str("");
-    scriptString[6][5].str("");
-    scriptString[6][6].str("");
-    scriptString[6][7].str("");
-//chapter 2, page 8
-    scriptString[7][0].str("");
-    scriptString[7][1].str("");
-    scriptString[7][2].str("");
-    scriptString[7][3].str("");
-    scriptString[7][4].str("");
-    scriptString[7][5].str("");
-    scriptString[7][6].str("");
-    scriptString[7][7].str("");*/
-
     for(int j =0; j <TOTAL_PAGES; j++)
     {
         for(int i = 0; i<TOTAL_SCRIPTS; i++)
@@ -97,9 +20,7 @@ chapter::chapter()
             //scriptTexture[j][i] = NULL;
         }
     }
-
     font = NULL;
-
 }
 
 chapter::~chapter()
