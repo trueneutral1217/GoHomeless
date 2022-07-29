@@ -36,6 +36,7 @@ Texture creditsTexture;
 Texture optionsTexture;
 Texture loadGameTexture;
 Texture chapterSelectTexture;
+Texture thanksTexture;
 //chapter1bg textures needs to be cleaned up, maybe made into an array.
 Texture chapter1BG;
 Texture chapter1BG2;
@@ -69,7 +70,7 @@ std::vector<audio> sounds;
 //particle objects
 Particle particles[ TOTAL_PARTICLES ];
 //declare chapter1
-chapter chapter1;
+chapter chapter;
 //tests savegame variables, usually when altered, saved, or loaded.
 void testSaveVariables();
 //render particles to screen
@@ -111,6 +112,7 @@ bool setButtonTextures(bool success)
     buttons[0].setPosition(600,20);
     buttons[5].setPosition(20,20);
     buttons[6].setPosition(20,100);
+    buttons[7].setPosition(20,150);
     return success;
 }
 
@@ -194,9 +196,9 @@ bool init()
 
 void testSaveVariables()
 {
-    std::cout << "\n currentChapter: " << std::to_string( chapter1.currentChapter );
-    std::cout << "\n currentPage: " << std::to_string( chapter1.currentPage );
-    std::cout << "\n currentScript: " << std::to_string( chapter1.currentScript );
+    std::cout << "\n currentChapter: " << std::to_string( chapter.currentChapter );
+    std::cout << "\n currentPage: " << std::to_string( chapter.currentPage );
+    std::cout << "\n currentScript: " << std::to_string( chapter.currentScript );
 }
 
 bool loadMedia()
@@ -210,13 +212,17 @@ bool loadMedia()
 	buttons[4].buttonName="credits";
 	buttons[5].buttonName="chapter1";
 	buttons[6].buttonName="fullScreenOff";
+	buttons[7].buttonName="stage1";
 
 	savegame.readFile();
 
-    chapter1.currentChapter= savegame.gData[0];
-    chapter1.currentPage= savegame.gData[1];
-    chapter1.currentScript = savegame.gData[2];
-
+    chapter.currentChapter= savegame.gData[0];
+    chapter.currentPage= savegame.gData[1];
+    chapter.currentScript = savegame.gData[2];
+    if(chapter.currentChapter>0)
+    {
+        chapter.chapter1Complete = true;
+    }
     testSaveVariables();
     //load tao animation images
     for(int i = 0; i<TAO_ANIMATION_FRAMES;i++)
@@ -237,8 +243,9 @@ bool loadMedia()
 	success = chapterSelectTexture.loadFromFile( "images/busstop.png",renderer );
 	success = creditsTexture.loadFromFile( "images/brickwall.png",renderer );
 	success = optionsTexture.loadFromFile("images/maritime.png",renderer );
+	success = thanksTexture.loadFromFile("images/thanks.png",renderer);
     //load chapter 1 background textures
-    success = chapter1.setBGTextures(renderer);
+    success = chapter.setBGTextures(renderer);
    //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
     //set dialog box alpha (about 75% opaque @ 192)
@@ -261,7 +268,7 @@ bool loadMedia()
 //	sound2 = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
 //	sound3 = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
     //load font
-	chapter1.loadFont();
+	chapter.loadFont();
 
 	//chapter1.loadChapterStrings(renderer);
 
@@ -274,7 +281,7 @@ bool loadMedia()
 
 void close()
 {
-    savegame.writeFile(chapter1.currentChapter,chapter1.currentPage,chapter1.currentScript);
+    savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript);
     testSaveVariables();
     //free the button textures
     for(int i = 0; i<TOTAL_BUTTONS;i++)
@@ -286,7 +293,7 @@ void close()
     {
         for(int i=0;i<TOTAL_SCRIPTS;i++)
         {
-            chapter1.scriptTexture[j][i].free();
+            chapter.scriptTexture[j][i].free();
         }
     }
     //free the tao animation textures
@@ -301,7 +308,8 @@ void close()
 	loadGameTexture.free();
 	optionsTexture.free();
 	creditsTexture.free();
-    chapter1.freeBGTextures();
+    chapter.freeBGTextures();
+    thanksTexture.free();
 
 	//free the dialog box for chapters
 	dialogBox.free();
@@ -316,8 +324,8 @@ void close()
 	//sound2 = NULL;
 	//sound3 = NULL;
 	//free the font
-	TTF_CloseFont( chapter1.font );
-    chapter1.font = NULL;
+	TTF_CloseFont( chapter.font );
+    chapter.font = NULL;
 	//Free the music
 	//Mix_FreeMusic( music );
 	//music = NULL;
@@ -358,7 +366,8 @@ int main( int argc, char* args[] )
 			SDL_Color textColor = { 255, 255, 255, 255 };
             //Set text color as black
 			textColor = { 0, 0, 0, 255 };
-			chapter1.loadChapterStrings(renderer);
+			//load the bg music file
+			chapter.loadChapterStrings(renderer);
             music.loadMusic();
 			//The frames per second cap timer
 			timer capTimer;
@@ -389,22 +398,22 @@ int main( int argc, char* args[] )
                     if(e.type == SDL_MOUSEBUTTONDOWN){
                         if(gameState == 5) //Chapter 1
                         {
-                            if(chapter1.currentPage==TOTAL_PAGES-1 && chapter1.currentScript==TOTAL_SCRIPTS-1){
-                                chapter1.completeChapter(renderer);
+                            if(chapter.currentPage==TOTAL_PAGES-1 && chapter.currentScript==TOTAL_SCRIPTS-1){
+                                chapter.completeChapter(renderer);
                                 gameState=2;
                                 chapter1Timer.stop();
                                 //printf("\n \n currentPage & currentScript = 7");
                                 //testSaveVariables();
                             }
-                            else if (chapter1.currentScript<TOTAL_SCRIPTS-1)
+                            else if (chapter.currentScript<TOTAL_SCRIPTS-1)
                             {
-                                chapter1.scriptIncrement();
+                                chapter.scriptIncrement();
                                 chapter1Timer.restart();
                                 //printf("\n \n left mouse down total scripts loop");
                                 //testSaveVariables();
                             }
-                            else if(chapter1.currentPage<TOTAL_PAGES-1){
-                                chapter1.pageIncrement();
+                            else if(chapter.currentPage<TOTAL_PAGES-1){
+                                chapter.pageIncrement();
                                 //printf("\n \n left mouse down total pages loop");
                                 //testSaveVariables();
                                 chapter1Timer.restart();
@@ -412,21 +421,21 @@ int main( int argc, char* args[] )
                         }
                         if(gameState == 1)//new game chapter select
                         {
-                            chapter1.resetChapters(renderer);
+                            chapter.resetChapters(renderer);
                         }
                         if(gameState == 2){//load game chapter select
-                            if(chapter1.currentPage<TOTAL_PAGES-1)
+                            if(chapter.currentPage<TOTAL_PAGES-1)
                             {
-                                if(chapter1.currentPage!=0)
+                                if(chapter.currentPage!=0)
                                 {
-                                    if(chapter1.currentScript ==0)
+                                    if(chapter.currentScript ==0)
                                     {//compensate for clicking back button at end of page.
-                                        chapter1.backPage();
+                                        chapter.backPage();
                                     }
                                 }
-                                if(chapter1.currentScript != 0 && chapter1.currentScript!=7)
+                                if(chapter.currentScript != 0 && chapter.currentScript!=7)
                                 {
-                                    chapter1.backScript();
+                                    chapter.backScript();
                                     //printf("\n %d \n",chapter1.currentScript);
                                 }
                             }
@@ -440,22 +449,22 @@ int main( int argc, char* args[] )
                             case SDLK_SPACE:
                                 if(gameState == 5)
                                 {
-                                    if(chapter1.currentScript<TOTAL_SCRIPTS-1)
+                                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
                                     {
-                                        chapter1.scriptIncrement();
+                                        chapter.scriptIncrement();
                                         chapter1Timer.restart();
                                     }
                                     else
                                     {
-                                        if(chapter1.currentPage<TOTAL_PAGES-1)
+                                        if(chapter.currentPage<TOTAL_PAGES-1)
                                         {
-                                            chapter1.pageIncrement();
+                                            chapter.pageIncrement();
                                             chapter1Timer.restart();
                                         }
                                         else
                                         {
                                             gameState = 2;
-                                            chapter1.completeChapter(renderer);
+                                            chapter.completeChapter(renderer);
                                         }
                                     }
                                 }
@@ -564,10 +573,16 @@ int main( int argc, char* args[] )
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 2)
-                {
+                {//load game chapter/stage select screen
                     chapter1Timer.stop();
                     //chapter select screen
                     chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    //stage 1 button
+                    if(chapter.chapter1Complete)
+                    {
+                        buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    }
+
                     //chapter 1 button
                     buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //back button
@@ -589,22 +604,22 @@ int main( int argc, char* args[] )
                     //Chapter 1
                     for(int j = 0; j<TOTAL_PAGES;j++){
                         //render background & dialog box before script lines
-                        switch(chapter1.currentPage %TOTAL_PAGES){
-                            case 0:chapter1.chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        switch(chapter.currentPage %TOTAL_PAGES){
+                            case 0:chapter.chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 1:chapter1.chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 1:chapter.chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 2:chapter1.chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 2:chapter.chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 3:chapter1.chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 3:chapter.chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 4:chapter1.chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 4:chapter.chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 5:chapter1.chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 5:chapter.chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 6:chapter1.chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 6:chapter.chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
-                            case 7:chapter1.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            case 7:chapter.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
                         }
                         //if player presses 'h' to hide dialog box or not.
@@ -614,9 +629,9 @@ int main( int argc, char* args[] )
                         if(hideDialogAndBox==false){
                             for(int i = 0; i<TOTAL_SCRIPTS;i++){
                                 //render script lines
-                                if(i <= chapter1.currentScript)
+                                if(i <= chapter.currentScript)
                                 {
-                                    chapter1.scriptTexture[chapter1.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                                    chapter.scriptTexture[chapter.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                 }
                             }
                         }
@@ -641,9 +656,14 @@ int main( int argc, char* args[] )
                     }
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
-                else
+                else if(gameState == 4)
                 {
                     creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                }
+                else if(gameState == 6)
+                {
+                    thanksTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
 				//Update screen
@@ -664,14 +684,14 @@ int main( int argc, char* args[] )
                 //set script line
                 if(chapter1Timer.getTicks()/1000 > 1)
                 {//implement timer auto script option.
-                    if(chapter1.currentScript<TOTAL_SCRIPTS-1)
+                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
                     {
-                        chapter1.scriptIncrement();
+                        chapter.scriptIncrement();
                         chapter1Timer.restart();
                         //printf("\n \n timer tick");
                         //testSaveVariables();
                     }
-                    if(chapter1.currentScript == TOTAL_SCRIPTS-1)
+                    if(chapter.currentScript == TOTAL_SCRIPTS-1)
                     {
                         chapter1Timer.stop();
                     }

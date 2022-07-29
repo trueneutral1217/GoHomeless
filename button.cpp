@@ -122,18 +122,10 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             setFullScreenOff(window,renderer);
                             gameState = 3;
                         }
-                        else if(buttonName=="fullScreenOff" && gameState==3)
+                        else if(buttonName=="stage1" && gameState==2)
                         {
-                            printf("\n \n fullScreenOff button pressed \n \n");
-                            if(fullScreen)
-                            {
-                                setFullScreenOff(window,renderer);
-                            }
-                            else
-                            {
-                                setFullScreenOn(window,renderer);
-                            }
-                            gameState = 3;
+                            printf("\n \n Stage 1 button pressed \n \n");
+                            gameState = 6;
                         }
                     break;
                 }

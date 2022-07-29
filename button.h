@@ -4,7 +4,7 @@
 #include "Texture.h"
 
 //buttons on the title screen + back button for screens like options
-const int TOTAL_BUTTONS = 7;
+const int TOTAL_BUTTONS = 8;
 
 const int BUTTON_WIDTH = 160;
 const int BUTTON_HEIGHT = 120;

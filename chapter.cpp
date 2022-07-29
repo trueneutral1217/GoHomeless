@@ -3,6 +3,7 @@
 chapter::chapter()
 {
     currentChapter = 0;
+    chapter1Complete = false;
     currentPage = 0;
     currentScript = 0;
     for(int j =0; j <TOTAL_PAGES; j++)
@@ -60,10 +61,12 @@ void chapter::backPage()
 }
 void chapter::completeChapter(SDL_Renderer* renderer)
 {
-    currentChapter++;
+    if(!chapter1Complete)
+    {
+        currentChapter++;
+    }
     resetPages();
-    resetScripts();
-    loadChapterStrings(renderer);
+    chapter1Complete=true;
 }
 void chapter::resetPages()
 {
@@ -78,8 +81,7 @@ void chapter::resetChapters(SDL_Renderer* renderer)
 {
     currentChapter=0;
     resetPages();
-    resetScripts();
-    loadChapterStrings(renderer);
+    chapter1Complete = false;
 }
 void chapter::loadChapterStrings(SDL_Renderer* renderer)
 {
@@ -235,6 +237,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[7][6].str("7");
         scriptString[7][7].str(" *End of Chapter 1* Press LMB or Enter to return to select screen.");
     }
+
     setScriptTextures(renderer);
 }
 
