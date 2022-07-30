@@ -85,7 +85,6 @@ void chapter::resetChapters(SDL_Renderer* renderer)
 }
 void chapter::loadChapterStrings(SDL_Renderer* renderer)
 {
-
 	if(currentChapter==0)
     {
         //chapter 1, page 1
