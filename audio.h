@@ -3,6 +3,8 @@
 
 #include <SDL_mixer.h>
 
+const int TOTAL_SOUNDS = 4;
+
 class audio
 {
     public:
@@ -13,8 +15,9 @@ class audio
         ~audio();
 
         void loadMusic();
-        void loadSound();
+        void loadSound(int soundNum);
         void playMusic();
+        void playSound();
         void freeAudio();
 
     private:

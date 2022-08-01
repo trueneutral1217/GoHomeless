@@ -266,8 +266,6 @@ bool chapter::setBGTextures(SDL_Renderer* renderer){
     for(int i = 0; i<TOTAL_PAGES;i++)
     {
         success = chapter1BG[i].loadFromFile( bgFileName[i],renderer );
-        //if(!chapter1BG[i].loadTexture
-       //success = chapter1BG[i].loadFromFile( "images/signflying800x600.png",renderer );
     }
     return success;
 }
@@ -277,38 +275,37 @@ bool chapter::setScriptTextures(SDL_Renderer* renderer){
     //Render text
     SDL_Color textColor;
     //make sure loading current strings
+    for(int j=0;j<TOTAL_PAGES;j++)
+    {
+        textColor = {55,55,55};
+        if(j==0)//was testing page 1 dialog color here
+        {
+            //green
+            //textColor = {0,255,0};
 
+            //pink
+            //textColor = {255,0,255};
+        }
+        if(j==3 || j==4 || j==6)//pages 4,5, and 7 have dialog color white.
+        {
+            //white
+            textColor = {255,255,255};
+        }
+        if(j==5)//page 6 has red dialog
+        {
+            //red
+            textColor = {255,0,0};
+        }
+        for(int i=0;i<TOTAL_SCRIPTS;i++){
 
-    for(int j=0;j<TOTAL_PAGES;j++){
-            textColor = {55,55,55};
-            if(j==0)
+            if( !scriptTexture[j][i].loadFromRenderedText( scriptString[j][i].str().c_str(), textColor,font, renderer ) )
             {
-                //green
-                //textColor = {0,255,0};
-
-                //pink
-                //textColor = {255,0,255};
-            }
-            if(j==3 || j==4 || j==6)
-            {
-                //white?
-                textColor = {255,255,255};
-            }
-            if(j==5)
-            {
-                //red
-                textColor = {255,0,0};
-            }
-            for(int i=0;i<TOTAL_SCRIPTS;i++){
-
-                if( !scriptTexture[j][i].loadFromRenderedText( scriptString[j][i].str().c_str(), textColor,font, renderer ) )
-                {
-                    printf( "Failed to render text texture!\n" );
-                    success = false;
-                }
+                printf( "Failed to render text texture!\n" );
+                success = false;
             }
         }
-        return success;
+    }
+    return success;
 }
 
 void chapter::loadFont()

@@ -55,6 +55,8 @@
 		</Unit>
 		<Unit filename="particle.cpp" />
 		<Unit filename="particle.h" />
+		<Unit filename="player.cpp" />
+		<Unit filename="player.h" />
 		<Unit filename="saveGame.cpp" />
 		<Unit filename="saveGame.h" />
 		<Unit filename="texture.cpp" />

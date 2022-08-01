@@ -11,14 +11,11 @@
 #include "particle.h"
 #include "chapter.h"
 #include "saveGame.h"
+#include "player.h"
 //declare and set constant variables
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const int TOTAL_STATES = 5;
-const int SCREEN_FPS=60;
-const int SCREEN_TICK_PER_FRAME = 1000 / SCREEN_FPS;
-const int TAO_ANIMATION_FRAMES = 8;
-const int TOTAL_SOUNDS = 4;
 //Starts up SDL and creates window
 bool init();
 //Loads media
@@ -57,12 +54,17 @@ Texture tao[TAO_ANIMATION_FRAMES];
 saveGame savegame;
 audio music;
 std::vector<audio> sounds;
+audio sound;
 //particle objects
 Particle particles[ TOTAL_PARTICLES ];
 //declare chapter1
 chapter chapter;
+//declare player
+player player1;
 //tests savegame variables, usually when altered, saved, or loaded.
 void testSaveVariables();
+//declare sound vector & load sounds into it.
+void loadSounds();
 //render particles to screen
 void renderParticles();
 //sets buttonTexture by buttonName
@@ -192,6 +194,20 @@ void testSaveVariables()
     std::cout << "\n chapter1Complete: " << std::to_string(chapter.chapter1Complete);
 }
 
+void loadSounds()
+{
+    //prep the vector
+    for(int i = 0; i < TOTAL_SOUNDS; i++)
+    {
+        sounds.push_back(sound);
+    }
+    //load the sounds for each point in the vector
+    for(int i = 0; i < TOTAL_SOUNDS; i++)
+    {
+        sounds[i].loadSound(i);
+    }
+}
+
 bool loadMedia()
 {
 	bool success = true;
@@ -204,9 +220,8 @@ bool loadMedia()
 	buttons[5].buttonName="chapter1";
 	buttons[6].buttonName="fullScreenOff";
 	buttons[7].buttonName="stage1";
-
+//load saved game
 	savegame.readFile();
-
     chapter.currentChapter= savegame.data[0];
     chapter.currentPage= savegame.data[1];
     chapter.currentScript = savegame.data[2];
@@ -242,28 +257,12 @@ bool loadMedia()
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
     //set dialog box alpha (about 75% opaque @ 192)
     dialogBox.setAlpha(255);
-	//Load music
-//	music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
-	//Load sound effects
-	/*
-	for(int i = 0; i<TOTAL_SOUNDS;i++)
-    {
-        std::stringstream ss;
-        ss << "sounds/titleitemselect" << (i+1) << ".wav";
-        std::string str = ss.str();
-
-        sound[i] = Mix_LoadWAV(str);
-	}*/
-	//load sounds (still working on new way).
-//	sound0 = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
-//	sound1 = Mix_LoadWAV( "sounds/titleitemselect2.wav" );
-//	sound2 = Mix_LoadWAV( "sounds/titleitemselect3.wav" );
-//	sound3 = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
     //load font
 	chapter.loadFont();
+	//load sound effects
+	loadSounds();
 
-	//chapter1.loadChapterStrings(renderer);
-
+    //for debugging
     if(success == false)
     {
         printf("something didn't load right in loadmedia.");
@@ -273,6 +272,7 @@ bool loadMedia()
 
 void close()
 {
+    //save progress
     savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete);
     testSaveVariables();
     //free the button textures
@@ -302,17 +302,9 @@ void close()
 	creditsTexture.free();
     chapter.freeBGTextures();
     thanksTexture.free();
-
 	//free the dialog box for chapters
 	dialogBox.free();
-	//Free the audio files
-//	audio.freeAudio();
-    /*
-    Mix_FreeChunk(audio.sound);
-    Mix_FreeMusic(audio.music);
-    audio.sound = NULL;
-    audio.music = NULL;
-    */
+	//audio destructor frees audio
 	//free the font
 	TTF_CloseFont( chapter.font );
     chapter.font = NULL;
@@ -346,9 +338,6 @@ int main( int argc, char* args[] )
 		{
 			//Main loop flag
 			bool quit = false;
-			//starting music
-            //Mix_PlayMusic( music, -1 );
-
             //set text color as white
 			SDL_Color textColor = { 255, 255, 255, 255 };
             //Set text color as black
@@ -464,17 +453,16 @@ int main( int argc, char* args[] )
                             break;
 							//sound tests
 							case SDLK_1:
-							//Mix_PlayChannel( -1, sound0, 0 );
+							    sounds[0].playSound();
 							break;
-							//Play sound effect
 							case SDLK_2:
-							//Mix_PlayChannel( -1, sound1, 0 );
+                                sounds[1].playSound();
 							break;
 							case SDLK_3:
-							//Mix_PlayChannel( -1, sound2, 0 );
+                                sounds[2].playSound();
 							break;
 							case SDLK_4:
-							//Mix_PlayChannel( -1, sound3, 0 );
+                                sounds[3].playSound();
 							break;
 							case SDLK_h:
 							if(hideDialogBox == false && hideDialogAndBox == false)
@@ -497,10 +485,6 @@ int main( int argc, char* args[] )
 							case SDLK_9:
 							//press 9 to play / pause music
                             music.playMusic();
-							break;
-							case SDLK_0:
-							//Stop the music
-							//Mix_HaltMusic();
 							break;
 						}
 					}

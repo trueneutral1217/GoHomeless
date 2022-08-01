@@ -9,6 +9,7 @@
 #include "SDL_image.h"
 #include <cmath>
 
+const int TAO_ANIMATION_FRAMES = 8;
 
 class Texture
 {

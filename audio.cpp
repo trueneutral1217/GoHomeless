@@ -19,9 +19,24 @@ void audio::loadMusic()
     music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
 }
 
-void audio::loadSound()
+void audio::loadSound(int soundNum)
 {
-    sound = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
+    switch(soundNum)
+    {
+        case 0:
+            sound = Mix_LoadWAV( "sounds/voice0.mp3" );
+        break;
+        case 1:
+            sound = Mix_LoadWAV( "sounds/gem.mp3" );
+        break;
+        case 2:
+            sound = Mix_LoadWAV( "sounds/shovel.mp3" );
+        break;
+        case 3:
+            sound = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
+        break;
+    }
+
 }
 void audio::freeAudio()
 {
@@ -29,6 +44,11 @@ void audio::freeAudio()
     sound = NULL;
     Mix_FreeMusic( music );
 	music = NULL;
+}
+
+void audio::playSound()
+{
+    Mix_PlayChannel( -1, sound, 0 );
 }
 
 void audio::playMusic()

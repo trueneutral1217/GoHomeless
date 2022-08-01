@@ -5,7 +5,7 @@
 1659121534 c:\gohomeless\gohomeless\button.h
 	"Texture.h"
 
-1658195594 c:\gohomeless\gohomeless\texture.h
+1659385836 c:\gohomeless\gohomeless\texture.h
 	"SDL.h"
 	<SDL_ttf.h>
 	"string"
@@ -417,10 +417,10 @@
 1658447856 source:c:\gohomeless\gohomeless\timer.cpp
 	"timer.h"
 
-1658447856 c:\gohomeless\gohomeless\timer.h
+1659385836 c:\gohomeless\gohomeless\timer.h
 	"Texture.h"
 
-1659218644 source:c:\gohomeless\gohomeless\main.cpp
+1659389730 source:c:\gohomeless\gohomeless\main.cpp
 	<iostream>
 	<assert.h>
 	<stddef.h>
@@ -445,19 +445,19 @@
 1659129121 c:\gohomeless\gohomeless\chapter.h
 	"Texture.h"
 
-1659381950 source:c:\gohomeless\gohomeless\chapter.cpp
+1659387851 source:c:\gohomeless\gohomeless\chapter.cpp
 	"chapter.h"
 
-1659382341 c:\gohomeless\gohomeless\savegame.h
+1659383342 c:\gohomeless\gohomeless\savegame.h
 	"Texture.h"
 
-1659382341 source:c:\gohomeless\gohomeless\savegame.cpp
+1659383342 source:c:\gohomeless\gohomeless\savegame.cpp
 	"saveGame.h"
 
-1659382779 source:c:\gohomeless\gohomeless\audio.cpp
+1659389800 source:c:\gohomeless\gohomeless\audio.cpp
 	"audio.h"
 
-1659382779 c:\gohomeless\gohomeless\audio.h
+1659388795 c:\gohomeless\gohomeless\audio.h
 	<SDL_mixer.h>
 
 1540997992 c:\mingw_dev_lib\sdl2_mixer-2.0.4\i686-w64-mingw32\include\sdl2\sdl_mixer.h
@@ -857,4 +857,9 @@
 	"SDL_version.h"
 	"begin_code.h"
 	"close_code.h"
+
+1659396256 source:c:\gohomeless\gohomeless\player.cpp
+	"player.h"
+
+1659396256 c:\gohomeless\gohomeless\player.h
 
