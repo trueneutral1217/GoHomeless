@@ -63,7 +63,7 @@ void chapter::completeChapter(SDL_Renderer* renderer)
 {
     if(!chapter1Complete)
     {
-        currentChapter++;
+        //currentChapter++;
     }
     resetPages();
     chapter1Complete=true;

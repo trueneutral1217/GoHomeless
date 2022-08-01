@@ -49,17 +49,7 @@ Texture dialogBox;
 bool hideDialogBox = false;
 bool hideDialogAndBox = false;
 bool fullScreen = false;
-//declare music
-//Mix_Music *music = NULL;
-//declare sound effects
-//Mix_Chunk sound[TOTAL_SOUNDS];
-
-//Mix_Chunk *sound0 = NULL;
-//Mix_Chunk *sound1 = NULL;
-//Mix_Chunk *sound2 = NULL;
-//Mix_Chunk *sound3 = NULL;
-
-//Buttons objects
+//Buttons object array
 button buttons[ TOTAL_BUTTONS ];
 //animation textures
 Texture tao[TAO_ANIMATION_FRAMES];
@@ -199,6 +189,7 @@ void testSaveVariables()
     std::cout << "\n currentChapter: " << std::to_string( chapter.currentChapter );
     std::cout << "\n currentPage: " << std::to_string( chapter.currentPage );
     std::cout << "\n currentScript: " << std::to_string( chapter.currentScript );
+    std::cout << "\n chapter1Complete: " << std::to_string(chapter.chapter1Complete);
 }
 
 bool loadMedia()
@@ -216,9 +207,10 @@ bool loadMedia()
 
 	savegame.readFile();
 
-    chapter.currentChapter= savegame.gData[0];
-    chapter.currentPage= savegame.gData[1];
-    chapter.currentScript = savegame.gData[2];
+    chapter.currentChapter= savegame.data[0];
+    chapter.currentPage= savegame.data[1];
+    chapter.currentScript = savegame.data[2];
+    chapter.chapter1Complete = savegame.data[3];
     if(chapter.currentChapter>0)
     {
         chapter.chapter1Complete = true;
@@ -281,7 +273,7 @@ bool loadMedia()
 
 void close()
 {
-    savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript);
+    savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete);
     testSaveVariables();
     //free the button textures
     for(int i = 0; i<TOTAL_BUTTONS;i++)
@@ -313,22 +305,17 @@ void close()
 
 	//free the dialog box for chapters
 	dialogBox.free();
-	//Free the sound effects
-
-	//Mix_FreeChunk( sound0 );
-	//Mix_FreeChunk( sound1 );
-	//Mix_FreeChunk( sound2 );
-	//Mix_FreeChunk( sound3 );
-	//sound0 = NULL;
-	//sound1 = NULL;
-	//sound2 = NULL;
-	//sound3 = NULL;
+	//Free the audio files
+//	audio.freeAudio();
+    /*
+    Mix_FreeChunk(audio.sound);
+    Mix_FreeMusic(audio.music);
+    audio.sound = NULL;
+    audio.music = NULL;
+    */
 	//free the font
 	TTF_CloseFont( chapter.font );
     chapter.font = NULL;
-	//Free the music
-	//Mix_FreeMusic( music );
-	//music = NULL;
 	//Destroy window
 	SDL_DestroyRenderer( renderer );
 	SDL_DestroyWindow( window );
@@ -508,31 +495,8 @@ int main( int argc, char* args[] )
                             std::cout << "hideDialogBox: " << hideDialogBox;
 							break;
 							case SDLK_9:
-							//If there is no music playing
-							music.playMusic();
-							/*
-							if( Mix_PlayingMusic() == 0 )
-							{
-								//Play the music
-								Mix_PlayMusic( music, -1 );
-							}
-							//If music is being played
-							else
-							{
-								//If the music is paused
-								if( Mix_PausedMusic() == 1 )
-								{
-									//Resume the music
-									Mix_ResumeMusic();
-								}
-								//If the music is playing
-								else
-								{
-									//Pause the music
-									Mix_PauseMusic();
-								}
-							}
-							*/
+							//press 9 to play / pause music
+                            music.playMusic();
 							break;
 							case SDLK_0:
 							//Stop the music

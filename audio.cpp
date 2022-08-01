@@ -23,6 +23,13 @@ void audio::loadSound()
 {
     sound = Mix_LoadWAV( "sounds/titleitemselect1.wav" );
 }
+void audio::freeAudio()
+{
+    Mix_FreeChunk( sound );
+    sound = NULL;
+    Mix_FreeMusic( music );
+	music = NULL;
+}
 
 void audio::playMusic()
 {

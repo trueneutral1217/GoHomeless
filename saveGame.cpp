@@ -13,8 +13,8 @@ void saveGame::readFile()
             //write savegame defaults as 0.
             for( int i = 0; i < TOTAL_DATA; ++i )
             {
-                gData[ i ] = 0;
-                SDL_RWwrite( file, &gData[ i ], sizeof(Sint32), 1 );
+                data[ i ] = 0;
+                SDL_RWwrite( file, &data[ i ], sizeof(Sint32), 1 );
             }
             //Close file handler
             SDL_RWclose( file );
@@ -30,7 +30,7 @@ void saveGame::readFile()
         printf( "Loading Save Game Data...!\n" );
         for( int i = 0; i < TOTAL_DATA; ++i )
         {
-            SDL_RWread( file, &gData[ i ], sizeof(Sint32), 1 );
+            SDL_RWread( file, &data[ i ], sizeof(Sint32), 1 );
         }
         //load data from file into savegame variables
 
@@ -38,20 +38,21 @@ void saveGame::readFile()
     }
 }
 
-void saveGame::writeFile(int currentChapter,int currentPage, int currentScript)
+void saveGame::writeFile(int currentChapter,int currentPage, int currentScript,bool chapter1Complete)
 {
 
     SDL_RWops* file = SDL_RWFromFile( "savegame/save.gsf", "w+b" );
     if( file != NULL )
     {
         //Save data
-        gData[0] = currentChapter;
-        gData[1] = currentPage;
-        gData[2] = currentScript;
+        data[0] = currentChapter;
+        data[1] = currentPage;
+        data[2] = currentScript;
+        data[3] = chapter1Complete;
         //testSaveVariables();
         for( int i = 0; i < TOTAL_DATA; ++i )
         {
-            SDL_RWwrite( file, &gData[ i ], sizeof(Sint32), 1 );
+            SDL_RWwrite( file, &data[ i ], sizeof(Sint32), 1 );
         }
         //Close file handler
         SDL_RWclose( file );

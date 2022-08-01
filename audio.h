@@ -15,6 +15,7 @@ class audio
         void loadMusic();
         void loadSound();
         void playMusic();
+        void freeAudio();
 
     private:
 
