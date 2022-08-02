@@ -12,9 +12,6 @@
 #include "chapter.h"
 #include "saveGame.h"
 #include "player.h"
-//declare and set constant variables
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
 const int TOTAL_STATES = 5;
 //Starts up SDL and creates window
 bool init();
@@ -261,7 +258,8 @@ bool loadMedia()
 	chapter.loadFont();
 	//load sound effects
 	loadSounds();
-
+    //load player texture
+    player1.loadPlayer(renderer);
     //for debugging
     if(success == false)
     {
@@ -378,20 +376,14 @@ int main( int argc, char* args[] )
                                 chapter.completeChapter(renderer);
                                 gameState=2;
                                 chapter1Timer.stop();
-                                //printf("\n \n currentPage & currentScript = 7");
-                                //testSaveVariables();
                             }
                             else if (chapter.currentScript<TOTAL_SCRIPTS-1)
                             {
                                 chapter.scriptIncrement();
                                 chapter1Timer.restart();
-                                //printf("\n \n left mouse down total scripts loop");
-                                //testSaveVariables();
                             }
                             else if(chapter.currentPage<TOTAL_PAGES-1){
                                 chapter.pageIncrement();
-                                //printf("\n \n left mouse down total pages loop");
-                                //testSaveVariables();
                                 chapter1Timer.restart();
                             }
                         }
@@ -412,7 +404,6 @@ int main( int argc, char* args[] )
                                 if(chapter.currentScript != 0 && chapter.currentScript!=7)
                                 {
                                     chapter.backScript();
-                                    //printf("\n %d \n",chapter1.currentScript);
                                 }
                             }
                         }
@@ -493,7 +484,9 @@ int main( int argc, char* args[] )
 					{
                         gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
 					}
+					player1.handleEvent(e);
 				}
+				player1.move();
 				//Clear screen
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( renderer );
@@ -612,6 +605,7 @@ int main( int argc, char* args[] )
                 else if(gameState == 6)
                 {
                     thanksTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    player1.render(renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
 				//Update screen

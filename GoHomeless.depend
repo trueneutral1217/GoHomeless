@@ -5,7 +5,7 @@
 1659121534 c:\gohomeless\gohomeless\button.h
 	"Texture.h"
 
-1659385836 c:\gohomeless\gohomeless\texture.h
+1659399724 c:\gohomeless\gohomeless\texture.h
 	"SDL.h"
 	<SDL_ttf.h>
 	"string"
@@ -420,7 +420,7 @@
 1659385836 c:\gohomeless\gohomeless\timer.h
 	"Texture.h"
 
-1659389730 source:c:\gohomeless\gohomeless\main.cpp
+1659399724 source:c:\gohomeless\gohomeless\main.cpp
 	<iostream>
 	<assert.h>
 	<stddef.h>
@@ -432,6 +432,7 @@
 	"particle.h"
 	"chapter.h"
 	"saveGame.h"
+	"player.h"
 
 1540998018 c:\mingw_dev_lib\sdl2_mixer-2.0.4\x86_64-w64-mingw32\include\sdl2\sdl_mixer.h
 	"SDL_stdinc.h"
@@ -858,8 +859,9 @@
 	"begin_code.h"
 	"close_code.h"
 
-1659396256 source:c:\gohomeless\gohomeless\player.cpp
+1659399678 source:c:\gohomeless\gohomeless\player.cpp
 	"player.h"
 
-1659396256 c:\gohomeless\gohomeless\player.h
+1659399784 c:\gohomeless\gohomeless\player.h
+	"texture.h"
 
