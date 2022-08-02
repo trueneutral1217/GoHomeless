@@ -47,6 +47,7 @@ bool fullScreen = false;
 button buttons[ TOTAL_BUTTONS ];
 //animation textures
 Texture tao[TAO_ANIMATION_FRAMES];
+Texture toaster[TOASTER_ANIMATION_FRAMES];
 //savegame handler
 saveGame savegame;
 audio music;
@@ -237,6 +238,16 @@ bool loadMedia()
         std::string str = ss.str();
         success = tao[i].loadFromFile(str,renderer);
     }
+    for(int i = 0; i<TOASTER_ANIMATION_FRAMES;i++)
+    {
+        int a = i;
+        std::stringstream ss;
+        ss << "images/animations/toaster/toaster" << a << ".png";
+        std::string str = ss.str();
+        success = toaster[i].loadFromFile(str,renderer);
+    }
+
+
     //set button positions & image textures
     success = setButtonTextures(success);
 	//game title image
@@ -287,8 +298,13 @@ void close()
         }
     }
     //free the tao animation textures
-    for(int i=0;i<TAO_ANIMATION_FRAMES;i++){
+    for(int i=0;i<TAO_ANIMATION_FRAMES;i++)
+    {
         tao[i].free();
+    }
+    for(int i=0;i<TOASTER_ANIMATION_FRAMES;i++)
+    {
+        toaster[i].free();
     }
     //free the title image
     title.free();
@@ -347,11 +363,14 @@ int main( int argc, char* args[] )
 			timer capTimer;
 			//timer for dialog for chapter1
 			timer chapter1Timer;
-            //timer for tao animation
+            //timer for tao animation, using it for toaster animation as well.
             timer animationTimer;
             animationTimer.start();
+            timer animationTimer2;
+            animationTimer2.start();
+            bool aniCountUp=true;
 			//Frame of animation
-			int aniFrame = 0;
+			int aniFrame,aniFrame2 = 0;
 			//Start counting frames per second
 			int countedFrames = 0;
 			//Event handler
@@ -600,6 +619,24 @@ int main( int argc, char* args[] )
                 else if(gameState == 4)
                 {
                     creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    switch(aniFrame2){
+                    case 0:toaster[0].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 1:toaster[1].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 2:toaster[2].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 3:toaster[3].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 4:toaster[4].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 5:toaster[5].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 6:toaster[6].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    case 7:toaster[7].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        break;
+                    }
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 6)
@@ -623,6 +660,18 @@ int main( int argc, char* args[] )
                     ++aniFrame;
                     animationTimer.restart();
                 }
+                if(animationTimer2.getTicks() / 60 > 1)
+                {
+                    if(aniCountUp)
+                    {
+                        aniFrame2++;
+                    }
+                    else
+                    {
+                        aniFrame2--;
+                    }
+                    animationTimer2.restart();
+                }
                 //set script line
                 if(chapter1Timer.getTicks()/1000 > 1)
                 {//implement timer auto script option.
@@ -643,6 +692,14 @@ int main( int argc, char* args[] )
 				{
 					aniFrame = 0;
 				}
+				if( aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
+				{
+					aniCountUp = false;
+				}
+				else if(aniFrame2 <= 0)
+                {
+                    aniCountUp = true;
+                }
 			}
 		}
 	}

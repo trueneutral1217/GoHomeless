@@ -12,6 +12,7 @@
 const int SCREEN_WIDTH = 800;
 const int SCREEN_HEIGHT = 600;
 const int TAO_ANIMATION_FRAMES = 8;
+const int TOASTER_ANIMATION_FRAMES = 8;
 
 class Texture
 {
