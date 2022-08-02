@@ -16,3 +16,5 @@ could still use user interface improvements.  I've been planning it out, but I o
 can commit to this project in any given day.  I'll be making a release version fairly soon just meant to be a 
 playable demo.  I was going to send it to my mommy.  besides the song I'd still like to make artwork for the credits 
 and options screens, as well as possibly implement those UI improvements that I've been thinking about.  
+
+8/1/22 - finally figured out how to make the release build work locally, so I uploaded a rar with the go homeless folder and an executable and cleaned out some files that aren't yet being used by the release (may never be used).  from there I added a player class, currently using a tree pic as a stand in for my player that only shows up in gamestate == 6, aka stage 1.  also added an animated robot waving at the user to the credit screen. :-)
