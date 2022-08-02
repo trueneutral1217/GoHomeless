@@ -22,6 +22,8 @@ chapter::chapter()
         }
     }
     font = NULL;
+    pageText.str( "" );
+    lineText.str( "" );
 }
 
 chapter::~chapter()
@@ -38,6 +40,7 @@ chapter::~chapter()
 void chapter::scriptIncrement()
 {
     currentScript++;
+
 }
 void chapter::pageIncrement()
 {
@@ -268,6 +271,37 @@ bool chapter::setBGTextures(SDL_Renderer* renderer){
         success = chapter1BG[i].loadFromFile( bgFileName[i],renderer );
     }
     return success;
+}
+
+void chapter::loadLineText(SDL_Renderer* renderer)
+{
+    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
+    //font.ptsize = 8;
+    lineText.str( "" );
+    lineText << "" << currentScript + 1;
+    //set text color to black
+    SDL_Color textColor = {0,0,0};
+
+    if( !curLineTextTexture.loadFromRenderedText( lineText.str().c_str(), textColor,font,renderer ) )
+    {
+        printf( "\n Unable to render current line text to texture!\n" );
+    }
+    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
+}
+
+void chapter::loadPageText(SDL_Renderer* renderer)
+{
+    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
+    pageText.str( "" );
+    pageText << "" << currentPage + 1;
+    //set text color to black
+    SDL_Color textColor = {0,0,0};
+
+    if( !curPageTextTexture.loadFromRenderedText( pageText.str().c_str(), textColor,font,renderer ) )
+    {
+        printf( "\n Unable to render current page text to texture!\n" );
+    }
+    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
 }
 
 bool chapter::setScriptTextures(SDL_Renderer* renderer){

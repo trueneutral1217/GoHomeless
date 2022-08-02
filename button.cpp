@@ -61,7 +61,7 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
 			inside = false;
 		}
 		//Mouse is right of the button
-		else if( x > position.x + BUTTON_WIDTH )
+		else if( x > position.x + buttonTexture.getWidth() )
 		{
 			inside = false;
 		}
@@ -71,7 +71,7 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
 			inside = false;
 		}
 		//Mouse below the button
-		else if( y > position.y + BUTTON_HEIGHT )
+		else if( y > position.y + buttonTexture.getHeight() )
 		{
 			inside = false;
 		}
@@ -126,6 +126,16 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                         {
                             printf("\n \n Stage 1 button pressed \n \n");
                             gameState = 6;
+                        }
+                        else if(buttonName=="backPage" && gameState==5)
+                        {
+                            printf("\n \n backPage button pressed \n \n");
+                            gameState=-1;
+                        }
+                        else if(buttonName=="backLine" && gameState==5)
+                        {
+                            printf("\n \n backLine button pressed \n \n");
+                            gameState=-1;
                         }
                     break;
                 }

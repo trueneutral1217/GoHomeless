@@ -43,6 +43,9 @@ class chapter
         void resetPages();
         void resetScripts();
 
+        void loadLineText(SDL_Renderer* renderer);
+        void loadPageText(SDL_Renderer* renderer);
+
         //
         std::string bgFileName[TOTAL_PAGES];
         void freeBGTextures();
@@ -50,6 +53,11 @@ class chapter
         bool setScriptTextures(SDL_Renderer* renderer);
         bool setBGTextures(SDL_Renderer* renderer);
         void loadFont();
+
+        std::stringstream pageText;
+        std::stringstream lineText;
+        Texture curLineTextTexture;
+        Texture curPageTextTexture;
 
 
 

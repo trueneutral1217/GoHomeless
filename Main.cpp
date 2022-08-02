@@ -39,6 +39,7 @@ Texture chapter1BG4;
 Texture chapter1BG5;
 Texture chapter1BG6;
 Texture dialogBox;
+Texture menuBar;
 //user presses 'h' to hide the dialogbox, or dialog box & text, or neither.
 bool hideDialogBox = false;
 bool hideDialogAndBox = false;
@@ -103,6 +104,8 @@ bool setButtonTextures(bool success)
     buttons[5].setPosition(20,20);
     buttons[6].setPosition(20,100);
     buttons[7].setPosition(20,150);
+    buttons[8].setPosition(161,350);
+    buttons[9].setPosition(195,350);
     return success;
 }
 
@@ -218,6 +221,8 @@ bool loadMedia()
 	buttons[5].buttonName="chapter1";
 	buttons[6].buttonName="fullScreenOff";
 	buttons[7].buttonName="stage1";
+	buttons[8].buttonName="backPage";
+	buttons[9].buttonName="backLine";
 //load saved game
 	savegame.readFile();
     chapter.currentChapter= savegame.data[0];
@@ -263,6 +268,7 @@ bool loadMedia()
     success = chapter.setBGTextures(renderer);
    //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
+	success = menuBar.loadFromFile("images/menuBar.png",renderer);
     //set dialog box alpha (about 75% opaque @ 192)
     dialogBox.setAlpha(255);
     //load font
@@ -318,6 +324,7 @@ void close()
     thanksTexture.free();
 	//free the dialog box for chapters
 	dialogBox.free();
+	menuBar.free();
 	//audio destructor frees audio
 	//free the font
 	TTF_CloseFont( chapter.font );
@@ -391,6 +398,7 @@ int main( int argc, char* args[] )
                     if(e.type == SDL_MOUSEBUTTONDOWN){
                         if(gameState == 5) //Chapter 1
                         {
+                            //need if(!insideButtons())
                             if(chapter.currentPage==TOTAL_PAGES-1 && chapter.currentScript==TOTAL_SCRIPTS-1){
                                 chapter.completeChapter(renderer);
                                 gameState=2;
@@ -501,7 +509,33 @@ int main( int argc, char* args[] )
 					//Handle button events
 					for( int i = 0; i < TOTAL_BUTTONS; ++i )
 					{
-                        gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
+					    if(i < 6 or i == 7)
+                        {
+                            gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
+                        }
+                        //if player presses backpage button, ugly af, but it works somewhat
+                        if(i==8 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+                            if(chapter.currentPage>0)
+                            {
+                                chapter.currentPage--;
+                                chapter.currentScript--;
+                            }
+                        }
+                        //if player presses backline button, ugly af, but it works somewhat
+                        if(i==9 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+
+                            if(chapter.currentScript>0)
+                            {
+                               chapter.currentScript-=2;
+                            }
+                            if(chapter.currentScript>=6)
+                            {
+                                chapter.currentPage--;
+                                chapter.currentScript=6;
+                            }
+                        }
 					}
 					player1.handleEvent(e);
 				}
@@ -582,6 +616,14 @@ int main( int argc, char* args[] )
                             case 7:chapter.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
                         }
+                        menuBar.render(0,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        //load page number into menubar
+                        chapter.loadPageText(renderer);
+                        chapter.curPageTextTexture.render(140,352,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        //load line number into menubar
+                        chapter.loadLineText(renderer);
+                        chapter.curLineTextTexture.render(130,374,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
                         //if player presses 'h' to hide dialog box or not.
                         if(hideDialogBox == false){
                             dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
@@ -597,21 +639,21 @@ int main( int argc, char* args[] )
                         }
                     }
                     switch(aniFrame){
-                    case 0:tao[0].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 0:tao[0].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 1:tao[1].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 1:tao[1].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 2:tao[2].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 2:tao[2].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 3:tao[3].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 3:tao[3].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 4:tao[4].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 4:tao[4].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 5:tao[5].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 5:tao[5].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 6:tao[6].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 6:tao[6].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
-                    case 7:tao[7].render(750,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    case 7:tao[7].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         break;
                     }
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
