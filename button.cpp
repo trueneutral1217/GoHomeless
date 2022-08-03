@@ -137,6 +137,31 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n backLine button pressed \n \n");
                             gameState=-1;
                         }
+                        else if(buttonName=="autoOn" && gameState==5)
+                        {
+                            printf("\n \n autotexton button pressed \n \n");
+                            gameState=-1;
+                        }
+                        else if(buttonName=="autoOff" && gameState==5)
+                        {
+                            printf("\n \n autotextoff button pressed \n \n");
+                            gameState=-1;
+                        }
+                        else if(buttonName=="autoSpeed1" && gameState==5)
+                        {
+                            printf("\n \n autospeed1 button pressed \n \n");
+                            gameState=-1;
+                        }
+                        else if(buttonName=="autoSpeed2" && gameState==5)
+                        {
+                            printf("\n \n autospeed2 button pressed \n \n");
+                            gameState=-1;
+                        }
+                        else if(buttonName=="autoSpeed3" && gameState==5)
+                        {
+                            printf("\n \n autospeed3 button pressed \n \n");
+                            gameState=-1;
+                        }
                     break;
                 }
 

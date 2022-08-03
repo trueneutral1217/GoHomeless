@@ -6,6 +6,8 @@ chapter::chapter()
     chapter1Complete = false;
     currentPage = 0;
     currentScript = 0;
+    autoText = true;
+    autoTextSpeed = 0;
     for(int j =0; j <TOTAL_PAGES; j++)
     {
         for(int i = 0; i<TOTAL_SCRIPTS; i++)

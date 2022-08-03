@@ -106,6 +106,13 @@ bool setButtonTextures(bool success)
     buttons[7].setPosition(20,150);
     buttons[8].setPosition(161,350);
     buttons[9].setPosition(195,350);
+    //autoTextOn
+    buttons[10].setPosition(270,385);
+    buttons[11].setPosition(290,385);
+    //autospeed
+    buttons[12].setPosition(240,365);
+    buttons[13].setPosition(266,365);
+    buttons[14].setPosition(292,365);
     return success;
 }
 
@@ -223,6 +230,12 @@ bool loadMedia()
 	buttons[7].buttonName="stage1";
 	buttons[8].buttonName="backPage";
 	buttons[9].buttonName="backLine";
+	buttons[10].buttonName="autoOn";
+	buttons[11].buttonName="autoOff";
+	buttons[12].buttonName="autoSpeed1";
+	buttons[13].buttonName="autoSpeed2";
+	buttons[14].buttonName="autoSpeed3";
+
 //load saved game
 	savegame.readFile();
     chapter.currentChapter= savegame.data[0];
@@ -536,6 +549,26 @@ int main( int argc, char* args[] )
                                 chapter.currentScript=6;
                             }
                         }
+                        if(i==10 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+                            chapter.autoText=true;
+                        }
+                        if(i==11 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+                            chapter.autoText=false;
+                        }
+                        if(i==12 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+                            chapter.autoTextSpeed=0;
+                        }
+                        if(i==13 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+                            chapter.autoTextSpeed=1;
+                        }
+                        if(i==14 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                        {
+                            chapter.autoTextSpeed=2;
+                        }
 					}
 					player1.handleEvent(e);
 				}
@@ -615,6 +648,28 @@ int main( int argc, char* args[] )
                                     break;
                             case 7:chapter.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                                     break;
+                        }
+                        if(chapter.autoText)
+                        {
+                            buttons[10].buttonTexture.render(buttons[10].getPositionX(),buttons[10].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        }
+                        else
+                        {
+                            buttons[11].buttonTexture.render(buttons[11].getPositionX(),buttons[11].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        }
+                        if(chapter.autoTextSpeed==0)
+                        {
+                            buttons[12].buttonTexture.render(buttons[12].getPositionX(),buttons[12].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+                        }
+                        else if(chapter.autoTextSpeed==1)
+                        {
+                            buttons[13].buttonTexture.render(buttons[13].getPositionX(),buttons[13].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+                        }
+                        else if(chapter.autoTextSpeed==2)
+                        {
+                            buttons[14].buttonTexture.render(buttons[14].getPositionX(),buttons[14].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
                         menuBar.render(0,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         //load page number into menubar
@@ -715,7 +770,35 @@ int main( int argc, char* args[] )
                     animationTimer2.restart();
                 }
                 //set script line
-                if(chapter1Timer.getTicks()/1000 > 1)
+                if(chapter1Timer.getTicks()/1000 > 1 && chapter.autoTextSpeed==0 && chapter.autoText)
+                {//implement timer auto script option.
+                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
+                    {
+                        chapter.scriptIncrement();
+                        chapter1Timer.restart();
+                        //printf("\n \n timer tick");
+                        //testSaveVariables();
+                    }
+                    if(chapter.currentScript == TOTAL_SCRIPTS-1)
+                    {
+                        chapter1Timer.stop();
+                    }
+                }
+                else if(chapter1Timer.getTicks()/750 > 1 && chapter.autoTextSpeed==1 && chapter.autoText)
+                {//implement timer auto script option.
+                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
+                    {
+                        chapter.scriptIncrement();
+                        chapter1Timer.restart();
+                        //printf("\n \n timer tick");
+                        //testSaveVariables();
+                    }
+                    if(chapter.currentScript == TOTAL_SCRIPTS-1)
+                    {
+                        chapter1Timer.stop();
+                    }
+                }
+                else if(chapter1Timer.getTicks()/500 > 1 && chapter.autoTextSpeed==2 && chapter.autoText)
                 {//implement timer auto script option.
                     if(chapter.currentScript<TOTAL_SCRIPTS-1)
                     {

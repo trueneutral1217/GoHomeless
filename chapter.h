@@ -25,6 +25,8 @@ class chapter
         int currentPage;
         int currentChapter;
         bool chapter1Complete;
+        bool autoText;
+        int autoTextSpeed;
 
         Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
         Texture chapter1BG[TOTAL_PAGES];
