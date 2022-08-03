@@ -28,8 +28,15 @@ class chapter
         bool autoText;
         int autoTextSpeed;
 
+        //user presses 'h' to hide the dialogbox, or dialog box & text, or neither.
+        bool hideDialogBox = false;
+        bool hideDialogAndBox = false;
+        bool fullScreen = false;
+
         Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
         Texture chapter1BG[TOTAL_PAGES];
+        Texture dialogBox;
+        Texture menuBar;
 
         std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS];
 
@@ -53,14 +60,15 @@ class chapter
         void freeBGTextures();
         void setFileNames();
         bool setScriptTextures(SDL_Renderer* renderer);
-        bool setBGTextures(SDL_Renderer* renderer);
+        bool setChapterTextures(SDL_Renderer* renderer);
         void loadFont();
 
         std::stringstream pageText;
         std::stringstream lineText;
         Texture curLineTextTexture;
         Texture curPageTextTexture;
-
+        //tests savegame variables, usually when altered, saved, or loaded.
+        void testSaveVariables();
 
 
     private:

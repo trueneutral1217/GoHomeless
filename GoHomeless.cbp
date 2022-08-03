@@ -44,6 +44,8 @@
 		</Linker>
 		<Unit filename="GoHomeless.cbp" />
 		<Unit filename="Main.cpp" />
+		<Unit filename="animations.cpp" />
+		<Unit filename="animations.h" />
 		<Unit filename="audio.cpp" />
 		<Unit filename="audio.h" />
 		<Unit filename="button.cpp" />
@@ -57,6 +59,8 @@
 		<Unit filename="particle.h" />
 		<Unit filename="player.cpp" />
 		<Unit filename="player.h" />
+		<Unit filename="pregameui.cpp" />
+		<Unit filename="pregameui.h" />
 		<Unit filename="saveGame.cpp" />
 		<Unit filename="saveGame.h" />
 		<Unit filename="texture.cpp" />

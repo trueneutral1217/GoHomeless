@@ -6,6 +6,21 @@ button::button()
 	position.y = 0;
     buttonName = "";
     fullScreen=false;
+    buttonNames[0]="back";
+	buttonNames[1]="new";
+	buttonNames[2]="load";
+	buttonNames[3]="options";
+	buttonNames[4]="credits";
+	buttonNames[5]="chapter1";
+	buttonNames[6]="fullScreenOff";
+	buttonNames[7]="stage1";
+	buttonNames[8]="backPage";
+	buttonNames[9]="backLine";
+	buttonNames[10]="autoOn";
+	buttonNames[11]="autoOff";
+	buttonNames[12]="autoSpeed1";
+	buttonNames[13]="autoSpeed2";
+	buttonNames[14]="autoSpeed3";
 
 }
 
@@ -42,6 +57,12 @@ bool button::setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer)
     SDL_SetWindowFullscreen( window, SDL_FALSE );
     return fullScreen;
 }
+
+void button::setButtonName(int i)
+{
+    buttonName=buttonNames[i];
+}
+
 
 int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
 {

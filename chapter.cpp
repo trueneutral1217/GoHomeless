@@ -251,6 +251,18 @@ void chapter::freeBGTextures()
     {
         chapter1BG[i].free();
     }
+    dialogBox.free();
+	menuBar.free();
+
+	//free the script textures
+    for(int j = 0; j < TOTAL_PAGES; j++)
+    {
+        for(int i=0;i<TOTAL_SCRIPTS;i++)
+        {
+            scriptTexture[j][i].free();
+        }
+    }
+
 }
 
 void chapter::setFileNames()
@@ -265,20 +277,23 @@ void chapter::setFileNames()
     bgFileName[7] = "images/forest.png";
 }
 
-bool chapter::setBGTextures(SDL_Renderer* renderer){
+bool chapter::setChapterTextures(SDL_Renderer* renderer){
     bool success = true;
     setFileNames();
     for(int i = 0; i<TOTAL_PAGES;i++)
     {
         success = chapter1BG[i].loadFromFile( bgFileName[i],renderer );
     }
+       //load dialog box image
+	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
+	success = menuBar.loadFromFile("images/menuBar.png",renderer);
+    //set dialog box alpha (about 75% opaque @ 192)
+    dialogBox.setAlpha(255);
     return success;
 }
 
 void chapter::loadLineText(SDL_Renderer* renderer)
 {
-    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
-    //font.ptsize = 8;
     lineText.str( "" );
     lineText << "" << currentScript + 1;
     //set text color to black
@@ -288,12 +303,10 @@ void chapter::loadLineText(SDL_Renderer* renderer)
     {
         printf( "\n Unable to render current line text to texture!\n" );
     }
-    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
 }
 
 void chapter::loadPageText(SDL_Renderer* renderer)
 {
-    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
     pageText.str( "" );
     pageText << "" << currentPage + 1;
     //set text color to black
@@ -303,7 +316,6 @@ void chapter::loadPageText(SDL_Renderer* renderer)
     {
         printf( "\n Unable to render current page text to texture!\n" );
     }
-    //font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
 }
 
 bool chapter::setScriptTextures(SDL_Renderer* renderer){
@@ -342,6 +354,14 @@ bool chapter::setScriptTextures(SDL_Renderer* renderer){
         }
     }
     return success;
+}
+
+void chapter::testSaveVariables()
+{
+    std::cout << "\n currentChapter: " << std::to_string( currentChapter );
+    std::cout << "\n currentPage: " << std::to_string( currentPage );
+    std::cout << "\n currentScript: " << std::to_string( currentScript );
+    std::cout << "\n chapter1Complete: " << std::to_string(chapter1Complete);
 }
 
 void chapter::loadFont()

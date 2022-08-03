@@ -1,8 +1,3 @@
-//SDL and system libraries
-#include <iostream>
-#include <assert.h>
-#include <stddef.h>
-#include <vector>
 //local classes
 #include "audio.h"
 #include "button.h"
@@ -12,6 +7,8 @@
 #include "chapter.h"
 #include "saveGame.h"
 #include "player.h"
+#include "pregameui.h"
+#include "animations.h"
 const int TOTAL_STATES = 5;
 //Starts up SDL and creates window
 bool init();
@@ -23,32 +20,8 @@ void close();
 SDL_Renderer* renderer = NULL;
 //The window we'll be rendering to
 SDL_Window* window = NULL;
-//declaring textures (title, backgrounds, and dialog box
-Texture title;
-Texture titleTexture;
-Texture creditsTexture;
-Texture optionsTexture;
-Texture loadGameTexture;
-Texture chapterSelectTexture;
-Texture thanksTexture;
-//chapter1bg textures needs to be cleaned up, maybe made into an array.
-Texture chapter1BG;
-Texture chapter1BG2;
-Texture chapter1BG3;
-Texture chapter1BG4;
-Texture chapter1BG5;
-Texture chapter1BG6;
-Texture dialogBox;
-Texture menuBar;
-//user presses 'h' to hide the dialogbox, or dialog box & text, or neither.
-bool hideDialogBox = false;
-bool hideDialogAndBox = false;
-bool fullScreen = false;
 //Buttons object array
 button buttons[ TOTAL_BUTTONS ];
-//animation textures
-Texture tao[TAO_ANIMATION_FRAMES];
-Texture toaster[TOASTER_ANIMATION_FRAMES];
 //savegame handler
 saveGame savegame;
 audio music;
@@ -60,8 +33,10 @@ Particle particles[ TOTAL_PARTICLES ];
 chapter chapter;
 //declare player
 player player1;
-//tests savegame variables, usually when altered, saved, or loaded.
-void testSaveVariables();
+//declare instance of pregame user interface.
+pregameui pregameui;
+//declare instance of animations
+animations animations;
 //declare sound vector & load sounds into it.
 void loadSounds();
 //render particles to screen
@@ -194,13 +169,7 @@ bool init()
 	return success;
 }
 
-void testSaveVariables()
-{
-    std::cout << "\n currentChapter: " << std::to_string( chapter.currentChapter );
-    std::cout << "\n currentPage: " << std::to_string( chapter.currentPage );
-    std::cout << "\n currentScript: " << std::to_string( chapter.currentScript );
-    std::cout << "\n chapter1Complete: " << std::to_string(chapter.chapter1Complete);
-}
+
 
 void loadSounds()
 {
@@ -220,22 +189,10 @@ bool loadMedia()
 {
 	bool success = true;
 	//set button names
-	buttons[0].buttonName="back";
-	buttons[1].buttonName="new";
-	buttons[2].buttonName="load";
-	buttons[3].buttonName="options";
-	buttons[4].buttonName="credits";
-	buttons[5].buttonName="chapter1";
-	buttons[6].buttonName="fullScreenOff";
-	buttons[7].buttonName="stage1";
-	buttons[8].buttonName="backPage";
-	buttons[9].buttonName="backLine";
-	buttons[10].buttonName="autoOn";
-	buttons[11].buttonName="autoOff";
-	buttons[12].buttonName="autoSpeed1";
-	buttons[13].buttonName="autoSpeed2";
-	buttons[14].buttonName="autoSpeed3";
-
+	for(int i = 0; i<TOTAL_BUTTONS; i++)
+    {
+        buttons[i].setButtonName(i);
+    }
 //load saved game
 	savegame.readFile();
     chapter.currentChapter= savegame.data[0];
@@ -246,44 +203,16 @@ bool loadMedia()
     {
         chapter.chapter1Complete = true;
     }
-    testSaveVariables();
-    //load tao animation images
-    for(int i = 0; i<TAO_ANIMATION_FRAMES;i++)
-    {
-        int a = i+1;
-        std::stringstream ss;
-        ss << "images/animations/tao/tao" << a << ".png";
-        std::string str = ss.str();
-        success = tao[i].loadFromFile(str,renderer);
-    }
-    for(int i = 0; i<TOASTER_ANIMATION_FRAMES;i++)
-    {
-        int a = i;
-        std::stringstream ss;
-        ss << "images/animations/toaster/toaster" << a << ".png";
-        std::string str = ss.str();
-        success = toaster[i].loadFromFile(str,renderer);
-    }
-
+    chapter.testSaveVariables();
+    //load animations textures
+    success = animations.setAnimationTextures(renderer);
 
     //set button positions & image textures
     success = setButtonTextures(success);
-	//game title image
-	success = title.loadFromFile( "images/title.png",renderer );
-	//load background image files for non-chapter1 backgrounds
-	success = titleTexture.loadFromFile( "images/skidrow.png",renderer );
-	success = loadGameTexture.loadFromFile( "images/loadgamescreen.png",renderer );
-	success = chapterSelectTexture.loadFromFile( "images/busstop.png",renderer );
-	success = creditsTexture.loadFromFile( "images/brickwall.png",renderer );
-	success = optionsTexture.loadFromFile("images/maritime.png",renderer );
-	success = thanksTexture.loadFromFile("images/thanks.png",renderer);
+    //load titlescreen textures, credit screen textures, etc.
+    success = pregameui.setPGUITextures(renderer);
     //load chapter 1 background textures
-    success = chapter.setBGTextures(renderer);
-   //load dialog box image
-	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
-	success = menuBar.loadFromFile("images/menuBar.png",renderer);
-    //set dialog box alpha (about 75% opaque @ 192)
-    dialogBox.setAlpha(255);
+    success = chapter.setChapterTextures(renderer);
     //load font
 	chapter.loadFont();
 	//load sound effects
@@ -302,42 +231,19 @@ void close()
 {
     //save progress
     savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete);
-    testSaveVariables();
+    chapter.testSaveVariables();
+
     //free the button textures
     for(int i = 0; i<TOTAL_BUTTONS;i++)
     {
         buttons[i].buttonTexture.free();
     }
-    //free the script textures
-    for(int j = 0; j < TOTAL_PAGES; j++)
-    {
-        for(int i=0;i<TOTAL_SCRIPTS;i++)
-        {
-            chapter.scriptTexture[j][i].free();
-        }
-    }
-    //free the tao animation textures
-    for(int i=0;i<TAO_ANIMATION_FRAMES;i++)
-    {
-        tao[i].free();
-    }
-    for(int i=0;i<TOASTER_ANIMATION_FRAMES;i++)
-    {
-        toaster[i].free();
-    }
-    //free the title image
-    title.free();
-    //free the background textures
-	titleTexture.free();
-	chapterSelectTexture.free();
-	loadGameTexture.free();
-	optionsTexture.free();
-	creditsTexture.free();
-    chapter.freeBGTextures();
-    thanksTexture.free();
-	//free the dialog box for chapters
-	dialogBox.free();
-	menuBar.free();
+    //free animation textures
+    animations.freeAnimationTextures();
+    //free pregame ui textures
+    pregameui.freePGUITextures();
+	//free the backgrounds, dialog box, menubar for chapters and script textures
+	chapter.freeBGTextures();
 	//audio destructor frees audio
 	//free the font
 	TTF_CloseFont( chapter.font );
@@ -372,10 +278,8 @@ int main( int argc, char* args[] )
 		{
 			//Main loop flag
 			bool quit = false;
-            //set text color as white
-			SDL_Color textColor = { 255, 255, 255, 255 };
-            //Set text color as black
-			textColor = { 0, 0, 0, 255 };
+            //set text color as black
+			SDL_Color textColor = { 0, 0, 0, 255 };
 			//load the bg music file
 			chapter.loadChapterStrings(renderer);
             music.loadMusic();
@@ -388,9 +292,6 @@ int main( int argc, char* args[] )
             animationTimer.start();
             timer animationTimer2;
             animationTimer2.start();
-            bool aniCountUp=true;
-			//Frame of animation
-			int aniFrame,aniFrame2 = 0;
 			//Start counting frames per second
 			int countedFrames = 0;
 			//Event handler
@@ -496,22 +397,22 @@ int main( int argc, char* args[] )
                                 sounds[3].playSound();
 							break;
 							case SDLK_h:
-							if(hideDialogBox == false && hideDialogAndBox == false)
+							if(chapter.hideDialogBox == false && chapter.hideDialogAndBox == false)
                             {
-                                hideDialogBox = true;
-                                hideDialogAndBox = false;
+                                chapter.hideDialogBox = true;
+                                chapter.hideDialogAndBox = false;
 							}
-							else if(hideDialogBox == true && hideDialogAndBox == false)
+							else if(chapter.hideDialogBox == true && chapter.hideDialogAndBox == false)
                             {
-                                hideDialogAndBox = true;
-                                hideDialogBox = true;
-							}else if(hideDialogBox == true && hideDialogAndBox == true)
+                                chapter.hideDialogAndBox = true;
+                                chapter.hideDialogBox = true;
+							}else if(chapter.hideDialogBox == true && chapter.hideDialogAndBox == true)
 							{
-							    hideDialogAndBox=false;
-							    hideDialogBox=false;
+							    chapter.hideDialogAndBox=false;
+							    chapter.hideDialogBox=false;
 							}
 							printf("\n h pressed \n");
-                            std::cout << "hideDialogBox: " << hideDialogBox;
+                            std::cout << "hideDialogBox: " << chapter.hideDialogBox;
 							break;
 							case SDLK_9:
 							//press 9 to play / pause music
@@ -580,9 +481,9 @@ int main( int argc, char* args[] )
                 if(gameState == 0)
                 {
                     chapter1Timer.stop();
-                    titleTexture.render( 0, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
+                    pregameui.titleTexture.render( 0, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     renderParticles();
-                    title.render(200, 100,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.title.render(200, 100,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //render title screen buttons
                     for(int i=1;i<TOTAL_BUTTONS;i++)
                     {
@@ -593,7 +494,7 @@ int main( int argc, char* args[] )
                 else if(gameState == 1)
                 {//new game chapter select screen
                     chapter1Timer.stop();
-                    chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
+                    pregameui.chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     //chapter 1 button
                     buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //back button
@@ -603,7 +504,7 @@ int main( int argc, char* args[] )
                 {//load game chapter/stage select screen
                     chapter1Timer.stop();
                     //chapter select screen
-                    chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //stage 1 button
                     if(chapter.chapter1Complete)
                     {
@@ -618,7 +519,7 @@ int main( int argc, char* args[] )
                 else if(gameState == 3)
                 {
                     //options screen
-                    optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     fullScreenButtonTextureToggle();
                 }
@@ -671,7 +572,7 @@ int main( int argc, char* args[] )
                         {
                             buttons[14].buttonTexture.render(buttons[14].getPositionX(),buttons[14].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
-                        menuBar.render(0,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        chapter.menuBar.render(0,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         //load page number into menubar
                         chapter.loadPageText(renderer);
                         chapter.curPageTextTexture.render(140,352,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
@@ -680,10 +581,10 @@ int main( int argc, char* args[] )
                         chapter.curLineTextTexture.render(130,374,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
                         //if player presses 'h' to hide dialog box or not.
-                        if(hideDialogBox == false){
-                            dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        if(chapter.hideDialogBox == false){
+                            chapter.dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
-                        if(hideDialogAndBox==false){
+                        if(chapter.hideDialogAndBox==false){
                             for(int i = 0; i<TOTAL_SCRIPTS;i++){
                                 //render script lines
                                 if(i <= chapter.currentScript)
@@ -693,52 +594,21 @@ int main( int argc, char* args[] )
                             }
                         }
                     }
-                    switch(aniFrame){
-                    case 0:tao[0].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 1:tao[1].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 2:tao[2].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 3:tao[3].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 4:tao[4].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 5:tao[5].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 6:tao[6].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 7:tao[7].render(750,300,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    }
+                    animations.renderTao(renderer);
+
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 4)
                 {
-                    creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    switch(aniFrame2){
-                    case 0:toaster[0].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 1:toaster[1].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 2:toaster[2].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 3:toaster[3].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 4:toaster[4].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 5:toaster[5].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 6:toaster[6].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    case 7:toaster[7].render(50,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        break;
-                    }
+                    pregameui.creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    animations.renderToaster(renderer);
+
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 6)
                 {
-                    thanksTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    //temporary texture until I get the tiles working on this gamestate
+                    pregameui.thanksTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     player1.render(renderer);
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
@@ -754,18 +624,18 @@ int main( int argc, char* args[] )
 				}
                 if(animationTimer.getTicks() / 500 > 1)
                 {
-                    ++aniFrame;
+                    ++animations.aniFrame;
                     animationTimer.restart();
                 }
                 if(animationTimer2.getTicks() / 60 > 1)
                 {
-                    if(aniCountUp)
+                    if(animations.aniCountUp)
                     {
-                        aniFrame2++;
+                        animations.aniFrame2++;
                     }
                     else
                     {
-                        aniFrame2--;
+                        animations.aniFrame2--;
                     }
                     animationTimer2.restart();
                 }
@@ -813,17 +683,17 @@ int main( int argc, char* args[] )
                     }
                 }
 				//Cycle animation
-				if( aniFrame >= TAO_ANIMATION_FRAMES )
+				if( animations.aniFrame >= TAO_ANIMATION_FRAMES )
 				{
-					aniFrame = 0;
+					animations.aniFrame = 0;
 				}
-				if( aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
+				if( animations.aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
 				{
-					aniCountUp = false;
+					animations.aniCountUp = false;
 				}
-				else if(aniFrame2 <= 0)
+				else if(animations.aniFrame2 <= 0)
                 {
-                    aniCountUp = true;
+                    animations.aniCountUp = true;
                 }
 			}
 		}

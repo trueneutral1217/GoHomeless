@@ -33,6 +33,10 @@ class button
 
 		std::string buttonName;
 
+		std::string buttonNames[TOTAL_BUTTONS];
+
+		void setButtonName(int i);
+
 	private:
 		//Top left point of button image location
 		SDL_Point position;
