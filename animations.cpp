@@ -5,6 +5,8 @@ animations::animations()
     aniFrame=0;
     aniFrame2=0;
     aniCountUp=true;
+    animationTimer.start();
+    animationTimer2.start();
 }
 
 animations::~animations()
@@ -95,3 +97,48 @@ void animations::renderToaster(SDL_Renderer* renderer)
     }
 }
 
+void animations::cycleAnimations()
+{
+    if( aniFrame >= TAO_ANIMATION_FRAMES )
+    {
+        aniFrame = 0;
+    }
+    if( aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
+    {
+        aniCountUp = false;
+    }
+    else if(aniFrame2 <= 0)
+    {
+        aniCountUp = true;
+    }
+}
+
+void animations::oscillateCount()
+{
+    if(aniCountUp)
+    {
+        aniFrame2++;
+    }
+    else
+    {
+        aniFrame2--;
+    }
+}
+
+void animations::taoAnimationProgress()
+{
+    if(animationTimer.getTicks() / 500 > 1)
+    {
+        ++aniFrame;
+        animationTimer.restart();
+    }
+}
+
+void animations::toasterAnimationProgress()
+{
+    if(animationTimer2.getTicks() / 60 > 1)
+    {
+        oscillateCount();
+        animationTimer2.restart();
+    }
+}

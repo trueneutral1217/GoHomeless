@@ -2,6 +2,7 @@
 #define CHAPTER_H
 
 #include "Texture.h"
+#include "timer.h"
 
 //number of dialog lines for chapter 1.
 const int TOTAL_SCRIPTS = 8;
@@ -19,6 +20,9 @@ class chapter
         ~chapter();
         //declare font
         TTF_Font *font;
+
+        //timer for dialog for chapter1
+        timer chapter1Timer;
 
         //tracks chapter progress.  used to save/load and display properly
         int currentScript;
@@ -69,6 +73,23 @@ class chapter
         Texture curPageTextTexture;
         //tests savegame variables, usually when altered, saved, or loaded.
         void testSaveVariables();
+
+        void setAutoScript();
+
+        //player clicks mouse button
+        int progress(SDL_Renderer* renderer,int gameState);
+        //player presses spacebar
+        int progress2(SDL_Renderer* renderer,int gameState);
+        //player presses h button
+        void handleDialogVisability();
+        //renders correct state of the visibility of dialog, dialog box.
+        void handleDialogRendering(SDL_Renderer* renderer);
+        //renders correct bg with it's corresponding page.
+        void renderBackgrounds(SDL_Renderer* renderer,int j);
+        //updates current page/script compensation
+        void handleBackPagePress();
+        //updates current line plus script compensation
+        void handleBackLinePress();
 
 
     private:

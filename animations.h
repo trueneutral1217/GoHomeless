@@ -2,6 +2,7 @@
 #define ANIMATIONS_H
 
 #include "Texture.h"
+#include "timer.h"
 const int TAO_ANIMATION_FRAMES = 8;
 const int TOASTER_ANIMATION_FRAMES = 8;
 
@@ -13,6 +14,12 @@ class animations
         animations();
         //destructor
         ~animations();
+
+        //timer for tao animation
+        timer animationTimer;
+
+        //timer for toaster the robot's animation
+        timer animationTimer2;
 
         bool aniCountUp;
         int aniFrame,aniFrame2;
@@ -26,6 +33,11 @@ class animations
 
         void renderTao(SDL_Renderer* renderer);
         void renderToaster(SDL_Renderer* renderer);
+        void cycleAnimations();
+        void oscillateCount();
+
+        void taoAnimationProgress();
+        void toasterAnimationProgress();
 
     private:
 

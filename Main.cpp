@@ -232,7 +232,6 @@ void close()
     //save progress
     savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete);
     chapter.testSaveVariables();
-
     //free the button textures
     for(int i = 0; i<TOTAL_BUTTONS;i++)
     {
@@ -285,13 +284,6 @@ int main( int argc, char* args[] )
             music.loadMusic();
 			//The frames per second cap timer
 			timer capTimer;
-			//timer for dialog for chapter1
-			timer chapter1Timer;
-            //timer for tao animation, using it for toaster animation as well.
-            timer animationTimer;
-            animationTimer.start();
-            timer animationTimer2;
-            animationTimer2.start();
 			//Start counting frames per second
 			int countedFrames = 0;
 			//Event handler
@@ -313,26 +305,16 @@ int main( int argc, char* args[] )
                         if(gameState == 5) //Chapter 1
                         {
                             //need if(!insideButtons())
-                            if(chapter.currentPage==TOTAL_PAGES-1 && chapter.currentScript==TOTAL_SCRIPTS-1){
-                                chapter.completeChapter(renderer);
-                                gameState=2;
-                                chapter1Timer.stop();
-                            }
-                            else if (chapter.currentScript<TOTAL_SCRIPTS-1)
-                            {
-                                chapter.scriptIncrement();
-                                chapter1Timer.restart();
-                            }
-                            else if(chapter.currentPage<TOTAL_PAGES-1){
-                                chapter.pageIncrement();
-                                chapter1Timer.restart();
-                            }
+                            //updates counters for script lines,turns pages, changes gameState if at end of chapter.
+                            gameState = chapter.progress(renderer,gameState);
                         }
                         if(gameState == 1)//new game chapter select
                         {
+                            //chapters get reset here, but I may have the actual chapter 1 button on this screen determine the reset.
                             chapter.resetChapters(renderer);
                         }
                         if(gameState == 2){//load game chapter select
+                                //correction for the mousedown event that increments even when button press on back button happening.
                             if(chapter.currentPage<TOTAL_PAGES-1)
                             {
                                 if(chapter.currentPage!=0)
@@ -357,24 +339,8 @@ int main( int argc, char* args[] )
                             case SDLK_SPACE:
                                 if(gameState == 5)
                                 {
-                                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
-                                    {
-                                        chapter.scriptIncrement();
-                                        chapter1Timer.restart();
-                                    }
-                                    else
-                                    {
-                                        if(chapter.currentPage<TOTAL_PAGES-1)
-                                        {
-                                            chapter.pageIncrement();
-                                            chapter1Timer.restart();
-                                        }
-                                        else
-                                        {
-                                            gameState = 2;
-                                            chapter.completeChapter(renderer);
-                                        }
-                                    }
+                                    //update script line, page, end chapter
+                                    gameState = chapter.progress2(renderer,gameState);
                                 }
                                 break;
                             case SDLK_ESCAPE:
@@ -397,26 +363,12 @@ int main( int argc, char* args[] )
                                 sounds[3].playSound();
 							break;
 							case SDLK_h:
-							if(chapter.hideDialogBox == false && chapter.hideDialogAndBox == false)
-                            {
-                                chapter.hideDialogBox = true;
-                                chapter.hideDialogAndBox = false;
-							}
-							else if(chapter.hideDialogBox == true && chapter.hideDialogAndBox == false)
-                            {
-                                chapter.hideDialogAndBox = true;
-                                chapter.hideDialogBox = true;
-							}else if(chapter.hideDialogBox == true && chapter.hideDialogAndBox == true)
-							{
-							    chapter.hideDialogAndBox=false;
-							    chapter.hideDialogBox=false;
-							}
-							printf("\n h pressed \n");
-                            std::cout << "hideDialogBox: " << chapter.hideDialogBox;
+							    //press h to cycle dialog visability
+							    chapter.handleDialogVisability();
 							break;
 							case SDLK_9:
-							//press 9 to play / pause music
-                            music.playMusic();
+                                //press 9 to play / pause music
+                                music.playMusic();
 							break;
 						}
 					}
@@ -425,54 +377,49 @@ int main( int argc, char* args[] )
 					{
 					    if(i < 6 or i == 7)
                         {
+                            //user is in pre game menus
                             gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
                         }
                         //if player presses backpage button, ugly af, but it works somewhat
                         if(i==8 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
-                            if(chapter.currentPage>0)
-                            {
-                                chapter.currentPage--;
-                                chapter.currentScript--;
-                            }
+                            chapter.handleBackPagePress();
                         }
                         //if player presses backline button, ugly af, but it works somewhat
                         if(i==9 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
-
-                            if(chapter.currentScript>0)
-                            {
-                               chapter.currentScript-=2;
-                            }
-                            if(chapter.currentScript>=6)
-                            {
-                                chapter.currentPage--;
-                                chapter.currentScript=6;
-                            }
+                            chapter.handleBackLinePress();
                         }
+                        //player presses auto Text on (resumes progress of chapters if stopped).
                         if(i==10 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
                             chapter.autoText=true;
                         }
+                        //player presses auto text off (stops progress of chapters)
                         if(i==11 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
                             chapter.autoText=false;
                         }
+                        //auto text speed slow button is pressed.
                         if(i==12 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
                             chapter.autoTextSpeed=0;
                         }
+                        //auto text speed medium button is pressed.
                         if(i==13 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
                             chapter.autoTextSpeed=1;
                         }
+                        //auto text speed fast button is pressed.
                         if(i==14 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
                         {
                             chapter.autoTextSpeed=2;
                         }
 					}
+					//if wasd are pressed player will be moved.
 					player1.handleEvent(e);
 				}
+				//process player movement
 				player1.move();
 				//Clear screen
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
@@ -480,20 +427,20 @@ int main( int argc, char* args[] )
                 //Title Screen rendering
                 if(gameState == 0)
                 {
-                    chapter1Timer.stop();
+                    chapter.chapter1Timer.stop();
                     pregameui.titleTexture.render( 0, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     renderParticles();
                     pregameui.title.render(200, 100,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //render title screen buttons
-                    for(int i=1;i<TOTAL_BUTTONS;i++)
+                    //5 is back button 6 is fullscreen button
+                    for(int i=1;i<5;i++)
                     {
-                        if(i<5)//5 is back button 6 is fullscreen button
-                            buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
                 }
                 else if(gameState == 1)
                 {//new game chapter select screen
-                    chapter1Timer.stop();
+                    chapter.chapter1Timer.stop();
                     pregameui.chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     //chapter 1 button
                     buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
@@ -502,7 +449,7 @@ int main( int argc, char* args[] )
                 }
                 else if(gameState == 2)
                 {//load game chapter/stage select screen
-                    chapter1Timer.stop();
+                    chapter.chapter1Timer.stop();
                     //chapter select screen
                     pregameui.chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //stage 1 button
@@ -510,7 +457,6 @@ int main( int argc, char* args[] )
                     {
                         buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
-
                     //chapter 1 button
                     buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //back button
@@ -525,31 +471,15 @@ int main( int argc, char* args[] )
                 }
                 else if(gameState == 5)
                 {
-                    if(chapter1Timer.isStarted()==false)
+                    if(chapter.chapter1Timer.isStarted()==false)
                     {
-                        chapter1Timer.start();
+                        chapter.chapter1Timer.start();
                     }
                     //Chapter 1
                     for(int j = 0; j<TOTAL_PAGES;j++){
                         //render background & dialog box before script lines
-                        switch(chapter.currentPage %TOTAL_PAGES){
-                            case 0:chapter.chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 1:chapter.chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 2:chapter.chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 3:chapter.chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 4:chapter.chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 5:chapter.chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 6:chapter.chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                            case 7:chapter.chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                    break;
-                        }
+                        chapter.renderBackgrounds(renderer,j);
+                        //going to need to split buttons up by declaring buttons in chapter class.
                         if(chapter.autoText)
                         {
                             buttons[10].buttonTexture.render(buttons[10].getPositionX(),buttons[10].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
@@ -579,30 +509,16 @@ int main( int argc, char* args[] )
                         //load line number into menubar
                         chapter.loadLineText(renderer);
                         chapter.curLineTextTexture.render(130,374,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-                        //if player presses 'h' to hide dialog box or not.
-                        if(chapter.hideDialogBox == false){
-                            chapter.dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        }
-                        if(chapter.hideDialogAndBox==false){
-                            for(int i = 0; i<TOTAL_SCRIPTS;i++){
-                                //render script lines
-                                if(i <= chapter.currentScript)
-                                {
-                                    chapter.scriptTexture[chapter.currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                                }
-                            }
-                        }
+                        //if the state of the dialog box visibility gets changed, this handles the rendering or not rendering.
+                        chapter.handleDialogRendering(renderer);
                     }
                     animations.renderTao(renderer);
-
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 4)
                 {
                     pregameui.creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     animations.renderToaster(renderer);
-
                     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 6)
@@ -622,79 +538,14 @@ int main( int argc, char* args[] )
 					//Wait remaining time
 					SDL_Delay( SCREEN_TICK_PER_FRAME - frameTicks );
 				}
-                if(animationTimer.getTicks() / 500 > 1)
-                {
-                    ++animations.aniFrame;
-                    animationTimer.restart();
-                }
-                if(animationTimer2.getTicks() / 60 > 1)
-                {
-                    if(animations.aniCountUp)
-                    {
-                        animations.aniFrame2++;
-                    }
-                    else
-                    {
-                        animations.aniFrame2--;
-                    }
-                    animationTimer2.restart();
-                }
+				//the tao animation timer
+				animations.taoAnimationProgress();
+                //the timer for toaster the robot's animation
+                animations.toasterAnimationProgress();
                 //set script line
-                if(chapter1Timer.getTicks()/1000 > 1 && chapter.autoTextSpeed==0 && chapter.autoText)
-                {//implement timer auto script option.
-                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
-                    {
-                        chapter.scriptIncrement();
-                        chapter1Timer.restart();
-                        //printf("\n \n timer tick");
-                        //testSaveVariables();
-                    }
-                    if(chapter.currentScript == TOTAL_SCRIPTS-1)
-                    {
-                        chapter1Timer.stop();
-                    }
-                }
-                else if(chapter1Timer.getTicks()/750 > 1 && chapter.autoTextSpeed==1 && chapter.autoText)
-                {//implement timer auto script option.
-                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
-                    {
-                        chapter.scriptIncrement();
-                        chapter1Timer.restart();
-                        //printf("\n \n timer tick");
-                        //testSaveVariables();
-                    }
-                    if(chapter.currentScript == TOTAL_SCRIPTS-1)
-                    {
-                        chapter1Timer.stop();
-                    }
-                }
-                else if(chapter1Timer.getTicks()/500 > 1 && chapter.autoTextSpeed==2 && chapter.autoText)
-                {//implement timer auto script option.
-                    if(chapter.currentScript<TOTAL_SCRIPTS-1)
-                    {
-                        chapter.scriptIncrement();
-                        chapter1Timer.restart();
-                        //printf("\n \n timer tick");
-                        //testSaveVariables();
-                    }
-                    if(chapter.currentScript == TOTAL_SCRIPTS-1)
-                    {
-                        chapter1Timer.stop();
-                    }
-                }
+                chapter.setAutoScript();
 				//Cycle animation
-				if( animations.aniFrame >= TAO_ANIMATION_FRAMES )
-				{
-					animations.aniFrame = 0;
-				}
-				if( animations.aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
-				{
-					animations.aniCountUp = false;
-				}
-				else if(animations.aniFrame2 <= 0)
-                {
-                    animations.aniCountUp = true;
-                }
+				animations.cycleAnimations();
 			}
 		}
 	}

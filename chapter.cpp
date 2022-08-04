@@ -369,3 +369,181 @@ void chapter::loadFont()
     //load the font
 	font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
 }
+
+int chapter::progress(SDL_Renderer* renderer,int gameState)
+{
+    if(currentPage==TOTAL_PAGES-1 && currentScript==TOTAL_SCRIPTS-1){
+        completeChapter(renderer);
+        gameState=2;
+        chapter1Timer.stop();
+    }
+    else if (currentScript<TOTAL_SCRIPTS-1)
+    {
+        scriptIncrement();
+        chapter1Timer.restart();
+    }
+    else if(currentPage<TOTAL_PAGES-1){
+        pageIncrement();
+        chapter1Timer.restart();
+    }
+    return gameState;
+}
+
+int chapter::progress2(SDL_Renderer* renderer,int gameState)
+{
+    if(currentScript<TOTAL_SCRIPTS-1)
+    {
+        scriptIncrement();
+        chapter1Timer.restart();
+    }
+    else
+    {
+        if(currentPage<TOTAL_PAGES-1)
+        {
+            pageIncrement();
+            chapter1Timer.restart();
+        }
+        else
+        {
+            gameState = 2;
+            completeChapter(renderer);
+        }
+    }
+    return gameState;
+}
+
+void chapter::handleDialogVisability()
+{
+    if(!hideDialogBox && !hideDialogAndBox)
+    {
+        hideDialogBox = true;
+        hideDialogAndBox = false;
+    }
+    else if(hideDialogBox && !hideDialogAndBox)
+    {
+        hideDialogAndBox = true;
+        hideDialogBox = true;
+    }else if(hideDialogBox && hideDialogAndBox)
+    {
+        hideDialogAndBox=false;
+        hideDialogBox=false;
+    }
+    printf("\n h pressed \n");
+    std::cout << "hideDialogBox: " << hideDialogBox;
+}
+
+void chapter::handleDialogRendering(SDL_Renderer* renderer)
+{
+    if(hideDialogBox == false)
+    {
+        dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    }
+    if(hideDialogAndBox==false){
+        for(int i = 0; i<TOTAL_SCRIPTS;i++)
+        {
+            //render script lines
+            if(i <= currentScript)
+            {
+                scriptTexture[currentPage][i].render(20,420 + (i*20),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            }
+        }
+    }
+}
+
+void chapter::handleBackPagePress()
+{
+    if(currentPage>0)
+    {
+        currentPage--;
+        currentScript--;
+    }
+}
+void chapter::handleBackLinePress()
+{
+    if(currentScript>0)
+    {
+       currentScript-=2;
+    }
+    if(currentScript>=6)
+    {
+        currentPage--;
+        currentScript=6;
+    }
+}
+
+void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
+{
+    switch(currentPage %TOTAL_PAGES)
+    {
+    case 0:
+        chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 1:
+        chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 2:
+        chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 3:
+        chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 4:
+        chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 5:
+        chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 6:
+        chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    case 7:
+        chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+}
+
+void chapter::setAutoScript()
+{
+    if(chapter1Timer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
+    {//implement timer auto script option.
+        if(currentScript<TOTAL_SCRIPTS-1)
+        {
+            scriptIncrement();
+            chapter1Timer.restart();
+            //printf("\n \n timer tick");
+            //testSaveVariables();
+        }
+        if(currentScript == TOTAL_SCRIPTS-1)
+        {
+            chapter1Timer.stop();
+        }
+    }
+    else if(chapter1Timer.getTicks()/750 > 1 && autoTextSpeed==1 && autoText)
+    {//implement timer auto script option.
+        if(currentScript<TOTAL_SCRIPTS-1)
+        {
+            scriptIncrement();
+            chapter1Timer.restart();
+            //printf("\n \n timer tick");
+            //testSaveVariables();
+        }
+        if(currentScript == TOTAL_SCRIPTS-1)
+        {
+            chapter1Timer.stop();
+        }
+    }
+    else if(chapter1Timer.getTicks()/500 > 1 && autoTextSpeed==2 && autoText)
+    {//implement timer auto script option.
+        if(currentScript<TOTAL_SCRIPTS-1)
+        {
+            scriptIncrement();
+            chapter1Timer.restart();
+            //printf("\n \n timer tick");
+            //testSaveVariables();
+        }
+        if(currentScript == TOTAL_SCRIPTS-1)
+        {
+            chapter1Timer.stop();
+        }
+    }
+}
