@@ -63,6 +63,8 @@
 		<Unit filename="pregameui.h" />
 		<Unit filename="saveGame.cpp" />
 		<Unit filename="saveGame.h" />
+		<Unit filename="stage.cpp" />
+		<Unit filename="stage.h" />
 		<Unit filename="texture.cpp" />
 		<Unit filename="texture.h" />
 		<Unit filename="texture.png" />

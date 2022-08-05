@@ -9,6 +9,11 @@ const int TOTAL_BUTTONS = 15;
 const int BUTTON_WIDTH = 160;
 const int BUTTON_HEIGHT = 120;
 
+//buttons in the menubar plus save & quit button .
+const static int TOTAL_CHAPTER_BUTTONS=8;
+//new game, load game, options, credits, back button, and fullscreen on/off button.
+const static int TOTAL_PREGAME_BUTTONS = 8;
+
 class button
 {
     public:
@@ -33,9 +38,14 @@ class button
 
 		std::string buttonName;
 
-		std::string buttonNames[TOTAL_BUTTONS];
+		std::string pregameButtonNames[TOTAL_PREGAME_BUTTONS];
+		std::string chapterButtonNames[TOTAL_CHAPTER_BUTTONS];
+        //each button has a string that describes the button.
+		void setChapterButtonName(int i);
+		void setPregameButtonName(int i);
+		//determines which texture to show in options screen, red or green.
+		void fullScreenButtonTextureToggle(SDL_Renderer* renderer);
 
-		void setButtonName(int i);
 
 	private:
 		//Top left point of button image location

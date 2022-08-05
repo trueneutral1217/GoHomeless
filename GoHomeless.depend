@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1659557872 source:c:\gohomeless\gohomeless\button.cpp
+1659685981 source:c:\gohomeless\gohomeless\button.cpp
 	"button.h"
 
-1659557872 c:\gohomeless\gohomeless\button.h
+1659685576 c:\gohomeless\gohomeless\button.h
 	"Texture.h"
 
 1659558644 c:\gohomeless\gohomeless\texture.h
@@ -424,7 +424,7 @@
 1659385836 c:\gohomeless\gohomeless\timer.h
 	"Texture.h"
 
-1659579825 source:c:\gohomeless\gohomeless\main.cpp
+1659686887 source:c:\gohomeless\gohomeless\main.cpp
 	"audio.h"
 	"button.h"
 	"Texture.h"
@@ -435,6 +435,7 @@
 	"player.h"
 	"pregameui.h"
 	"animations.h"
+	"stage.h"
 
 1540998018 c:\mingw_dev_lib\sdl2_mixer-2.0.4\x86_64-w64-mingw32\include\sdl2\sdl_mixer.h
 	"SDL_stdinc.h"
@@ -445,11 +446,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1659583235 c:\gohomeless\gohomeless\chapter.h
+1659678609 c:\gohomeless\gohomeless\chapter.h
 	"Texture.h"
 	"timer.h"
+	"button.h"
 
-1659583235 source:c:\gohomeless\gohomeless\chapter.cpp
+1659686887 source:c:\gohomeless\gohomeless\chapter.cpp
 	"chapter.h"
 
 1659383342 c:\gohomeless\gohomeless\savegame.h
@@ -868,10 +870,11 @@
 1659399784 c:\gohomeless\gohomeless\player.h
 	"texture.h"
 
-1659557392 c:\gohomeless\gohomeless\pregameui.h
+1659678609 c:\gohomeless\gohomeless\pregameui.h
 	"texture.h"
+	"button.h"
 
-1659557568 source:c:\gohomeless\gohomeless\pregameui.cpp
+1659678437 source:c:\gohomeless\gohomeless\pregameui.cpp
 	"pregameui.h"
 
 1659582947 source:c:\gohomeless\gohomeless\animations.cpp
@@ -880,4 +883,9 @@
 1659582934 c:\gohomeless\gohomeless\animations.h
 	"Texture.h"
 	"timer.h"
+
+1659643999 source:c:\gohomeless\gohomeless\stage.cpp
+	"stage.h"
+
+1659646240 c:\gohomeless\gohomeless\stage.h
 

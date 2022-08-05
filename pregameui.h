@@ -2,6 +2,9 @@
 #define PREGAMEUI_H
 
 #include "texture.h"
+#include "button.h"
+
+
 
 class pregameui
 {
@@ -20,8 +23,13 @@ public:
     Texture chapterSelectTexture;
     Texture thanksTexture;
 
+    button buttons[TOTAL_PREGAME_BUTTONS];
+
     bool setPGUITextures(SDL_Renderer* renderer);
     void freePGUITextures();
+
+    //sets up the textures by button name and sets positions of the pregame buttons.
+    bool setPreGameButtonTextures(SDL_Renderer* renderer, bool success);
 
 private:
 

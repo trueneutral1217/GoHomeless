@@ -10,6 +10,23 @@ pregameui::~pregameui()
 
 }
 
+bool pregameui::setPreGameButtonTextures(SDL_Renderer* renderer, bool success)
+{
+    for( int i = 0; i < TOTAL_PREGAME_BUTTONS; ++i )
+    {
+        std::stringstream ss;
+        ss << "images/buttons/" << buttons[i].buttonName << ".png";
+        std::string str = ss.str();
+        success = buttons[i].buttonTexture.loadFromFile( str,renderer );
+        buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
+    }
+    buttons[0].setPosition(600,20);
+    buttons[5].setPosition(20,20);
+    buttons[6].setPosition(20,100);
+    buttons[7].setPosition(20,150);
+    return success;
+}
+
 bool pregameui::setPGUITextures(SDL_Renderer* renderer)
 {
     bool success = true;

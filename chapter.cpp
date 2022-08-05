@@ -455,9 +455,36 @@ void chapter::handleBackPagePress()
     if(currentPage>0)
     {
         currentPage--;
-        currentScript--;
+        currentScript=7;
     }
 }
+
+bool chapter::setChapterButtonTextures(SDL_Renderer* renderer, bool success)
+{
+
+    for( int i = 0; i < TOTAL_CHAPTER_BUTTONS; ++i )
+    {
+        std::stringstream ss;
+        ss << "images/buttons/" << buttons[i].buttonName << ".png";
+        std::string str = ss.str();
+        success = buttons[i].buttonTexture.loadFromFile( str,renderer );
+        //buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
+    }
+    //backpage and backline button positions
+    buttons[0].setPosition(161,350);
+    buttons[1].setPosition(195,350);
+    //autoTextOn
+    buttons[2].setPosition(270,385);
+    buttons[3].setPosition(290,385);
+    //autospeed
+    buttons[4].setPosition(240,365);
+    buttons[5].setPosition(266,365);
+    buttons[6].setPosition(292,365);
+    //save and exit
+    buttons[7].setPosition(600,20);
+    return success;
+}
+
 void chapter::handleBackLinePress()
 {
     if(currentScript>0)

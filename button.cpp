@@ -6,27 +6,43 @@ button::button()
 	position.y = 0;
     buttonName = "";
     fullScreen=false;
-    buttonNames[0]="back";
-	buttonNames[1]="new";
-	buttonNames[2]="load";
-	buttonNames[3]="options";
-	buttonNames[4]="credits";
-	buttonNames[5]="chapter1";
-	buttonNames[6]="fullScreenOff";
-	buttonNames[7]="stage1";
-	buttonNames[8]="backPage";
-	buttonNames[9]="backLine";
-	buttonNames[10]="autoOn";
-	buttonNames[11]="autoOff";
-	buttonNames[12]="autoSpeed1";
-	buttonNames[13]="autoSpeed2";
-	buttonNames[14]="autoSpeed3";
-
+    //move buttons 0-7 to pregameui
+    pregameButtonNames[0]="back";
+	pregameButtonNames[1]="new";
+	pregameButtonNames[2]="load";
+	pregameButtonNames[3]="options";
+	pregameButtonNames[4]="credits";
+	pregameButtonNames[5]="chapter1";
+	pregameButtonNames[6]="fullScreenOff";
+	pregameButtonNames[7]="stage1";
+	//move buttons 8-15 to chapter
+	chapterButtonNames[0]="backPage";
+	chapterButtonNames[1]="backLine";
+	chapterButtonNames[2]="autoOn";
+	chapterButtonNames[3]="autoOff";
+	chapterButtonNames[4]="autoSpeed1";
+	chapterButtonNames[5]="autoSpeed2";
+	chapterButtonNames[6]="autoSpeed3";
+    chapterButtonNames[7]="saveAndExit";
 }
 
 button::~button()
 {
     buttonTexture.free();
+}
+
+void button::fullScreenButtonTextureToggle(SDL_Renderer* renderer)
+{
+    buttonTexture.free();
+    if(fullScreen)
+    {
+        buttonTexture.loadFromFile("images/buttons/fullScreenOn.png", renderer);
+    }
+    else
+    {
+        buttonTexture.loadFromFile("images/buttons/fullScreenOff.png", renderer);
+    }
+    buttonTexture.render(getPositionX(),getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
 
 void button::setPosition( int x, int y )
@@ -58,9 +74,14 @@ bool button::setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer)
     return fullScreen;
 }
 
-void button::setButtonName(int i)
+void button::setChapterButtonName(int i)
 {
-    buttonName=buttonNames[i];
+    buttonName=chapterButtonNames[i];
+}
+
+void button::setPregameButtonName(int i)
+{
+    buttonName=pregameButtonNames[i];
 }
 
 
@@ -125,7 +146,8 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n options button pressed \n \n");
                             gameState = 3;
                         }
-                        else if(buttonName=="back" && gameState != 0){
+                        //gamestate0 - 4 is pregameui area
+                        else if(buttonName=="back" && (gameState < 5 || gameState==6) ){
                             printf("\n \n back button pressed \n \n");
                             gameState = 0;
                         }
@@ -137,10 +159,13 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n chapter 1 button pressed \n \n");
                             gameState = 5;
                         }
-                        else if(buttonName=="fullScreenOn" && gameState==3)
+                        else if(buttonName=="fullScreenOff" && gameState==3)
                         {
-                            printf("\n \n fullScreenOn button pressed \n \n");
-                            setFullScreenOff(window,renderer);
+                            printf("\n \n fullScreenOff button pressed \n \n");
+                            if(!fullScreen)
+                                setFullScreenOn(window,renderer);
+                            else
+                                setFullScreenOff(window,renderer);
                             gameState = 3;
                         }
                         else if(buttonName=="stage1" && gameState==2)
@@ -161,27 +186,32 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                         else if(buttonName=="autoOn" && gameState==5)
                         {
                             printf("\n \n autotexton button pressed \n \n");
-                            gameState=-1;
+                            gameState=1;
                         }
                         else if(buttonName=="autoOff" && gameState==5)
                         {
                             printf("\n \n autotextoff button pressed \n \n");
-                            gameState=-1;
+                            gameState=0;
                         }
                         else if(buttonName=="autoSpeed1" && gameState==5)
                         {
                             printf("\n \n autospeed1 button pressed \n \n");
-                            gameState=-1;
+                            gameState=0;
                         }
                         else if(buttonName=="autoSpeed2" && gameState==5)
                         {
                             printf("\n \n autospeed2 button pressed \n \n");
-                            gameState=-1;
+                            gameState=1;
                         }
                         else if(buttonName=="autoSpeed3" && gameState==5)
                         {
                             printf("\n \n autospeed3 button pressed \n \n");
-                            gameState=-1;
+                            gameState=2;
+                        }
+                        else if(buttonName=="saveAndExit" && gameState==5)
+                        {
+                            printf("\n \n saveAndExit button pressed \n \n");
+                            gameState=0;
                         }
                     break;
                 }

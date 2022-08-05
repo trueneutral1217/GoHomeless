@@ -9,6 +9,7 @@
 #include "player.h"
 #include "pregameui.h"
 #include "animations.h"
+#include "stage.h"
 const int TOTAL_STATES = 5;
 //Starts up SDL and creates window
 bool init();
@@ -20,8 +21,6 @@ void close();
 SDL_Renderer* renderer = NULL;
 //The window we'll be rendering to
 SDL_Window* window = NULL;
-//Buttons object array
-button buttons[ TOTAL_BUTTONS ];
 //savegame handler
 saveGame savegame;
 audio music;
@@ -41,13 +40,8 @@ animations animations;
 void loadSounds();
 //render particles to screen
 void renderParticles();
-//sets buttonTexture by buttonName
-bool setButtonTextures(bool success);
-//determines which texture to show in options screen, red or green.
-void fullScreenButtonTextureToggle();
 //tracks the state of the game for rendering etc.
 int gameState;
-
 void renderParticles(){
     //Go through particles
     for( int i = 0; i < TOTAL_PARTICLES; ++i )
@@ -63,47 +57,6 @@ void renderParticles(){
     {
         particles[i].render(renderer,particles[i].renderColor);
     }
-}
-
-bool setButtonTextures(bool success)
-{
-    for( int i = 0; i < TOTAL_BUTTONS; ++i )
-    {
-        std::stringstream ss;
-        ss << "images/buttons/" << buttons[i].buttonName << ".png";
-        std::string str = ss.str();
-        success = buttons[i].buttonTexture.loadFromFile( str,renderer );
-        buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
-    }
-    buttons[0].setPosition(600,20);
-    buttons[5].setPosition(20,20);
-    buttons[6].setPosition(20,100);
-    buttons[7].setPosition(20,150);
-    buttons[8].setPosition(161,350);
-    buttons[9].setPosition(195,350);
-    //autoTextOn
-    buttons[10].setPosition(270,385);
-    buttons[11].setPosition(290,385);
-    //autospeed
-    buttons[12].setPosition(240,365);
-    buttons[13].setPosition(266,365);
-    buttons[14].setPosition(292,365);
-    return success;
-}
-
-void fullScreenButtonTextureToggle()
-{
-    buttons[6].buttonTexture.free();
-    if(buttons[6].fullScreen)
-    {
-
-        buttons[6].buttonTexture.loadFromFile("images/buttons/fullScreenOn.png", renderer);
-    }
-    else
-    {
-        buttons[6].buttonTexture.loadFromFile("images/buttons/fullScreenOff.png", renderer);
-    }
-    buttons[6].buttonTexture.render(buttons[6].getPositionX(),buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
 
 //initializes audio,video, etc.
@@ -189,9 +142,13 @@ bool loadMedia()
 {
 	bool success = true;
 	//set button names
-	for(int i = 0; i<TOTAL_BUTTONS; i++)
+	for(int i = 0; i<TOTAL_PREGAME_BUTTONS; i++)
     {
-        buttons[i].setButtonName(i);
+        pregameui.buttons[i].setPregameButtonName(i);
+    }
+    for(int i = 0; i < TOTAL_CHAPTER_BUTTONS; i++)
+    {
+        chapter.buttons[i].setChapterButtonName(i);
     }
 //load saved game
 	savegame.readFile();
@@ -208,9 +165,11 @@ bool loadMedia()
     success = animations.setAnimationTextures(renderer);
 
     //set button positions & image textures
-    success = setButtonTextures(success);
+    success = pregameui.setPreGameButtonTextures(renderer, success);
     //load titlescreen textures, credit screen textures, etc.
     success = pregameui.setPGUITextures(renderer);
+    //sets up button textures and positions for chapter buttons
+    success = chapter.setChapterButtonTextures(renderer,success);
     //load chapter 1 background textures
     success = chapter.setChapterTextures(renderer);
     //load font
@@ -233,9 +192,13 @@ void close()
     savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete);
     chapter.testSaveVariables();
     //free the button textures
-    for(int i = 0; i<TOTAL_BUTTONS;i++)
+    for(int i = 0; i<TOTAL_CHAPTER_BUTTONS;i++)
     {
-        buttons[i].buttonTexture.free();
+        chapter.buttons[i].buttonTexture.free();
+    }
+    for(int i = 0; i<TOTAL_PREGAME_BUTTONS;i++)
+    {
+        pregameui.buttons[i].buttonTexture.free();
     }
     //free animation textures
     animations.freeAnimationTextures();
@@ -277,8 +240,6 @@ int main( int argc, char* args[] )
 		{
 			//Main loop flag
 			bool quit = false;
-            //set text color as black
-			SDL_Color textColor = { 0, 0, 0, 255 };
 			//load the bg music file
 			chapter.loadChapterStrings(renderer);
             music.loadMusic();
@@ -373,49 +334,72 @@ int main( int argc, char* args[] )
 						}
 					}
 					//Handle button events
-					for( int i = 0; i < TOTAL_BUTTONS; ++i )
-					{
-					    if(i < 6 or i == 7)
+					if(gameState <5 || gameState==6)
+                    {
+                        for( int i = 0; i < TOTAL_PREGAME_BUTTONS; ++i )
                         {
-                            //user is in pre game menus
-                            gameState = buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer );
+                            gameState = pregameui.buttons[ i ].handleEvent(gameState,pregameui.buttons[i].buttonName, &e, window,renderer );
                         }
-                        //if player presses backpage button, ugly af, but it works somewhat
-                        if(i==8 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
+                    }
+                    if(gameState == 5)
+                    {
+                        for(int i = 0; i<TOTAL_CHAPTER_BUTTONS; ++i)
                         {
-                            chapter.handleBackPagePress();
+                            //if player presses backpage button, ugly af, but it works somewhat
+                            if(i==0)
+                            {
+                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == -1)
+                                {
+                                    chapter.handleBackPagePress();
+                                }
+                            }
+                            //if player presses backline button, ugly af, but it works somewhat
+                            if(i==1)
+                            {
+                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == -1)
+                                {
+                                    chapter.handleBackLinePress();
+                                }
+                            }
+                            //player presses auto Text on (resumes progress of chapters if stopped).
+                            if(i==2)
+                            {
+                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer )==1)
+                                {
+                                    chapter.autoText=true;
+                                }
+                            }
+                            //player presses auto text off (stops progress of chapters)
+                            if(i==3)
+                            {
+                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer )==0)
+                                {
+                                    chapter.autoText=false;
+                                }
+                            }
+                            //auto text speed slow button is pressed.
+                            if(i==4 && chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == 0)
+                            {
+                                chapter.autoTextSpeed = 0;
+                            }
+                            //auto text speed medium button is pressed.
+                            if(i==5 && chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == 1)
+                            {
+                                chapter.autoTextSpeed = 1;
+                            }
+                            //auto text speed fast button is pressed.
+                            if(i==6 && chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == 2)
+                            {
+                                chapter.autoTextSpeed = 2;
+                                //chapter.autoTextSpeed=2;
+                            }
+                            if(i==7)
+                            {//save and exit button
+                                gameState=chapter.buttons[i].handleEvent(gameState,chapter.buttons[i].buttonName,&e,window,renderer);
+                            }
                         }
-                        //if player presses backline button, ugly af, but it works somewhat
-                        if(i==9 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
-                        {
-                            chapter.handleBackLinePress();
-                        }
-                        //player presses auto Text on (resumes progress of chapters if stopped).
-                        if(i==10 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
-                        {
-                            chapter.autoText=true;
-                        }
-                        //player presses auto text off (stops progress of chapters)
-                        if(i==11 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
-                        {
-                            chapter.autoText=false;
-                        }
-                        //auto text speed slow button is pressed.
-                        if(i==12 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
-                        {
-                            chapter.autoTextSpeed=0;
-                        }
-                        //auto text speed medium button is pressed.
-                        if(i==13 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
-                        {
-                            chapter.autoTextSpeed=1;
-                        }
-                        //auto text speed fast button is pressed.
-                        if(i==14 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, &e, window,renderer ) == -1)
-                        {
-                            chapter.autoTextSpeed=2;
-                        }
-					}
+                    }
+
 					//if wasd are pressed player will be moved.
 					player1.handleEvent(e);
 				}
@@ -435,7 +419,7 @@ int main( int argc, char* args[] )
                     //5 is back button 6 is fullscreen button
                     for(int i=1;i<5;i++)
                     {
-                        buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        pregameui.buttons[i].buttonTexture.render(pregameui.buttons[i].getPositionX(),pregameui.buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
                 }
                 else if(gameState == 1)
@@ -443,31 +427,31 @@ int main( int argc, char* args[] )
                     chapter.chapter1Timer.stop();
                     pregameui.chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
                     //chapter 1 button
-                    buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[5].buttonTexture.render(pregameui.buttons[5].getPositionX(),pregameui.buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //back button
-                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[0].buttonTexture.render(pregameui.buttons[0].getPositionX(),pregameui.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 2)
                 {//load game chapter/stage select screen
                     chapter.chapter1Timer.stop();
                     //chapter select screen
                     pregameui.chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    //stage 1 button
+                    //if chapter 1 is complete, render stage 1 button
                     if(chapter.chapter1Complete)
-                    {
-                        buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    {  //render stage 1 button
+                        pregameui.buttons[7].buttonTexture.render(pregameui.buttons[7].getPositionX(),pregameui.buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     }
                     //chapter 1 button
-                    buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[5].buttonTexture.render(pregameui.buttons[5].getPositionX(),pregameui.buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     //back button
-                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[0].buttonTexture.render(pregameui.buttons[0].getPositionX(),pregameui.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 3)
                 {
                     //options screen
                     pregameui.optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    fullScreenButtonTextureToggle();
+                    pregameui.buttons[0].buttonTexture.render(pregameui.buttons[0].getPositionX(),pregameui.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[6].fullScreenButtonTextureToggle(renderer);
                 }
                 else if(gameState == 5)
                 {
@@ -479,28 +463,34 @@ int main( int argc, char* args[] )
                     for(int j = 0; j<TOTAL_PAGES;j++){
                         //render background & dialog box before script lines
                         chapter.renderBackgrounds(renderer,j);
-                        //going to need to split buttons up by declaring buttons in chapter class.
+
+                        //chapter.buttons[0].buttonTexture.render(chapter.buttons[0].getPositionX(),chapter.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        //chapter.buttons[1].buttonTexture.render(chapter.buttons[1].getPositionX(),chapter.buttons[1].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
                         if(chapter.autoText)
                         {
-                            buttons[10].buttonTexture.render(buttons[10].getPositionX(),buttons[10].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            //render auto texture on button (hightlights auto text on in menubar)
+                            chapter.buttons[2].buttonTexture.render(chapter.buttons[2].getPositionX(),chapter.buttons[2].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
                         else
                         {
-                            buttons[11].buttonTexture.render(buttons[11].getPositionX(),buttons[11].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            //render auto texture off button (hightlights auto text off in menubar)
+                            chapter.buttons[3].buttonTexture.render(chapter.buttons[3].getPositionX(),chapter.buttons[3].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
                         if(chapter.autoTextSpeed==0)
                         {
-                            buttons[12].buttonTexture.render(buttons[12].getPositionX(),buttons[12].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
+                            //highlights text speed 1
+                            chapter.buttons[4].buttonTexture.render(chapter.buttons[4].getPositionX(),chapter.buttons[4].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
                         else if(chapter.autoTextSpeed==1)
                         {
-                            buttons[13].buttonTexture.render(buttons[13].getPositionX(),buttons[13].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
+                            //highlights text speed 2
+                            chapter.buttons[5].buttonTexture.render(chapter.buttons[5].getPositionX(),chapter.buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
                         else if(chapter.autoTextSpeed==2)
                         {
-                            buttons[14].buttonTexture.render(buttons[14].getPositionX(),buttons[14].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                            //highlights text speed 3
+                            chapter.buttons[6].buttonTexture.render(chapter.buttons[6].getPositionX(),chapter.buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         }
                         chapter.menuBar.render(0,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                         //load page number into menubar
@@ -513,20 +503,21 @@ int main( int argc, char* args[] )
                         chapter.handleDialogRendering(renderer);
                     }
                     animations.renderTao(renderer);
-                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    //render save & exit button
+                    chapter.buttons[7].buttonTexture.render(chapter.buttons[7].getPositionX(),chapter.buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 4)
                 {
                     pregameui.creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     animations.renderToaster(renderer);
-                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[0].buttonTexture.render(pregameui.buttons[0].getPositionX(),pregameui.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
                 else if(gameState == 6)
                 {
                     //temporary texture until I get the tiles working on this gamestate
                     pregameui.thanksTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                     player1.render(renderer);
-                    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    pregameui.buttons[0].buttonTexture.render(pregameui.buttons[0].getPositionX(),pregameui.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
 				//Update screen
 				SDL_RenderPresent( renderer );

@@ -3,6 +3,7 @@
 
 #include "Texture.h"
 #include "timer.h"
+#include "button.h"
 
 //number of dialog lines for chapter 1.
 const int TOTAL_SCRIPTS = 8;
@@ -23,6 +24,8 @@ class chapter
 
         //timer for dialog for chapter1
         timer chapter1Timer;
+
+        button buttons[TOTAL_CHAPTER_BUTTONS];
 
         //tracks chapter progress.  used to save/load and display properly
         int currentScript;
@@ -90,7 +93,8 @@ class chapter
         void handleBackPagePress();
         //updates current line plus script compensation
         void handleBackLinePress();
-
+        //sets buttonTexture by buttonName and position
+        bool setChapterButtonTextures(SDL_Renderer* renderer, bool success);
 
     private:
 
