@@ -130,7 +130,7 @@ bool pregameui::setPGUITextures(SDL_Renderer* renderer)
 	success = chapterSelectTexture.loadFromFile( "images/busstop.png",renderer );
 	success = creditsTexture.loadFromFile( "images/brickwall.png",renderer );
 	success = optionsTexture.loadFromFile("images/maritime.png",renderer );
-	success = thanksTexture.loadFromFile("images/thanks.png",renderer);
+	//success = thanksTexture.loadFromFile("images/thanks.png",renderer);
 
 	if(!success)
     {
@@ -150,5 +150,5 @@ void pregameui::freePGUITextures()
 	loadGameTexture.free();
 	optionsTexture.free();
 	creditsTexture.free();
-    thanksTexture.free();
+    //thanksTexture.free();
 }

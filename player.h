@@ -20,6 +20,8 @@ class player
         void move();
         void render(SDL_Renderer* renderer);
 
+        void freePlayer();
+
     private:
 
         int playerX,playerY;

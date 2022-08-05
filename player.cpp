@@ -73,3 +73,8 @@ void player::render(SDL_Renderer* renderer)
 {
     playerTexture.render(playerX,playerY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
+
+void player::freePlayer()
+{
+    playerTexture.free();
+}

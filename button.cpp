@@ -24,6 +24,8 @@ button::button()
 	chapterButtonNames[5]="autoSpeed2";
 	chapterButtonNames[6]="autoSpeed3";
     chapterButtonNames[7]="saveAndExit";
+
+    stageButtonNames[0]="saveAndExit";
 }
 
 button::~button()
@@ -84,6 +86,10 @@ void button::setPregameButtonName(int i)
     buttonName=pregameButtonNames[i];
 }
 
+void button::setStageButtonName(int i)
+{
+    buttonName=stageButtonNames[i];
+}
 
 int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
 {

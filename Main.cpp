@@ -6,7 +6,6 @@
 #include "particle.h"
 #include "chapter.h"
 #include "saveGame.h"
-#include "player.h"
 #include "pregameui.h"
 #include "animations.h"
 #include "stage.h"
@@ -30,8 +29,6 @@ audio sound;
 chapter chapter;
 //declare stage
 stage stage;
-//declare player
-player player1;
 //declare instance of pregame user interface.
 pregameui pregameui;
 //declare instance of animations
@@ -120,6 +117,7 @@ bool loadMedia()
 	//set button names
     pregameui.setButtonNames();
     chapter.setButtonNames();
+    stage.setButtonNames();
     //load saved game
 	savegame.readFile();
 	//set chapter variables based on savegame data.
@@ -136,12 +134,16 @@ bool loadMedia()
     success = chapter.setChapterButtonTextures(renderer,success);
     //load chapter 1 background textures
     success = chapter.setChapterTextures(renderer);
+    //load stage button textures and positions
+    success = stage.setStageButtonTextures(renderer,success);
+    //set stage bg texture
+    success = stage.setStageTextures(renderer);
     //load font
 	chapter.loadFont();
 	//load sound effects
 	loadSounds();
     //load player texture
-    player1.loadPlayer(renderer);
+    stage.player1.loadPlayer(renderer);
     //for debugging
     if(success == false)
     {
@@ -158,6 +160,9 @@ void close()
     //free the button textures
     chapter.freeButtons();
     pregameui.freeButtons();
+    stage.freeButtons();
+    stage.freeBGTextures();
+    stage.player1.freePlayer();
     //free animation textures
     animations.freeAnimationTextures();
     //free pregame ui textures
@@ -301,13 +306,14 @@ int main( int argc, char* args[] )
                     }
                     if(gameState == 5)
                     {
+                        //handles button presses on chapter screen.
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer );
                     }
 					//if wasd are pressed player will be moved.
-					player1.handleEvent(e);
+					stage.player1.handleEvent(e);
 				}
 				//process player movement
-				player1.move();
+				stage.player1.move();
 				//Clear screen
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( renderer );
@@ -356,9 +362,9 @@ int main( int argc, char* args[] )
                 {
                     //temporary texture until I get the tiles working on this gamestate
                     //this stuff should all be part of stage class eventually.
-                    pregameui.thanksTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    player1.render(renderer);
-                    pregameui.buttons[0].buttonTexture.render(pregameui.buttons[0].getPositionX(),pregameui.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    stage.stage1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    stage.player1.render(renderer);
+                    stage.buttons[0].buttonTexture.render(stage.buttons[0].getPositionX(),stage.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
 				//Update screen
 				SDL_RenderPresent( renderer );

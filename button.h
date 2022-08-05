@@ -13,6 +13,8 @@ const int BUTTON_HEIGHT = 120;
 const static int TOTAL_CHAPTER_BUTTONS=8;
 //new game, load game, options, credits, back button, and fullscreen on/off button.
 const static int TOTAL_PREGAME_BUTTONS = 8;
+//gamestate=6, stage1 buttons
+const static int TOTAL_STAGE_BUTTONS = 1;
 
 class button
 {
@@ -40,9 +42,11 @@ class button
 
 		std::string pregameButtonNames[TOTAL_PREGAME_BUTTONS];
 		std::string chapterButtonNames[TOTAL_CHAPTER_BUTTONS];
+		std::string stageButtonNames[TOTAL_STAGE_BUTTONS];
         //each button has a string that describes the button.
 		void setChapterButtonName(int i);
 		void setPregameButtonName(int i);
+		void setStageButtonName(int i);
 		//determines which texture to show in options screen, red or green.
 		void fullScreenButtonTextureToggle(SDL_Renderer* renderer);
 

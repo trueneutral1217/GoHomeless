@@ -22,7 +22,7 @@ public:
     Texture optionsTexture;
     Texture loadGameTexture;
     Texture chapterSelectTexture;
-    Texture thanksTexture;
+
 
     button buttons[TOTAL_PREGAME_BUTTONS];
 
