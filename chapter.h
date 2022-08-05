@@ -95,6 +95,14 @@ class chapter
         void handleBackLinePress();
         //sets buttonTexture by buttonName and position
         bool setChapterButtonTextures(SDL_Renderer* renderer, bool success);
+        //set button names
+        void setButtonNames();
+        //free button textures at close time
+        void freeButtons();
+        //handles pretty much all rendering except animation in chapter 1
+        void handleRendering(SDL_Renderer* renderer);
+        //load savegame data into chapter variables
+        void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3);
 
     private:
 

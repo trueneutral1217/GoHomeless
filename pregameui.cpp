@@ -27,6 +27,98 @@ bool pregameui::setPreGameButtonTextures(SDL_Renderer* renderer, bool success)
     return success;
 }
 
+void pregameui::setButtonNames()
+{
+    for(int i = 0; i<TOTAL_PREGAME_BUTTONS; i++)
+    {
+        buttons[i].setPregameButtonName(i);
+    }
+}
+
+void pregameui::freeButtons()
+{
+    for(int i = 0; i<TOTAL_PREGAME_BUTTONS;i++)
+    {
+        buttons[i].buttonTexture.free();
+    }
+}
+
+void pregameui::handleOptionsScreenRendering(SDL_Renderer* renderer)
+{
+    optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    buttons[6].fullScreenButtonTextureToggle(renderer);
+}
+
+void pregameui::handleCreditsScreenRendering(SDL_Renderer* renderer)
+{
+    creditsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}
+
+void pregameui::handleLoadGameScreenRendering(SDL_Renderer* renderer, bool chapter1Complete)
+{
+    //chapter select screen
+    chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    //if chapter 1 is complete, render stage 1 button
+    if(chapter1Complete)
+    {  //render stage 1 button
+        buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    }
+    //chapter 1 button
+    buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    //back button
+    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}
+
+void pregameui::handleNewGameScreenRendering(SDL_Renderer* renderer)
+{
+    //rendering bg for newgame screen
+    chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
+    //chapter 1 button
+    buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    //back button
+    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}
+
+void pregameui::renderParticles(SDL_Renderer* renderer)
+{
+    //Go through particles
+    for( int i = 0; i < TOTAL_PARTICLES; ++i )
+    {
+        //Delete and replace dead particles
+        if( particles[i].isDead() )
+        {
+            particles[i].createParticle(renderer);
+        }
+    }
+    //Show particles
+    for( int i = 0; i < TOTAL_PARTICLES; ++i )
+    {
+        particles[i].render(renderer,particles[i].renderColor);
+    }
+}
+
+void pregameui::handleTitleScreenRendering(SDL_Renderer* renderer)
+{
+    titleTexture.render( 0, 0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer );
+    renderParticles(renderer);
+    title.render(200, 100,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    //render title screen buttons
+    //5 is back button 6 is fullscreen button
+    for(int i=1;i<5;i++)
+    {
+        buttons[i].buttonTexture.render(buttons[i].getPositionX(),buttons[i].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    }
+}
+
+void pregameui::createParticles(SDL_Renderer* renderer)
+{
+    for(int i=0;i<TOTAL_PARTICLES;i++){
+        particles[i].createParticle(renderer);
+    }
+}
+
 bool pregameui::setPGUITextures(SDL_Renderer* renderer)
 {
     bool success = true;

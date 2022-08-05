@@ -3,6 +3,7 @@
 
 #include "texture.h"
 #include "button.h"
+#include "particle.h"
 
 
 
@@ -30,6 +31,27 @@ public:
 
     //sets up the textures by button name and sets positions of the pregame buttons.
     bool setPreGameButtonTextures(SDL_Renderer* renderer, bool success);
+    //set button names
+    void setButtonNames();
+    //free the button textures at close.
+    void freeButtons();
+
+    void handleOptionsScreenRendering(SDL_Renderer* renderer);
+
+    void handleCreditsScreenRendering(SDL_Renderer* renderer);
+
+    void handleLoadGameScreenRendering(SDL_Renderer* renderer,bool chapter1Complete);
+
+    void handleNewGameScreenRendering(SDL_Renderer* renderer);
+
+    void handleTitleScreenRendering(SDL_Renderer* renderer);
+
+    //particle objects
+    Particle particles[ TOTAL_PARTICLES ];
+
+    void renderParticles(SDL_Renderer* renderer);
+
+    void createParticles(SDL_Renderer* renderer);
 
 private:
 

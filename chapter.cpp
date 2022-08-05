@@ -459,6 +459,79 @@ void chapter::handleBackPagePress()
     }
 }
 
+void chapter::setButtonNames()
+{
+    for(int i = 0; i < TOTAL_CHAPTER_BUTTONS; i++)
+    {
+        buttons[i].setChapterButtonName(i);
+    }
+}
+
+void chapter::freeButtons()
+{
+    for(int i = 0; i<TOTAL_CHAPTER_BUTTONS;i++)
+    {
+        buttons[i].buttonTexture.free();
+    }
+}
+
+void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3)
+{
+    currentChapter=data0;
+    currentPage=data1;
+    currentScript=data2;
+    chapter1Complete=data3;
+}
+
+void chapter::handleRendering(SDL_Renderer* renderer)
+{
+    for(int j = 0; j<TOTAL_PAGES;j++)
+    {
+        //render background & dialog box before script lines
+        renderBackgrounds(renderer,j);
+        //these two lines may not actually be necessary.
+        buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        buttons[1].buttonTexture.render(buttons[1].getPositionX(),buttons[1].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+        if(autoText)
+        {
+            //render auto texture on button (hightlights auto text on in menubar)
+            buttons[2].buttonTexture.render(buttons[2].getPositionX(),buttons[2].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        }
+        else
+        {
+            //render auto texture off button (hightlights auto text off in menubar)
+            buttons[3].buttonTexture.render(buttons[3].getPositionX(),buttons[3].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        }
+        if(autoTextSpeed==0)
+        {
+            //highlights text speed 1
+            buttons[4].buttonTexture.render(buttons[4].getPositionX(),buttons[4].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        }
+        else if(autoTextSpeed==1)
+        {
+            //highlights text speed 2
+            buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        }
+        else if(autoTextSpeed==2)
+        {
+            //highlights text speed 3
+            buttons[6].buttonTexture.render(buttons[6].getPositionX(),buttons[6].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        }
+        menuBar.render(0,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //load page number into menubar
+        loadPageText(renderer);
+        curPageTextTexture.render(140,352,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //load line number into menubar
+        loadLineText(renderer);
+        curLineTextTexture.render(130,374,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //if the state of the dialog box visibility gets changed, this handles the rendering or not rendering.
+        handleDialogRendering(renderer);
+    }
+    //render save & exit button
+    buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}
+
 bool chapter::setChapterButtonTextures(SDL_Renderer* renderer, bool success)
 {
 
