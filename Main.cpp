@@ -301,61 +301,7 @@ int main( int argc, char* args[] )
                     }
                     if(gameState == 5)
                     {
-                        for(int i = 0; i<TOTAL_CHAPTER_BUTTONS; ++i)
-                        {
-                            //if player presses backpage button, ugly af, but it works somewhat
-                            if(i==0)
-                            {
-                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == -1)
-                                {
-                                    chapter.handleBackPagePress();
-                                }
-                            }
-                            //if player presses backline button, ugly af, but it works somewhat
-                            if(i==1)
-                            {
-                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == -1)
-                                {
-                                    chapter.handleBackLinePress();
-                                }
-                            }
-                            //player presses auto Text on (resumes progress of chapters if stopped).
-                            if(i==2)
-                            {
-                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer )==1)
-                                {
-                                    chapter.autoText=true;
-                                }
-                            }
-                            //player presses auto text off (stops progress of chapters)
-                            if(i==3)
-                            {
-                                if(chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer )==0)
-                                {
-                                    chapter.autoText=false;
-                                }
-                            }
-                            //auto text speed slow button is pressed.
-                            if(i==4 && chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == 0)
-                            {
-                                chapter.autoTextSpeed = 0;
-                            }
-                            //auto text speed medium button is pressed.
-                            if(i==5 && chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == 1)
-                            {
-                                chapter.autoTextSpeed = 1;
-                            }
-                            //auto text speed fast button is pressed.
-                            if(i==6 && chapter.buttons[ i ].handleEvent(gameState,chapter.buttons[i].buttonName, &e, window,renderer ) == 2)
-                            {
-                                chapter.autoTextSpeed = 2;
-                                //chapter.autoTextSpeed=2;
-                            }
-                            if(i==7)
-                            {//save and exit button
-                                gameState=chapter.buttons[i].handleEvent(gameState,chapter.buttons[i].buttonName,&e,window,renderer);
-                            }
-                        }
+                        gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer );
                     }
 					//if wasd are pressed player will be moved.
 					player1.handleEvent(e);

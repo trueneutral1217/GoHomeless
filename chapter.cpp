@@ -455,7 +455,7 @@ void chapter::handleBackPagePress()
     if(currentPage>0)
     {
         currentPage--;
-        currentScript=7;
+        currentScript=6;
     }
 }
 
@@ -481,6 +481,66 @@ void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 
     currentPage=data1;
     currentScript=data2;
     chapter1Complete=data3;
+}
+
+int chapter::handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
+{
+    for(int i = 0; i<TOTAL_CHAPTER_BUTTONS; ++i)
+    {
+        //if player presses backpage button, ugly af, but it works somewhat
+        if(i==0)
+        {
+            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == -1)
+            {
+                handleBackPagePress();
+            }
+        }
+        //if player presses backline button, ugly af, but it works somewhat
+        if(i==1)
+        {
+            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == -1)
+            {
+                handleBackLinePress();
+            }
+        }
+        //player presses auto Text on (resumes progress of chapters if stopped).
+        if(i==2)
+        {
+            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer )==1)
+            {
+                autoText=true;
+            }
+        }
+        //player presses auto text off (stops progress of chapters)
+        if(i==3)
+        {
+            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer )==0)
+            {
+                autoText=false;
+            }
+        }
+        //auto text speed slow button is pressed.
+        if(i==4 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 0)
+        {
+            autoTextSpeed = 0;
+        }
+        //auto text speed medium button is pressed.
+        if(i==5 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 1)
+        {
+            autoTextSpeed = 1;
+        }
+        //auto text speed fast button is pressed.
+        if(i==6 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 2)
+        {
+            autoTextSpeed = 2;
+            //chapter.autoTextSpeed=2;
+        }
+        if(i==7)
+        {//save and exit button
+            gameState=buttons[i].handleEvent(gameState,buttons[i].buttonName,e,window,renderer);
+        }
+    }
+    return gameState;
 }
 
 void chapter::handleRendering(SDL_Renderer* renderer)

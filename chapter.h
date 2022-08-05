@@ -104,6 +104,8 @@ class chapter
         //load savegame data into chapter variables
         void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3);
 
+        int handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+
     private:
 
 };
