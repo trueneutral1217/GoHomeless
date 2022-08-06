@@ -18,3 +18,8 @@ playable demo.  I was going to send it to my mommy.  besides the song I'd still 
 and options screens, as well as possibly implement those UI improvements that I've been thinking about.  
 
 8/1/22 - finally figured out how to make the release build work locally, so I uploaded a rar with the go homeless folder and an executable and cleaned out some files that aren't yet being used by the release (may never be used).  from there I added a player class, currently using a tree pic as a stand in for my player that only shows up in gamestate == 6, aka stage 1.  also added an animated robot waving at the user to the credit screen. :-)
+
+8/5/22 - a lot of cosmetic updates for the code, moved a lot of stuff out to chapter class, animations class, created player class,
+created stage class.  stage 1 is gameState 6.  thinking about doing a tilesheet for stage 1.  chapter two dialog is no longer just place
+holders.  chapter one's title is Origins, chapter 2 title is Thoughts.  oh, a lot of changes to button class.  main.cpp doesn't look like it did a week ago.
+I don't plan to stop.  I'll keep updating this game until it freaking sparkles.  I love you.
