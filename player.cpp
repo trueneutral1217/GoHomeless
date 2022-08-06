@@ -78,3 +78,27 @@ void player::freePlayer()
 {
     playerTexture.free();
 }
+
+void player::setCamera(SDL_Rect& camera)
+{
+    camera.x = (playerCollisionBox.x + PLAYER_WIDTH/2) - SCREEN_WIDTH/2;
+    camera.y = (playerCollisionBox.y + PLAYER_HEIGHT/2) - SCREEN_HEIGHT/2;
+    //make sure player doesn't leave top or left side of screen
+    if(camera.x < 0)
+    {
+        camera.x = 0;
+    }
+    if(camera.y < 0)
+    {
+        camera.y=0;
+    }
+    //screen width,height should be replaced by level width, height.
+    if(camera.x>SCREEN_WIDTH-camera.w)
+    {
+        camera.x=SCREEN_WIDTH-camera.w;
+    }
+    if(camera.y>SCREEN_HEIGHT-camera.h)
+    {
+        camera.y=SCREEN_HEIGHT-camera.h;
+    }
+}

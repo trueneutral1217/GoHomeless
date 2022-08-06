@@ -169,76 +169,76 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
     if(currentChapter==1)
     {
         //chapter 2 page 1
-        scriptString[0][0].str("1");
-        scriptString[0][1].str("2");
-        scriptString[0][2].str("3");
-        scriptString[0][3].str("4");
-        scriptString[0][4].str("5");
-        scriptString[0][5].str("6");
-        scriptString[0][6].str("7");
+        scriptString[0][0].str("Down with the oligarchy!");
+        scriptString[0][1].str("The financially wealthy are entitled assholes.");
+        scriptString[0][2].str("Cops enforce evil.");
+        scriptString[0][3].str("Incumbent forces have too much influence.");
+        scriptString[0][4].str("No capitalist future.");
+        scriptString[0][5].str("Life is precious.");
+        scriptString[0][6].str("Goodbye salamanders and coral reefs, goodbye large mammals.");
         scriptString[0][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 2
-        scriptString[1][0].str("1");
-        scriptString[1][1].str("2");
-        scriptString[1][2].str("3");
-        scriptString[1][3].str("4");
-        scriptString[1][4].str("5");
-        scriptString[1][5].str("6");
-        scriptString[1][6].str("7");
+        scriptString[1][0].str("Blind obedience gets us nowhere.");
+        scriptString[1][1].str("Where is the wisdom in holding back universal Basic Income?");
+        scriptString[1][2].str("The planet is dying.");
+        scriptString[1][3].str("The planet is dying and we're sticking to a socio-economic");
+        scriptString[1][4].str("system that is killing it.");
+        scriptString[1][5].str("jobs are currently less important than public health.");
+        scriptString[1][6].str("The U.S. is Fascist Capitalist.");
         scriptString[1][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 3
-        scriptString[2][0].str("1");
-        scriptString[2][1].str("2");
-        scriptString[2][2].str("3");
-        scriptString[2][3].str("4");
-        scriptString[2][4].str("5");
-        scriptString[2][5].str("6");
-        scriptString[2][6].str("7");
+        scriptString[2][0].str("You can't represent the financially poor unless you are");
+        scriptString[2][1].str("financially poor yourself.");
+        scriptString[2][2].str("The needs of the people outweigh maintaining capitalism.");
+        scriptString[2][3].str("Universal basic income is necessary now.");
+        scriptString[2][4].str("Political concessions to large corporations are killing the planet.");
+        scriptString[2][5].str("My body runs on utilities, but I live in a car.");
+        scriptString[2][6].str("Minimum wage should be a living wage.");
         scriptString[2][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 4
-        scriptString[3][0].str("1");
-        scriptString[3][1].str("2");
-        scriptString[3][2].str("3");
-        scriptString[3][3].str("4");
-        scriptString[3][4].str("5");
-        scriptString[3][5].str("6");
-        scriptString[3][6].str("7");
+        scriptString[3][0].str("As inflation progresses, poverty grows.");
+        scriptString[3][1].str("Universal basic income is a step forward for humanity.");
+        scriptString[3][2].str("Dinosaurs can't lead the young.");
+        scriptString[3][3].str("Coming soon: omega varient.");
+        scriptString[3][4].str("We're all connected.");
+        scriptString[3][5].str("You are a beacon of hope in this dark world.");
+        scriptString[3][6].str("It's tough acting like you can operate at half mast.");
         scriptString[3][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 5
-        scriptString[4][0].str("1");
-        scriptString[4][1].str("2");
-        scriptString[4][2].str("3");
-        scriptString[4][3].str("4");
-        scriptString[4][4].str("5");
-        scriptString[4][5].str("6");
-        scriptString[4][6].str("7");
+        scriptString[4][0].str("Tear down the mansions!");
+        scriptString[4][1].str("Respect for authority is killing the planet.");
+        scriptString[4][2].str("Homeless death means homelessness just became less of a problem");
+        scriptString[4][3].str("-Joe Biden");
+        scriptString[4][4].str("Why don't you work? why aren't you vaccinated? I'm a millionaire!");
+        scriptString[4][5].str("-Joe Biden");
+        scriptString[4][6].str("Disobey when you know the orders are wrong.");
         scriptString[4][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 6
-        scriptString[5][0].str("1");
-        scriptString[5][1].str("2");
-        scriptString[5][2].str("3");
-        scriptString[5][3].str("4");
-        scriptString[5][4].str("5");
-        scriptString[5][5].str("6");
-        scriptString[5][6].str("7");
+        scriptString[5][0].str("How many lies has the news media spun today?");
+        scriptString[5][1].str("You know when your boss's orders are wrong, ");
+        scriptString[5][2].str("disobey in those circumstances.");
+        scriptString[5][3].str("You don't want me competing in the job market.");
+        scriptString[5][4].str("Discontent is the first step to progress -Oscar Wilde");
+        scriptString[5][5].str("Disinformation is a tool against socialist revolution!");
+        scriptString[5][6].str("Automation means we compete with China, economically.");
         scriptString[5][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 7
-        scriptString[6][0].str("1");
-        scriptString[6][1].str("2");
-        scriptString[6][2].str("3");
-        scriptString[6][3].str("4");
-        scriptString[6][4].str("5");
-        scriptString[6][5].str("6");
-        scriptString[6][6].str("7");
+        scriptString[6][0].str("Phase out human workers.");
+        scriptString[6][1].str("Why are we prioritizing financially wealthy lives by having a");
+        scriptString[6][2].str("tiered medical insurance system?");
+        scriptString[6][3].str("I free up a job for you, friend.");
+        scriptString[6][4].str("My big picture includes humanity's survival.");
+        scriptString[6][5].str("Preventing mass extinctions is secondary, but important.");
+        scriptString[6][6].str("Earth is a single point of failure for our species' survival.");
         scriptString[6][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 8
-        scriptString[7][0].str("1");
-        scriptString[7][1].str("2");
-        scriptString[7][2].str("3");
-        scriptString[7][3].str("4");
-        scriptString[7][4].str("5");
-        scriptString[7][5].str("6");
-        scriptString[7][6].str("7");
+        scriptString[7][0].str("I may be a beggar on the street, but don't I deserve utilities");
+        scriptString[7][1].str("that aren't public?");
+        scriptString[7][2].str("We all share the burden of the financially wealthy.");
+        scriptString[7][3].str("How can I persuade you to demand universal basic income?");
+        scriptString[7][4].str("I only have logic, and you're not like me at all.");
+        scriptString[7][5].str("Why have I been treated less than equal?");
+        scriptString[7][6].str("If I die tomorrow will it matter to you?");
         scriptString[7][7].str(" *End of Chapter 1* Press LMB or Enter to return to select screen.");
     }
 

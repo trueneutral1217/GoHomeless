@@ -22,11 +22,15 @@ class player
 
         void freePlayer();
 
+        void setCamera(SDL_Rect& camera);
+
     private:
-
+        //player coordinates
         int playerX,playerY;
+        //player velocity
         int pVelX,pVelY;
-
+        //necessary for many operations, from walking to potentially fighting.
+        SDL_Rect playerCollisionBox;
 };
 #endif // PLAYER_H
 

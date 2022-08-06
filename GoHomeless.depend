@@ -424,7 +424,7 @@
 1659385836 c:\gohomeless\gohomeless\timer.h
 	"Texture.h"
 
-1659741088 source:c:\gohomeless\gohomeless\main.cpp
+1659741623 source:c:\gohomeless\gohomeless\main.cpp
 	"audio.h"
 	"button.h"
 	"Texture.h"
@@ -432,7 +432,6 @@
 	"particle.h"
 	"chapter.h"
 	"saveGame.h"
-	"player.h"
 	"pregameui.h"
 	"animations.h"
 	"stage.h"
@@ -864,10 +863,10 @@
 	"begin_code.h"
 	"close_code.h"
 
-1659399678 source:c:\gohomeless\gohomeless\player.cpp
+1659760284 source:c:\gohomeless\gohomeless\player.cpp
 	"player.h"
 
-1659741650 c:\gohomeless\gohomeless\player.h
+1659760284 c:\gohomeless\gohomeless\player.h
 	"texture.h"
 
 1659740291 c:\gohomeless\gohomeless\pregameui.h
