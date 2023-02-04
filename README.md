@@ -23,3 +23,8 @@ and options screens, as well as possibly implement those UI improvements that I'
 created stage class.  stage 1 is gameState 6.  thinking about doing a tilesheet for stage 1.  chapter two dialog is no longer just place
 holders.  chapter one's title is Origins, chapter 2 title is Thoughts.  oh, a lot of changes to button class.  main.cpp doesn't look like it did a week ago.
 I don't plan to stop.  I'll keep updating this game until it freaking sparkles.  I love you.
+
+2/3/23 - added a couple bg images for gamestate 7 / chapter 2.  added a button for chapter 2 to the load game screen when chapter1Complete is true.
+did some testing, but probably could use more in depth testing, it was mainly just a quick & dirty update to make chapter2 accessible & show the
+new backgrounds.  despite the fact that it's been about 8 months, the code wasn't so convoluted that I couldn't get it done in about an hour (the programming,
+not the art).  cheers.

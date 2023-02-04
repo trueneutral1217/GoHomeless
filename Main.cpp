@@ -9,7 +9,18 @@
 #include "pregameui.h"
 #include "animations.h"
 #include "stage.h"
-const int TOTAL_STATES = 5;
+const int TOTAL_STATES = 7;
+
+//gameStates
+//gameState = 0 pregameui
+//gameState = 1 new game chapter select
+//gameState = 2 load game chapter select
+//gameState = 3 options
+//gameState = 4 credits
+//gameState = 5 chapter 1
+//gameState = 6 stage 1
+//gameState = 7 chapter 2
+
 //Starts up SDL and creates window
 bool init();
 //Loads media
@@ -39,6 +50,50 @@ void loadSounds();
 //tracks the state of the game for rendering etc.
 int gameState;
 //initializes audio,video, etc.
+Texture blackGround;
+bool fadeOut(int countedFrames, bool fade);
+
+bool fadeIn(int countedFrames,bool fade);
+
+bool fadeIn(int countedFrames, bool fade)
+{
+//this stuff is still experimental.  gonna have to figure something out for this system.
+
+    //std::cout << "fade in function is triggered\n";
+
+
+        Uint32 alpha = 255-(countedFrames%256);
+        blackGround.setAlpha(alpha);
+        //std::cout << "\n alpha: " << alpha;
+
+    if(countedFrames%256>254)
+    {
+        fade=false;
+        std::cout <<"fade In counted Frames:" << countedFrames << " \n";
+    }
+
+    return fade;
+}
+
+bool fadeOut(int countedFrames, bool fade)
+{
+
+       if(countedFrames%256 < 255)
+            {  //fades in the go homeless title
+                blackGround.setAlpha(countedFrames);
+
+            }
+
+
+    if(countedFrames%256>=255)
+    {
+        fade=false;
+        std::cout <<"fade out counted Frames:" << countedFrames << " \n";
+    }
+
+return fade;
+}
+
 bool init()
 {
 	//Initialization flag
@@ -144,6 +199,8 @@ bool loadMedia()
 	loadSounds();
     //load player texture
     stage.player1.loadPlayer(renderer);
+    //fade to black background
+    blackGround.loadFromFile("images/Blackground.png",renderer);
     //for debugging
     if(success == false)
     {
@@ -169,6 +226,7 @@ void close()
     pregameui.freePGUITextures();
 	//free the backgrounds, dialog box, menubar for chapters and script textures
 	chapter.freeBGTextures();
+	blackGround.free();
 	//audio destructor frees audio
 	//free the font
 	TTF_CloseFont( chapter.font );
@@ -203,6 +261,8 @@ int main( int argc, char* args[] )
 		{
 			//Main loop flag
 			bool quit = false;
+
+			bool fade=false;
 			//load the bg music file
 			chapter.loadChapterStrings(renderer);
             music.loadMusic();
@@ -225,7 +285,16 @@ int main( int argc, char* args[] )
 					{
 						quit = true;
 					}
-                    if(e.type == SDL_MOUSEBUTTONDOWN){
+                    if(e.type == SDL_MOUSEBUTTONDOWN)
+                    {
+                        if(gameState == 0)
+                        {
+                            //fade = true;
+                        }
+                        if(gameState == 7)//chapter 2
+                        {
+                            gameState = chapter.progress(renderer,gameState);
+                        }
                         if(gameState == 5) //Chapter 1
                         {
                             //need if(!insideButtons())
@@ -238,6 +307,9 @@ int main( int argc, char* args[] )
                             chapter.resetChapters(renderer);
                         }
                         if(gameState == 2){//load game chapter select
+                                //fade = true;
+                                //fade = fadeIn(countedFrames,fade);
+                        //std::cout << "mouse down in gameState = 2";
                                 //correction for the mousedown event that increments even when button press on back button happening.
                             if(chapter.currentPage<TOTAL_PAGES-1)
                             {
@@ -299,15 +371,35 @@ int main( int argc, char* args[] )
 					//Handle button events
 					if(gameState <5 || gameState==6)
                     {
+                        int oldGameState = gameState;
                         for( int i = 0; i < TOTAL_PREGAME_BUTTONS; ++i )
                         {
                             gameState = pregameui.buttons[ i ].handleEvent(gameState,pregameui.buttons[i].buttonName, &e, window,renderer );
                         }
+                        if(gameState != oldGameState)
+                        {
+                            int newGameState = gameState;
+                            gameState = oldGameState;
+                            fade=true;
+                            //if(countedFrames%256 < 255)
+                            //{
+
+                                fade=fadeOut(countedFrames,fade);
+                            //}
+                            //if(!fade)
+                                gameState=newGameState;
+                        }
+
+
                     }
                     if(gameState == 5)
                     {
                         //handles button presses on chapter screen.
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer );
+                    }
+                    if(gameState == 7)
+                    {
+                        gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
                     }
 					//if wasd are pressed player will be moved.
 					stage.player1.handleEvent(e);
@@ -318,11 +410,13 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( renderer );
                 //Title Screen rendering
+
                 if(gameState == 0)
                 {
                     chapter.chapter1Timer.stop();
                     //renders buttons, bg, title image, and handles particle effect.
                     pregameui.handleTitleScreenRendering(renderer);
+
                 }
                 else if(gameState == 1)
                 {//new game chapter select screen
@@ -331,15 +425,21 @@ int main( int argc, char* args[] )
                 }
                 else if(gameState == 2)
                 {//load game chapter/stage select screen
+
                     chapter.chapter1Timer.stop();
+                    chapter.chapter2Timer.stop();
+
                     //handles the buttons and background rendering
                     pregameui.handleLoadGameScreenRendering(renderer,chapter.chapter1Complete);
+
+
                 }
                 else if(gameState == 3)
                 {
                     //options screen buttons/bg rendering
                     pregameui.handleOptionsScreenRendering(renderer);
                 }
+                //chapter 1 is in effect
                 else if(gameState == 5)
                 {
                     if(!chapter.chapter1Timer.isStarted())
@@ -350,13 +450,23 @@ int main( int argc, char* args[] )
                     chapter.handleRendering(renderer);
                     //render tao animation
                     animations.renderTao(renderer);
+                }
+                //if chapter 2 is in effect
+                else if(gameState == 7)
+                {
+                    if(!chapter.chapter2Timer.isStarted())
+                    {
+                        chapter.chapter2Timer.start();
                     }
+                    chapter.handleRendering(renderer);
+                }
                 else if(gameState == 4)
                 {
                     //render background image and back button
                     pregameui.handleCreditsScreenRendering(renderer);
                     //robot animation
                     animations.renderToaster(renderer);
+                    //animations.renderToaster2(renderer);
                 }
                 else if(gameState == 6)
                 {
@@ -366,9 +476,20 @@ int main( int argc, char* args[] )
                     stage.player1.render(renderer);
                     stage.buttons[0].buttonTexture.render(stage.buttons[0].getPositionX(),stage.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
+                if(fade)
+                {
+                    fade = fadeIn(countedFrames,fade);
+                    blackGround.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                }
+
 				//Update screen
 				SDL_RenderPresent( renderer );
 				++countedFrames;
+				if(countedFrames>0 && countedFrames < 255 && gameState==0)
+                {  //fades in the go homeless title
+                    pregameui.title.setAlpha(countedFrames);
+                }
+
 				//If frame finished early
 				int frameTicks = capTimer.getTicks();
 				if( frameTicks < SCREEN_TICK_PER_FRAME )
@@ -380,6 +501,8 @@ int main( int argc, char* args[] )
 				animations.taoAnimationProgress();
                 //the timer for toaster the robot's animation
                 animations.toasterAnimationProgress();
+
+                animations.toaster2AnimationProgress();
                 //set script line
                 chapter.setAutoScript();
 				//Cycle animation

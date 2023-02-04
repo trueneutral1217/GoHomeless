@@ -15,6 +15,7 @@ button::button()
 	pregameButtonNames[5]="chapter1";
 	pregameButtonNames[6]="fullScreenOff";
 	pregameButtonNames[7]="stage1";
+	pregameButtonNames[8]="chapter2";
 	//move buttons 8-15 to chapter
 	chapterButtonNames[0]="backPage";
 	chapterButtonNames[1]="backLine";
@@ -164,6 +165,11 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                         else if(buttonName=="chapter1" && gameState==2){
                             printf("\n \n chapter 1 button pressed \n \n");
                             gameState = 5;
+                        }
+                        else if(buttonName=="chapter2")
+                        {
+                            printf("\n \n chapter 2 button pressed \n \n");
+                            gameState = 7;
                         }
                         else if(buttonName=="fullScreenOff" && gameState==3)
                         {

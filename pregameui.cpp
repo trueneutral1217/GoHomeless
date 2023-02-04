@@ -24,6 +24,7 @@ bool pregameui::setPreGameButtonTextures(SDL_Renderer* renderer, bool success)
     buttons[5].setPosition(20,20);
     buttons[6].setPosition(20,100);
     buttons[7].setPosition(20,150);
+    buttons[8].setPosition(20,200);
     return success;
 }
 
@@ -62,7 +63,10 @@ void pregameui::handleLoadGameScreenRendering(SDL_Renderer* renderer, bool chapt
     chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     //if chapter 1 is complete, render stage 1 button
     if(chapter1Complete)
-    {  //render stage 1 button
+    {
+        //render chapter 2 button
+        buttons[8].buttonTexture.render(buttons[8].getPositionX(),buttons[8].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //render stage 1 button
         buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     }
     //chapter 1 button

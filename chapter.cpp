@@ -72,6 +72,7 @@ void chapter::completeChapter(SDL_Renderer* renderer)
     }
     resetPages();
     chapter1Complete=true;
+    currentChapter = 1;
 }
 void chapter::resetPages()
 {
@@ -239,7 +240,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[7][4].str("I only have logic, and you're not like me at all.");
         scriptString[7][5].str("Why have I been treated less than equal?");
         scriptString[7][6].str("If I die tomorrow will it matter to you?");
-        scriptString[7][7].str(" *End of Chapter 1* Press LMB or Enter to return to select screen.");
+        scriptString[7][7].str(" *End of Chapter 2* Press LMB or Enter to return to select screen.");
     }
 
     setScriptTextures(renderer);
@@ -275,14 +276,35 @@ void chapter::setFileNames()
     bgFileName[5] = "images/America2.png";
     bgFileName[6] = "images/darknight.png";
     bgFileName[7] = "images/forest.png";
+
+    bgFileName2[0] = "images/bubbleparty.png";
+    bgFileName2[1] = "images/randomcolors.png";
+    bgFileName2[2] = "images/chapter1BG.png";
+    bgFileName2[3] = "images/chapter1BG.png";
+    bgFileName2[4] = "images/chapter1BG.png";
+    bgFileName2[5] = "images/chapter1BG.png";
+    bgFileName2[6] = "images/chapter1BG.png";
+    bgFileName2[7] = "images/chapter1BG.png";
 }
 
 bool chapter::setChapterTextures(SDL_Renderer* renderer){
     bool success = true;
     setFileNames();
-    for(int i = 0; i<TOTAL_PAGES;i++)
+    if(chapter1Complete)
+        currentChapter = 1;
+    if(currentChapter==0)
     {
-        success = chapter1BG[i].loadFromFile( bgFileName[i],renderer );
+        for(int i = 0; i<TOTAL_PAGES;i++)
+        {
+            success = chapter1BG[i].loadFromFile( bgFileName[i],renderer );
+        }
+    }
+    else if(currentChapter == 1)
+    {
+        for(int i = 0; i<TOTAL_PAGES;i++)
+        {
+            success = chapter2BG[i].loadFromFile( bgFileName2[i],renderer );
+        }
     }
        //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
@@ -481,6 +503,7 @@ void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 
     currentPage=data1;
     currentScript=data2;
     chapter1Complete=data3;
+    //this needs to be fixed at the source.
 }
 
 int chapter::handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
@@ -633,32 +656,65 @@ void chapter::handleBackLinePress()
 
 void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 {
-    switch(currentPage %TOTAL_PAGES)
+    if(currentChapter == 0)
     {
-    case 0:
-        chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 1:
-        chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 2:
-        chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 3:
-        chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 4:
-        chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 5:
-        chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 6:
-        chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
-    case 7:
-        chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    break;
+        switch(currentPage %TOTAL_PAGES)
+        {
+        case 0:
+            chapter1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 1:
+            chapter1BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 2:
+            chapter1BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 3:
+            chapter1BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 4:
+            chapter1BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 5:
+            chapter1BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 6:
+            chapter1BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 7:
+            chapter1BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        }
+    }
+    else if(currentChapter == 1)
+    {
+        switch(currentPage %TOTAL_PAGES)
+        {
+        case 0:
+            chapter2BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 1:
+            chapter2BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 2:
+            chapter2BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 3:
+            chapter2BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 4:
+            chapter2BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 5:
+            chapter2BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 6:
+            chapter2BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 7:
+            chapter2BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        }
     }
 }
 

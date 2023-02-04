@@ -4,9 +4,11 @@ animations::animations()
 {
     aniFrame=0;
     aniFrame2=0;
+    aniFrame3=0;
     aniCountUp=true;
     animationTimer.start();
     animationTimer2.start();
+    animationTimer3.start();
 }
 
 animations::~animations()
@@ -35,6 +37,14 @@ bool animations::setAnimationTextures(SDL_Renderer* renderer)
         std::string str = ss.str();
         success = toaster[i].loadFromFile(str,renderer);
     }
+    for(int i = 0; i<TOASTER2_ANIMATION_FRAMES;i++)
+    {
+        int a = i;
+        std::stringstream ss;
+        ss << "images/animations/toaster2/toastersprite" << a << ".png";
+        std::string str = ss.str();
+        success = toaster2[i].loadFromFile(str,renderer);
+    }
 
     return success;
 }
@@ -49,6 +59,10 @@ void animations::freeAnimationTextures()
     for(int i=0;i<TOASTER_ANIMATION_FRAMES;i++)
     {
         toaster[i].free();
+    }
+    for(int i=0;i<TOASTER2_ANIMATION_FRAMES;i++)
+    {
+        toaster2[i].free();
     }
 }
 
@@ -97,11 +111,33 @@ void animations::renderToaster(SDL_Renderer* renderer)
     }
 }
 
+void animations::renderToaster2(SDL_Renderer* renderer)
+{
+    switch(aniFrame3)
+    {
+    case 0:toaster2[0].render(500,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //std::cout << "\n rendering toaster2[0] texture \n";
+        break;
+    case 1:toaster2[1].render(500,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    //std::cout << "\n rendering toaster2[1] texture \n";
+        break;
+    case 2:toaster2[2].render(500,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    //std::cout << "\n rendering toaster2[2] texture \n";
+        break;
+
+    }
+}
+
 void animations::cycleAnimations()
 {
     if( aniFrame >= TAO_ANIMATION_FRAMES )
     {
         aniFrame = 0;
+    }
+    if(aniFrame3 >= TOASTER2_ANIMATION_FRAMES)
+    {
+        aniFrame3 = 0;
+        //std::cout << "\n reset aniFrame 3 \n";
     }
     if( aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
     {
@@ -111,6 +147,8 @@ void animations::cycleAnimations()
     {
         aniCountUp = true;
     }
+
+
 }
 
 void animations::oscillateCount()
@@ -140,5 +178,15 @@ void animations::toasterAnimationProgress()
     {
         oscillateCount();
         animationTimer2.restart();
+    }
+}
+
+void animations::toaster2AnimationProgress()
+{
+    if(animationTimer3.getTicks() / 60 > 1)
+    {
+        aniFrame3++;
+        animationTimer3.restart();
+        //std::cout << "\n aniFrame3 = " << aniFrame3 << " \n";
     }
 }

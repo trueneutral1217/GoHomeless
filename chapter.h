@@ -24,6 +24,7 @@ class chapter
 
         //timer for dialog for chapter1
         timer chapter1Timer;
+        timer chapter2Timer;
 
         button buttons[TOTAL_CHAPTER_BUTTONS];
 
@@ -42,6 +43,7 @@ class chapter
 
         Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
         Texture chapter1BG[TOTAL_PAGES];
+        Texture chapter2BG[TOTAL_PAGES];
         Texture dialogBox;
         Texture menuBar;
 
@@ -64,6 +66,7 @@ class chapter
 
         //
         std::string bgFileName[TOTAL_PAGES];
+        std::string bgFileName2[TOTAL_PAGES];
         void freeBGTextures();
         void setFileNames();
         bool setScriptTextures(SDL_Renderer* renderer);
