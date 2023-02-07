@@ -279,10 +279,10 @@ void chapter::setFileNames()
 
     bgFileName2[0] = "images/bubbleparty.png";
     bgFileName2[1] = "images/randomcolors.png";
-    bgFileName2[2] = "images/chapter1BG.png";
-    bgFileName2[3] = "images/chapter1BG.png";
-    bgFileName2[4] = "images/chapter1BG.png";
-    bgFileName2[5] = "images/chapter1BG.png";
+    bgFileName2[2] = "images/angryright.png";
+    bgFileName2[3] = "images/nondigitalpaperclip.png";
+    bgFileName2[4] = "images/joblesspurpose.png";
+    bgFileName2[5] = "images/treadonyou.png";
     bgFileName2[6] = "images/chapter1BG.png";
     bgFileName2[7] = "images/chapter1BG.png";
 }
