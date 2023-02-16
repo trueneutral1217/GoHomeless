@@ -28,3 +28,6 @@ I don't plan to stop.  I'll keep updating this game until it freaking sparkles. 
 did some testing, but probably could use more in depth testing, it was mainly just a quick & dirty update to make chapter2 accessible & show the
 new backgrounds.  despite the fact that it's been about 8 months, the code wasn't so convoluted that I couldn't get it done in about an hour (the programming,
 not the art).  cheers.
+
+2/16/23 - Parallax added to chapter 2 page 7, haven't done much debugging, but it seemed to work fine on my side. added the art files 
+associated with that page's parallax effect.  I'm probably going to do parallax for ch 2 page 8 as well.  I love you.
