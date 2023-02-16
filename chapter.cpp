@@ -283,7 +283,7 @@ void chapter::setFileNames()
     bgFileName2[3] = "images/nondigitalpaperclip.png";
     bgFileName2[4] = "images/joblesspurpose.png";
     bgFileName2[5] = "images/treadonyou.png";
-    bgFileName2[6] = "images/chapter1BG.png";
+    bgFileName2[6] = "images/blackground.png";
     bgFileName2[7] = "images/chapter1BG.png";
 }
 
@@ -306,6 +306,12 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer){
             success = chapter2BG[i].loadFromFile( bgFileName2[i],renderer );
         }
     }
+
+    success = ch2Pg7Fore.parallaxTexture.loadFromFile("images/starlaxfore.png",renderer);
+    success = ch2Pg7Mid.parallaxTexture.loadFromFile("images/starlaxmid.png",renderer);
+    success = ch2Pg7Back.parallaxTexture.loadFromFile("images/starlaxback.png",renderer);
+
+
        //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
 	success = menuBar.loadFromFile("images/menuBar.png",renderer);
@@ -710,6 +716,22 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
         break;
         case 6:
             chapter2BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            SDL_Delay(10);
+            //this is uggy but I'm doing it here for now, probably move it out to it's own function on a refactor day.
+            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg7Mid.parallaxTexture.render(ch2Pg7Mid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg7Mid.parallaxTexture.render(ch2Pg7Mid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg7Fore.incrementFore();
+            ch2Pg7Mid.incrementMid();
+            ch2Pg7Back.incrementBack();
+
         break;
         case 7:
             chapter2BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);

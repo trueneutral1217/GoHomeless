@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1675465412 source:c:\gohomeless\gohomeless\button.cpp
+1676586334 source:c:\gohomeless\gohomeless\button.cpp
 	"button.h"
 
 1675464146 c:\gohomeless\gohomeless\button.h
 	"Texture.h"
 
-1659555044 c:\gohomeless\gohomeless\texture.h
+1676511936 c:\gohomeless\gohomeless\texture.h
 	"SDL.h"
 	<SDL_ttf.h>
 	"string"
@@ -415,7 +415,7 @@
 1658538273 c:\gohomeless\gohomeless\particle.h
 	"Texture.h"
 
-1656714168 source:c:\gohomeless\gohomeless\texture.cpp
+1676511936 source:c:\gohomeless\gohomeless\texture.cpp
 	"Texture.h"
 
 1658444256 source:c:\gohomeless\gohomeless\timer.cpp
@@ -445,10 +445,10 @@
 	"begin_code.h"
 	"close_code.h"
 
-1662145739 c:\gohomeless\gohomeless\chapter.h
-	"Texture.h"
+1676587760 c:\gohomeless\gohomeless\chapter.h
 	"timer.h"
 	"button.h"
+	"parallax.h"
 
 1675463464 source:c:\gohomeless\gohomeless\chapter.cpp
 	"chapter.h"
@@ -891,4 +891,10 @@
 	"Texture.h"
 	"button.h"
 	"player.h"
+
+1676587258 c:\gohomeless\gohomeless\parallax.h
+	"Texture.h"
+
+1676588481 source:c:\gohomeless\gohomeless\parallax.cpp
+	"parallax.h"
 

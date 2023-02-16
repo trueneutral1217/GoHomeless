@@ -55,6 +55,8 @@
 		<Unit filename="myicon.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
+		<Unit filename="parallax.cpp" />
+		<Unit filename="parallax.h" />
 		<Unit filename="particle.cpp" />
 		<Unit filename="particle.h" />
 		<Unit filename="player.cpp" />

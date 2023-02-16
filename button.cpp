@@ -27,6 +27,8 @@ button::button()
     chapterButtonNames[7]="saveAndExit";
 
     stageButtonNames[0]="saveAndExit";
+
+    //buttonTexture=NULL;
 }
 
 button::~button()

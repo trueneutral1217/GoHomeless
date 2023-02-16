@@ -1,9 +1,11 @@
 #ifndef CHAPTER_H
 #define CHAPTER_H
 
-#include "Texture.h"
+//#include "Texture.h"
+//texture.h is included in button.h, so maybe I'm okay to exclude the line.
 #include "timer.h"
 #include "button.h"
+#include "parallax.h"
 
 //number of dialog lines for chapter 1.
 const int TOTAL_SCRIPTS = 8;
@@ -46,6 +48,10 @@ class chapter
         Texture chapter2BG[TOTAL_PAGES];
         Texture dialogBox;
         Texture menuBar;
+
+        parallax ch2Pg7Fore;
+        parallax ch2Pg7Mid;
+        parallax ch2Pg7Back;
 
         std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS];
 
