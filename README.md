@@ -31,3 +31,7 @@ not the art).  cheers.
 
 2/16/23 - Parallax added to chapter 2 page 7, haven't done much debugging, but it seemed to work fine on my side. added the art files 
 associated with that page's parallax effect.  I'm probably going to do parallax for ch 2 page 8 as well.  I love you.
+
+2/17/23 - added parallax images to chapter 2 page 8, added another layer to the parallax effect, anterior mid.  future naming of 
+layers will include anterior & posterior if I add more than 3 layers.
+
