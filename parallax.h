@@ -37,6 +37,7 @@ class parallax
         void incrementBack();
         void incrementFore();
         void incrementMid();
+        void incrementAnteriorMid();
 
         //might be able to privatize. both of the following functions
         void resetParallax();

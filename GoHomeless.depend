@@ -445,12 +445,12 @@
 	"begin_code.h"
 	"close_code.h"
 
-1676587760 c:\gohomeless\gohomeless\chapter.h
+1676660884 c:\gohomeless\gohomeless\chapter.h
 	"timer.h"
 	"button.h"
 	"parallax.h"
 
-1675463464 source:c:\gohomeless\gohomeless\chapter.cpp
+1676661381 source:c:\gohomeless\gohomeless\chapter.cpp
 	"chapter.h"
 
 1659379742 c:\gohomeless\gohomeless\savegame.h
@@ -892,9 +892,9 @@
 	"button.h"
 	"player.h"
 
-1676587258 c:\gohomeless\gohomeless\parallax.h
+1676660884 c:\gohomeless\gohomeless\parallax.h
 	"Texture.h"
 
-1676588481 source:c:\gohomeless\gohomeless\parallax.cpp
+1676660884 source:c:\gohomeless\gohomeless\parallax.cpp
 	"parallax.h"
 

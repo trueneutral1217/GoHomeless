@@ -34,6 +34,13 @@ void parallax::incrementFore(){
     resetParallax();
 }
 
+void parallax::incrementAnteriorMid(){
+    paraX+=3;
+    paraX2+=3;
+    updateRects();
+    resetParallax();
+}
+
 
 void parallax::incrementMid(){
     paraX+=2;

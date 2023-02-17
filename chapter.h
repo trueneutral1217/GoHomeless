@@ -53,6 +53,11 @@ class chapter
         parallax ch2Pg7Mid;
         parallax ch2Pg7Back;
 
+        parallax ch2Pg8Fore;
+        parallax ch2Pg8AnteriorMid;
+        parallax ch2Pg8Mid;
+        parallax ch2Pg8Back;
+
         std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS];
 
         //Load Strings

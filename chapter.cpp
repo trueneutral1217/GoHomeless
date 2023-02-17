@@ -284,7 +284,7 @@ void chapter::setFileNames()
     bgFileName2[4] = "images/joblesspurpose.png";
     bgFileName2[5] = "images/treadonyou.png";
     bgFileName2[6] = "images/blackground.png";
-    bgFileName2[7] = "images/chapter1BG.png";
+    bgFileName2[7] = "images/blackground.png";
 }
 
 bool chapter::setChapterTextures(SDL_Renderer* renderer){
@@ -310,6 +310,11 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer){
     success = ch2Pg7Fore.parallaxTexture.loadFromFile("images/starlaxfore.png",renderer);
     success = ch2Pg7Mid.parallaxTexture.loadFromFile("images/starlaxmid.png",renderer);
     success = ch2Pg7Back.parallaxTexture.loadFromFile("images/starlaxback.png",renderer);
+
+    success = ch2Pg8Fore.parallaxTexture.loadFromFile("images/dusk.png",renderer);
+    success = ch2Pg8AnteriorMid.parallaxTexture.loadFromFile("images/road.png",renderer);
+    success = ch2Pg8Mid.parallaxTexture.loadFromFile("images/cityscape.png",renderer);
+    success = ch2Pg8Back.parallaxTexture.loadFromFile("images/citystars.png",renderer);
 
 
        //load dialog box image
@@ -719,14 +724,15 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
             SDL_Delay(10);
             //this is uggy but I'm doing it here for now, probably move it out to it's own function on a refactor day.
-            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
             ch2Pg7Mid.parallaxTexture.render(ch2Pg7Mid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
             ch2Pg7Mid.parallaxTexture.render(ch2Pg7Mid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
-            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
             ch2Pg7Fore.incrementFore();
             ch2Pg7Mid.incrementMid();
@@ -734,7 +740,28 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
         break;
         case 7:
+            //render images back to front for proper layering.
             chapter2BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            SDL_Delay(10);
+
+            ch2Pg8Back.parallaxTexture.render(ch2Pg8Back.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg8Back.parallaxTexture.render(ch2Pg8Back.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg8Mid.parallaxTexture.render(ch2Pg8Mid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg8Mid.parallaxTexture.render(ch2Pg8Mid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg8AnteriorMid.parallaxTexture.render(ch2Pg8AnteriorMid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg8AnteriorMid.parallaxTexture.render(ch2Pg8AnteriorMid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg8Fore.parallaxTexture.render(ch2Pg8Fore.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            ch2Pg8Fore.parallaxTexture.render(ch2Pg8Fore.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+            ch2Pg8Fore.incrementFore();
+            ch2Pg8AnteriorMid.incrementAnteriorMid();
+            ch2Pg8Mid.incrementMid();
+            ch2Pg8Back.incrementBack();
+
         break;
         }
     }
