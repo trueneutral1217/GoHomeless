@@ -67,7 +67,7 @@ void pregameui::handleLoadGameScreenRendering(SDL_Renderer* renderer, bool chapt
         //render chapter 2 button
         buttons[8].buttonTexture.render(buttons[8].getPositionX(),buttons[8].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         //render stage 1 button
-        buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     }
     //chapter 1 button
     buttons[5].buttonTexture.render(buttons[5].getPositionX(),buttons[5].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);

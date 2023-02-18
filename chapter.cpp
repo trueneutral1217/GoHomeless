@@ -72,7 +72,8 @@ void chapter::completeChapter(SDL_Renderer* renderer)
     }
     resetPages();
     chapter1Complete=true;
-    currentChapter = 1;
+    currentChapter += 1;
+    testSaveVariables();
 }
 void chapter::resetPages()
 {
@@ -88,6 +89,8 @@ void chapter::resetChapters(SDL_Renderer* renderer)
     currentChapter=0;
     resetPages();
     chapter1Complete = false;
+    loadChapterStrings(renderer);
+    testSaveVariables();
 }
 void chapter::loadChapterStrings(SDL_Renderer* renderer)
 {
@@ -290,8 +293,6 @@ void chapter::setFileNames()
 bool chapter::setChapterTextures(SDL_Renderer* renderer){
     bool success = true;
     setFileNames();
-    if(chapter1Complete)
-        currentChapter = 1;
     if(currentChapter==0)
     {
         for(int i = 0; i<TOTAL_PAGES;i++)
@@ -305,17 +306,16 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer){
         {
             success = chapter2BG[i].loadFromFile( bgFileName2[i],renderer );
         }
+
+        success = ch2Pg7Fore.parallaxTexture.loadFromFile("images/starlaxfore.png",renderer);
+        success = ch2Pg7Mid.parallaxTexture.loadFromFile("images/starlaxmid.png",renderer);
+        success = ch2Pg7Back.parallaxTexture.loadFromFile("images/starlaxback.png",renderer);
+
+        success = ch2Pg8Fore.parallaxTexture.loadFromFile("images/dusk.png",renderer);
+        success = ch2Pg8AnteriorMid.parallaxTexture.loadFromFile("images/road.png",renderer);
+        success = ch2Pg8Mid.parallaxTexture.loadFromFile("images/cityscape.png",renderer);
+        success = ch2Pg8Back.parallaxTexture.loadFromFile("images/citystars.png",renderer);
     }
-
-    success = ch2Pg7Fore.parallaxTexture.loadFromFile("images/starlaxfore.png",renderer);
-    success = ch2Pg7Mid.parallaxTexture.loadFromFile("images/starlaxmid.png",renderer);
-    success = ch2Pg7Back.parallaxTexture.loadFromFile("images/starlaxback.png",renderer);
-
-    success = ch2Pg8Fore.parallaxTexture.loadFromFile("images/dusk.png",renderer);
-    success = ch2Pg8AnteriorMid.parallaxTexture.loadFromFile("images/road.png",renderer);
-    success = ch2Pg8Mid.parallaxTexture.loadFromFile("images/cityscape.png",renderer);
-    success = ch2Pg8Back.parallaxTexture.loadFromFile("images/citystars.png",renderer);
-
 
        //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
@@ -405,16 +405,20 @@ void chapter::loadFont()
 
 int chapter::progress(SDL_Renderer* renderer,int gameState)
 {
+    //end of chapter, should send user back to load game screen
     if(currentPage==TOTAL_PAGES-1 && currentScript==TOTAL_SCRIPTS-1){
         completeChapter(renderer);
         gameState=2;
         chapter1Timer.stop();
+        chapter2Timer.stop();
     }
+    //increments line of script displayed
     else if (currentScript<TOTAL_SCRIPTS-1)
     {
         scriptIncrement();
         chapter1Timer.restart();
     }
+    //increments page displayed
     else if(currentPage<TOTAL_PAGES-1){
         pageIncrement();
         chapter1Timer.restart();
@@ -428,6 +432,7 @@ int chapter::progress2(SDL_Renderer* renderer,int gameState)
     {
         scriptIncrement();
         chapter1Timer.restart();
+        chapter2Timer.restart();
     }
     else
     {
@@ -435,6 +440,7 @@ int chapter::progress2(SDL_Renderer* renderer,int gameState)
         {
             pageIncrement();
             chapter1Timer.restart();
+            chapter2Timer.restart();
         }
         else
         {
@@ -722,45 +728,14 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
         case 6:
             chapter2BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
-            SDL_Delay(10);
-            //this is uggy but I'm doing it here for now, probably move it out to it's own function on a refactor day.
-
-            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg7Back.parallaxTexture.render(ch2Pg7Back.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg7Mid.parallaxTexture.render(ch2Pg7Mid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg7Mid.parallaxTexture.render(ch2Pg7Mid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg7Fore.parallaxTexture.render(ch2Pg7Fore.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg7Fore.incrementFore();
-            ch2Pg7Mid.incrementMid();
-            ch2Pg7Back.incrementBack();
+            ch2Pg7handleParallax(renderer);
 
         break;
         case 7:
             //render images back to front for proper layering.
             chapter2BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
-            SDL_Delay(10);
-
-            ch2Pg8Back.parallaxTexture.render(ch2Pg8Back.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg8Back.parallaxTexture.render(ch2Pg8Back.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg8Mid.parallaxTexture.render(ch2Pg8Mid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg8Mid.parallaxTexture.render(ch2Pg8Mid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg8AnteriorMid.parallaxTexture.render(ch2Pg8AnteriorMid.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg8AnteriorMid.parallaxTexture.render(ch2Pg8AnteriorMid.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg8Fore.parallaxTexture.render(ch2Pg8Fore.parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-            ch2Pg8Fore.parallaxTexture.render(ch2Pg8Fore.parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
-            ch2Pg8Fore.incrementFore();
-            ch2Pg8AnteriorMid.incrementAnteriorMid();
-            ch2Pg8Mid.incrementMid();
-            ch2Pg8Back.incrementBack();
+            ch2Pg8handleParallax(renderer);
 
         break;
         }
@@ -769,6 +744,7 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
 void chapter::setAutoScript()
 {
+    //This Function needs to be updated for chapter 2
     if(chapter1Timer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
     {//implement timer auto script option.
         if(currentScript<TOTAL_SCRIPTS-1)
@@ -811,4 +787,36 @@ void chapter::setAutoScript()
             chapter1Timer.stop();
         }
     }
+}
+
+
+void chapter::ch2Pg7handleParallax(SDL_Renderer* renderer){
+
+//slows down the animation of the parallax backgrounds
+    SDL_Delay(10);
+
+    ch2Pg7Back.parallaxRender(renderer);
+    ch2Pg7Mid.parallaxRender(renderer);
+    ch2Pg7Fore.parallaxRender(renderer);
+
+    ch2Pg7Fore.incrementFore();
+    ch2Pg7Mid.incrementMid();
+    ch2Pg7Back.incrementBack();
+
+}
+
+void chapter::ch2Pg8handleParallax(SDL_Renderer* renderer){
+
+    SDL_Delay(10);
+
+    ch2Pg8Back.parallaxRender(renderer);
+    ch2Pg8Mid.parallaxRender(renderer);
+    ch2Pg8AnteriorMid.parallaxRender(renderer);
+    ch2Pg8Fore.parallaxRender(renderer);
+
+    ch2Pg8Fore.incrementFore();
+    ch2Pg8AnteriorMid.incrementAnteriorMid();
+    ch2Pg8Mid.incrementMid();
+    ch2Pg8Back.incrementBack();
+
 }

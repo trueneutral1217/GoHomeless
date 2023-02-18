@@ -35,3 +35,5 @@ associated with that page's parallax effect.  I'm probably going to do parallax 
 2/17/23 - added parallax images to chapter 2 page 8, added another layer to the parallax effect, anterior mid.  future naming of 
 layers will include anterior & posterior if I add more than 3 layers.
 
+2/18/23 - debug day, chapter backgrounds and scripts were having some issues, they look to be resolved now.
+noticed that autoscript is only working on chapter 1, so I'll begin working on that at a later date.

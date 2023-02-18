@@ -291,16 +291,7 @@ int main( int argc, char* args[] )
                         {
                             //fade = true;
                         }
-                        if(gameState == 7)//chapter 2
-                        {
-                            gameState = chapter.progress(renderer,gameState);
-                        }
-                        if(gameState == 5) //Chapter 1
-                        {
-                            //need if(!insideButtons())
-                            //updates counters for script lines,turns pages, changes gameState if at end of chapter.
-                            gameState = chapter.progress(renderer,gameState);
-                        }
+
                         if(gameState == 1)//new game chapter select
                         {
                             //chapters get reset here, but I may have the actual chapter 1 button on this screen determine the reset.
@@ -325,6 +316,16 @@ int main( int argc, char* args[] )
                                     chapter.backScript();
                                 }
                             }
+                        }
+                        if(gameState == 7)//chapter 2
+                        {
+                            gameState = chapter.progress(renderer,gameState);
+                        }
+                        if(gameState == 5) //Chapter 1
+                        {
+                            //need if(!insideButtons())
+                            //updates counters for script lines,turns pages, changes gameState if at end of chapter.
+                            gameState = chapter.progress(renderer,gameState);
                         }
                     }
 					//Handle key press
@@ -368,13 +369,47 @@ int main( int argc, char* args[] )
 							break;
 						}
 					}
-					//Handle button events
+					//Handle button events when in pregame ui or stage 1.
 					if(gameState <5 || gameState==6)
                     {
                         int oldGameState = gameState;
                         for( int i = 0; i < TOTAL_PREGAME_BUTTONS; ++i )
                         {
                             gameState = pregameui.buttons[ i ].handleEvent(gameState,pregameui.buttons[i].buttonName, &e, window,renderer );
+                        }
+                        if(gameState == 5)
+                        {
+                            if(chapter.currentChapter != 0)
+                            {
+                                chapter.currentChapter = 0;
+                                chapter.resetPages();
+                                //chapter.currentPage = 0;
+                                //chapter.currentScript = 0;
+                                //chapter.setChapterTextures(renderer);
+                                //chapter.loadChapterStrings(renderer);
+
+                            }
+
+                            chapter.setChapterTextures(renderer);
+                            chapter.loadChapterStrings(renderer);
+                            chapter.testSaveVariables();
+                        }
+                        if(gameState == 7)
+                        {
+                            if(chapter.currentChapter!=1)
+                            {
+                                chapter.currentChapter =1;
+                                chapter.resetPages();
+                                //chapter.currentPage=0;
+                                //chapter.currentScript=0;
+                                //chapter.setChapterTextures(renderer);
+                                //chapter.loadChapterStrings(renderer);
+
+                            }
+
+                            chapter.setChapterTextures(renderer);
+                            chapter.loadChapterStrings(renderer);
+                            chapter.testSaveVariables();
                         }
                         if(gameState != oldGameState)
                         {
@@ -394,11 +429,12 @@ int main( int argc, char* args[] )
                     }
                     if(gameState == 5)
                     {
-                        //handles button presses on chapter screen.
+                        //handles button presses in chapter 1 (autospeed changes, backpage, etc).
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer );
                     }
                     if(gameState == 7)
                     {
+                        //handles button presses for chapter 2.
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
                     }
 					//if wasd are pressed player will be moved.

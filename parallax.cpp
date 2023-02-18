@@ -73,3 +73,11 @@ void parallax::updateRects()
     parallaxRect2.x=paraX2;
 
 }
+
+void parallax::parallaxRender(SDL_Renderer* renderer)
+{
+
+    parallaxTexture.render(parallaxRect1.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    parallaxTexture.render(parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+
+}

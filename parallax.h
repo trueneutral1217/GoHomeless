@@ -42,6 +42,7 @@ class parallax
         //might be able to privatize. both of the following functions
         void resetParallax();
         void updateRects();
+        void parallaxRender(SDL_Renderer* renderer);
 
     private:
 

@@ -58,6 +58,9 @@ class chapter
         parallax ch2Pg8Mid;
         parallax ch2Pg8Back;
 
+        void ch2Pg7handleParallax(SDL_Renderer* renderer);
+        void ch2Pg8handleParallax(SDL_Renderer* renderer);
+
         std::stringstream scriptString[TOTAL_PAGES][TOTAL_SCRIPTS];
 
         //Load Strings
@@ -79,6 +82,7 @@ class chapter
         std::string bgFileName[TOTAL_PAGES];
         std::string bgFileName2[TOTAL_PAGES];
         void freeBGTextures();
+        //sets file names for page backgrounds
         void setFileNames();
         bool setScriptTextures(SDL_Renderer* renderer);
         bool setChapterTextures(SDL_Renderer* renderer);

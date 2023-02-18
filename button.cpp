@@ -161,11 +161,11 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             gameState = 0;
                         }
                         else if(buttonName=="chapter1" && gameState==1){
-                            printf("\n \n chapter 1 button pressed \n \n");
+                            printf("\n \n chapter 1 button pressed from new game screen \n \n");
                             gameState = 5;
                         }
                         else if(buttonName=="chapter1" && gameState==2){
-                            printf("\n \n chapter 1 button pressed \n \n");
+                            printf("\n \n chapter 1 button pressed from load screen \n \n");
                             gameState = 5;
                         }
                         else if(buttonName=="chapter2")
@@ -187,42 +187,42 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n Stage 1 button pressed \n \n");
                             gameState = 6;
                         }
-                        else if(buttonName=="backPage" && gameState==5)
+                        else if(buttonName=="backPage" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n backPage button pressed \n \n");
                             gameState=-1;
                         }
-                        else if(buttonName=="backLine" && gameState==5)
+                        else if(buttonName=="backLine" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n backLine button pressed \n \n");
                             gameState=-1;
                         }
-                        else if(buttonName=="autoOn" && gameState==5)
+                        else if(buttonName=="autoOn" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n autotexton button pressed \n \n");
                             gameState=1;
                         }
-                        else if(buttonName=="autoOff" && gameState==5)
+                        else if(buttonName=="autoOff" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n autotextoff button pressed \n \n");
                             gameState=0;
                         }
-                        else if(buttonName=="autoSpeed1" && gameState==5)
+                        else if(buttonName=="autoSpeed1" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n autospeed1 button pressed \n \n");
                             gameState=0;
                         }
-                        else if(buttonName=="autoSpeed2" && gameState==5)
+                        else if(buttonName=="autoSpeed2" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n autospeed2 button pressed \n \n");
                             gameState=1;
                         }
-                        else if(buttonName=="autoSpeed3" && gameState==5)
+                        else if(buttonName=="autoSpeed3" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n autospeed3 button pressed \n \n");
                             gameState=2;
                         }
-                        else if(buttonName=="saveAndExit" && gameState==5)
+                        else if(buttonName=="saveAndExit" && (gameState==5 || gameState ==7))
                         {
                             printf("\n \n saveAndExit button pressed \n \n");
                             gameState=0;
