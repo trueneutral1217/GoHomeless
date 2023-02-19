@@ -383,13 +383,7 @@ int main( int argc, char* args[] )
                             {
                                 chapter.currentChapter = 0;
                                 chapter.resetPages();
-                                //chapter.currentPage = 0;
-                                //chapter.currentScript = 0;
-                                //chapter.setChapterTextures(renderer);
-                                //chapter.loadChapterStrings(renderer);
-
                             }
-
                             chapter.setChapterTextures(renderer);
                             chapter.loadChapterStrings(renderer);
                             chapter.testSaveVariables();
@@ -400,13 +394,7 @@ int main( int argc, char* args[] )
                             {
                                 chapter.currentChapter =1;
                                 chapter.resetPages();
-                                //chapter.currentPage=0;
-                                //chapter.currentScript=0;
-                                //chapter.setChapterTextures(renderer);
-                                //chapter.loadChapterStrings(renderer);
-
                             }
-
                             chapter.setChapterTextures(renderer);
                             chapter.loadChapterStrings(renderer);
                             chapter.testSaveVariables();
@@ -449,21 +437,20 @@ int main( int argc, char* args[] )
 
                 if(gameState == 0)
                 {
-                    chapter.chapter1Timer.stop();
+                    chapter.chapterTimer.stop();
                     //renders buttons, bg, title image, and handles particle effect.
                     pregameui.handleTitleScreenRendering(renderer);
 
                 }
                 else if(gameState == 1)
                 {//new game chapter select screen
-                    chapter.chapter1Timer.stop();
+                    chapter.chapterTimer.stop();
                     pregameui.handleNewGameScreenRendering(renderer);
                 }
                 else if(gameState == 2)
                 {//load game chapter/stage select screen
 
-                    chapter.chapter1Timer.stop();
-                    chapter.chapter2Timer.stop();
+                    chapter.chapterTimer.stop();
 
                     //handles the buttons and background rendering
                     pregameui.handleLoadGameScreenRendering(renderer,chapter.chapter1Complete);
@@ -478,9 +465,9 @@ int main( int argc, char* args[] )
                 //chapter 1 is in effect
                 else if(gameState == 5)
                 {
-                    if(!chapter.chapter1Timer.isStarted())
+                    if(!chapter.chapterTimer.isStarted())
                     {
-                        chapter.chapter1Timer.start();
+                        chapter.chapterTimer.start();
                     }
                     //Chapter 1 rendering (buttons and backgrounds and text.
                     chapter.handleRendering(renderer);
@@ -490,9 +477,9 @@ int main( int argc, char* args[] )
                 //if chapter 2 is in effect
                 else if(gameState == 7)
                 {
-                    if(!chapter.chapter2Timer.isStarted())
+                    if(!chapter.chapterTimer.isStarted())
                     {
-                        chapter.chapter2Timer.start();
+                        chapter.chapterTimer.start();
                     }
                     chapter.handleRendering(renderer);
                 }

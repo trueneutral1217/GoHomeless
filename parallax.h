@@ -39,9 +39,14 @@ class parallax
         void incrementMid();
         void incrementAnteriorMid();
 
+        void specialIncrementFore();
+
         //might be able to privatize. both of the following functions
         void resetParallax();
         void updateRects();
+
+        void specialResetParallax();
+
         void parallaxRender(SDL_Renderer* renderer);
 
     private:

@@ -37,3 +37,9 @@ layers will include anterior & posterior if I add more than 3 layers.
 
 2/18/23 - debug day, chapter backgrounds and scripts were having some issues, they look to be resolved now.
 noticed that autoscript is only working on chapter 1, so I'll begin working on that at a later date.
+
+2/19/23 - autoscript wasn't working for chapter 2, so I updated the fuction that controls chapter 1's autoscript.
+Now, chapter1Timer has been changed to chapterTimer, the setAutoScript function now works for chapter 1 and chapter two, 
+also it should work for subsequent chapters.  I guess I'll find out when I implement chapter 3.  also added a couple functions for
+the car image at the end of chapter two, it's not actually a background, and doesn't need to really be parallax.  I feel like
+it looks a lot better.

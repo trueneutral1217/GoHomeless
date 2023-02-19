@@ -56,6 +56,13 @@ void parallax::incrementBack(){
     resetParallax();
 }
 
+void parallax::specialIncrementFore(){
+    paraX+=4;
+  //  paraX2+=4;
+    updateRects();
+    specialResetParallax();
+}
+
 void parallax::resetParallax()
 {
     if(paraX > 799){
@@ -64,6 +71,17 @@ void parallax::resetParallax()
     if(paraX2 > 799){
         paraX2 = -799;
     }
+}
+
+void parallax::specialResetParallax()
+{
+    if(paraX>799){
+        paraX=-1599;
+    }
+    /*
+    if(paraX2>799){
+        paraX2=-1599;
+    }*/
 }
 
 void parallax::updateRects()

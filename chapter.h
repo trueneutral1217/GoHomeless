@@ -24,9 +24,8 @@ class chapter
         //declare font
         TTF_Font *font;
 
-        //timer for dialog for chapter1
-        timer chapter1Timer;
-        timer chapter2Timer;
+        //timer for dialog for chapters
+        timer chapterTimer;
 
         button buttons[TOTAL_CHAPTER_BUTTONS];
 

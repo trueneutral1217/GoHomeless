@@ -409,19 +409,18 @@ int chapter::progress(SDL_Renderer* renderer,int gameState)
     if(currentPage==TOTAL_PAGES-1 && currentScript==TOTAL_SCRIPTS-1){
         completeChapter(renderer);
         gameState=2;
-        chapter1Timer.stop();
-        chapter2Timer.stop();
+        chapterTimer.stop();
     }
     //increments line of script displayed
     else if (currentScript<TOTAL_SCRIPTS-1)
     {
         scriptIncrement();
-        chapter1Timer.restart();
+        chapterTimer.restart();
     }
     //increments page displayed
     else if(currentPage<TOTAL_PAGES-1){
         pageIncrement();
-        chapter1Timer.restart();
+        chapterTimer.restart();
     }
     return gameState;
 }
@@ -431,16 +430,14 @@ int chapter::progress2(SDL_Renderer* renderer,int gameState)
     if(currentScript<TOTAL_SCRIPTS-1)
     {
         scriptIncrement();
-        chapter1Timer.restart();
-        chapter2Timer.restart();
+        chapterTimer.restart();
     }
     else
     {
         if(currentPage<TOTAL_PAGES-1)
         {
             pageIncrement();
-            chapter1Timer.restart();
-            chapter2Timer.restart();
+            chapterTimer.restart();
         }
         else
         {
@@ -744,49 +741,97 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
 void chapter::setAutoScript()
 {
-    //This Function needs to be updated for chapter 2
-    if(chapter1Timer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
-    {//implement timer auto script option.
-        if(currentScript<TOTAL_SCRIPTS-1)
-        {
-            scriptIncrement();
-            chapter1Timer.restart();
-            //printf("\n \n timer tick");
-            //testSaveVariables();
+//This Function needs to be updated for chapter 2
+//if(currentChapter==0)
+  //  {
+        if(chapterTimer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
+        {//implement timer auto script option.
+            if(currentScript<TOTAL_SCRIPTS-1)
+            {
+                scriptIncrement();
+                chapterTimer.restart();
+                //printf("\n \n timer tick");
+                //testSaveVariables();
+            }
+            if(currentScript == TOTAL_SCRIPTS-1)
+            {
+                chapterTimer.stop();
+            }
         }
-        if(currentScript == TOTAL_SCRIPTS-1)
-        {
-            chapter1Timer.stop();
+        else if(chapterTimer.getTicks()/750 > 1 && autoTextSpeed==1 && autoText)
+        {//implement timer auto script option.
+            if(currentScript<TOTAL_SCRIPTS-1)
+            {
+                scriptIncrement();
+                chapterTimer.restart();
+                //printf("\n \n timer tick");
+                //testSaveVariables();
+            }
+            if(currentScript == TOTAL_SCRIPTS-1)
+            {
+                chapterTimer.stop();
+            }
         }
-    }
-    else if(chapter1Timer.getTicks()/750 > 1 && autoTextSpeed==1 && autoText)
-    {//implement timer auto script option.
-        if(currentScript<TOTAL_SCRIPTS-1)
-        {
-            scriptIncrement();
-            chapter1Timer.restart();
-            //printf("\n \n timer tick");
-            //testSaveVariables();
+        else if(chapterTimer.getTicks()/500 > 1 && autoTextSpeed==2 && autoText)
+        {//implement timer auto script option.
+            if(currentScript<TOTAL_SCRIPTS-1)
+            {
+                scriptIncrement();
+                chapterTimer.restart();
+                //printf("\n \n timer tick");
+                //testSaveVariables();
+            }
+            if(currentScript == TOTAL_SCRIPTS-1)
+            {
+                chapterTimer.stop();
+            }
         }
-        if(currentScript == TOTAL_SCRIPTS-1)
-        {
-            chapter1Timer.stop();
+   // }
+   /* if(currentChapter == 1)
+   // {
+        if(chapterTimer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
+        {//implement timer auto script option.
+            if(currentScript<TOTAL_SCRIPTS-1)
+            {
+                scriptIncrement();
+                chapterTimer.restart();
+                //printf("\n \n timer tick");
+                //testSaveVariables();
+            }
+            if(currentScript == TOTAL_SCRIPTS-1)
+            {
+                chapterTimer.stop();
+            }
         }
-    }
-    else if(chapter1Timer.getTicks()/500 > 1 && autoTextSpeed==2 && autoText)
-    {//implement timer auto script option.
-        if(currentScript<TOTAL_SCRIPTS-1)
-        {
-            scriptIncrement();
-            chapter1Timer.restart();
-            //printf("\n \n timer tick");
-            //testSaveVariables();
+        else if(chapterTimer.getTicks()/750 > 1 && autoTextSpeed==1 && autoText)
+        {//implement timer auto script option.
+            if(currentScript<TOTAL_SCRIPTS-1)
+            {
+                scriptIncrement();
+                chapterTimer.restart();
+                //printf("\n \n timer tick");
+                //testSaveVariables();
+            }
+            if(currentScript == TOTAL_SCRIPTS-1)
+            {
+                chapterTimer.stop();
+            }
         }
-        if(currentScript == TOTAL_SCRIPTS-1)
-        {
-            chapter1Timer.stop();
+        else if(chapterTimer.getTicks()/500 > 1 && autoTextSpeed==2 && autoText)
+        {//implement timer auto script option.
+            if(currentScript<TOTAL_SCRIPTS-1)
+            {
+                scriptIncrement();
+                chapterTimer.restart();
+                //printf("\n \n timer tick");
+                //testSaveVariables();
+            }
+            if(currentScript == TOTAL_SCRIPTS-1)
+            {
+                chapterTimer.stop();
+            }
         }
-    }
+   } */
 }
 
 
@@ -814,7 +859,8 @@ void chapter::ch2Pg8handleParallax(SDL_Renderer* renderer){
     ch2Pg8AnteriorMid.parallaxRender(renderer);
     ch2Pg8Fore.parallaxRender(renderer);
 
-    ch2Pg8Fore.incrementFore();
+    //ch2Pg8Fore.incrementFore();
+    ch2Pg8Fore.specialIncrementFore();
     ch2Pg8AnteriorMid.incrementAnteriorMid();
     ch2Pg8Mid.incrementMid();
     ch2Pg8Back.incrementBack();
