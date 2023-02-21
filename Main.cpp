@@ -264,8 +264,9 @@ int main( int argc, char* args[] )
 
 			bool fade=false;
 			//load the bg music file
-			chapter.loadChapterStrings(renderer);
+			//chapter.loadChapterStrings(renderer);
             music.loadMusic();
+            music.playMusic();
 			//The frames per second cap timer
 			timer capTimer;
 			//Start counting frames per second
@@ -377,6 +378,7 @@ int main( int argc, char* args[] )
                         {
                             gameState = pregameui.buttons[ i ].handleEvent(gameState,pregameui.buttons[i].buttonName, &e, window,renderer );
                         }
+                        //printf("gameState = ", gameState);
                         if(gameState == 5)
                         {
                             if(chapter.currentChapter != 0)
@@ -384,6 +386,9 @@ int main( int argc, char* args[] )
                                 chapter.currentChapter = 0;
                                 chapter.resetPages();
                             }
+                            music.stopMusic();
+                            music.loadChapter1Music();
+                            music.playMusic();
                             chapter.setChapterTextures(renderer);
                             chapter.loadChapterStrings(renderer);
                             chapter.testSaveVariables();
@@ -395,6 +400,9 @@ int main( int argc, char* args[] )
                                 chapter.currentChapter =1;
                                 chapter.resetPages();
                             }
+                            music.stopMusic();
+                            music.loadChapter2Music();
+                            music.playMusic();
                             chapter.setChapterTextures(renderer);
                             chapter.loadChapterStrings(renderer);
                             chapter.testSaveVariables();
@@ -407,23 +415,33 @@ int main( int argc, char* args[] )
                             //if(countedFrames%256 < 255)
                             //{
 
-                                fade=fadeOut(countedFrames,fade);
+                            fade=fadeOut(countedFrames,fade);
                             //}
                             //if(!fade)
-                                gameState=newGameState;
+                            gameState=newGameState;
+
                         }
-
-
                     }
+
                     if(gameState == 5)
                     {
                         //handles button presses in chapter 1 (autospeed changes, backpage, etc).
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer );
+                        if(gameState==0){
+                            music.stopMusic();
+                            music.loadMusic();
+                            music.playMusic();
+                        }
                     }
                     if(gameState == 7)
                     {
                         //handles button presses for chapter 2.
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
+                        if(gameState==0){
+                            music.stopMusic();
+                            music.loadMusic();
+                            music.playMusic();
+                        }
                     }
 					//if wasd are pressed player will be moved.
 					stage.player1.handleEvent(e);

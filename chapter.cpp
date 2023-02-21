@@ -66,10 +66,6 @@ void chapter::backPage()
 }
 void chapter::completeChapter(SDL_Renderer* renderer)
 {
-    if(!chapter1Complete)
-    {
-        //currentChapter++;
-    }
     resetPages();
     chapter1Complete=true;
     currentChapter += 1;
@@ -85,7 +81,7 @@ void chapter::resetScripts()
     currentScript=0;
 }
 void chapter::resetChapters(SDL_Renderer* renderer)
-{
+{  //when new game is clicked, reset chapter variables (page, script, chaptercomplete, and current chapter)
     currentChapter=0;
     resetPages();
     chapter1Complete = false;
@@ -741,17 +737,13 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
 void chapter::setAutoScript()
 {
-//This Function needs to be updated for chapter 2
-//if(currentChapter==0)
-  //  {
+
         if(chapterTimer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
-        {//implement timer auto script option.
+        {//implement timer auto script option. Slow / default speed
             if(currentScript<TOTAL_SCRIPTS-1)
             {
                 scriptIncrement();
                 chapterTimer.restart();
-                //printf("\n \n timer tick");
-                //testSaveVariables();
             }
             if(currentScript == TOTAL_SCRIPTS-1)
             {
@@ -759,13 +751,11 @@ void chapter::setAutoScript()
             }
         }
         else if(chapterTimer.getTicks()/750 > 1 && autoTextSpeed==1 && autoText)
-        {//implement timer auto script option.
+        {//implement timer auto script option. Medium Speed
             if(currentScript<TOTAL_SCRIPTS-1)
             {
                 scriptIncrement();
                 chapterTimer.restart();
-                //printf("\n \n timer tick");
-                //testSaveVariables();
             }
             if(currentScript == TOTAL_SCRIPTS-1)
             {
@@ -773,65 +763,17 @@ void chapter::setAutoScript()
             }
         }
         else if(chapterTimer.getTicks()/500 > 1 && autoTextSpeed==2 && autoText)
-        {//implement timer auto script option.
+        {//implement timer auto script option.  Fast speed
             if(currentScript<TOTAL_SCRIPTS-1)
             {
                 scriptIncrement();
                 chapterTimer.restart();
-                //printf("\n \n timer tick");
-                //testSaveVariables();
             }
             if(currentScript == TOTAL_SCRIPTS-1)
             {
                 chapterTimer.stop();
             }
         }
-   // }
-   /* if(currentChapter == 1)
-   // {
-        if(chapterTimer.getTicks()/1000 > 1 && autoTextSpeed==0 && autoText)
-        {//implement timer auto script option.
-            if(currentScript<TOTAL_SCRIPTS-1)
-            {
-                scriptIncrement();
-                chapterTimer.restart();
-                //printf("\n \n timer tick");
-                //testSaveVariables();
-            }
-            if(currentScript == TOTAL_SCRIPTS-1)
-            {
-                chapterTimer.stop();
-            }
-        }
-        else if(chapterTimer.getTicks()/750 > 1 && autoTextSpeed==1 && autoText)
-        {//implement timer auto script option.
-            if(currentScript<TOTAL_SCRIPTS-1)
-            {
-                scriptIncrement();
-                chapterTimer.restart();
-                //printf("\n \n timer tick");
-                //testSaveVariables();
-            }
-            if(currentScript == TOTAL_SCRIPTS-1)
-            {
-                chapterTimer.stop();
-            }
-        }
-        else if(chapterTimer.getTicks()/500 > 1 && autoTextSpeed==2 && autoText)
-        {//implement timer auto script option.
-            if(currentScript<TOTAL_SCRIPTS-1)
-            {
-                scriptIncrement();
-                chapterTimer.restart();
-                //printf("\n \n timer tick");
-                //testSaveVariables();
-            }
-            if(currentScript == TOTAL_SCRIPTS-1)
-            {
-                chapterTimer.stop();
-            }
-        }
-   } */
 }
 
 

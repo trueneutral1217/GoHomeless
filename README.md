@@ -43,3 +43,8 @@ Now, chapter1Timer has been changed to chapterTimer, the setAutoScript function 
 also it should work for subsequent chapters.  I guess I'll find out when I implement chapter 3.  also added a couple functions for
 the car image at the end of chapter two, it's not actually a background, and doesn't need to really be parallax.  I feel like
 it looks a lot better.
+
+2/21/23 - audio is now set up to play different songs for the pregame user interface, chapter1, and chapter 2.  still having a weird error when I close
+program, so I'll be trying to figure that one out, I'm guessing I'm not freeing up a texture or something.  other than that, I can't think of
+much else to do before release of demo 2 besides maybe adding an animation or two to some of the middle pages of chapter 2 since the art on those
+pages is a little meh.

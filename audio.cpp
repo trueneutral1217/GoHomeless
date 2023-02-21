@@ -19,6 +19,16 @@ void audio::loadMusic()
     music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
 }
 
+void audio::loadChapter1Music()
+{
+    music = Mix_LoadMUS("music/Meadow March.mp3");
+}
+
+void audio::loadChapter2Music()
+{
+    music = Mix_LoadMUS("music/Tiki Jungle.mp3");
+}
+
 void audio::loadSound(int soundNum)
 {
     switch(soundNum)
@@ -74,4 +84,19 @@ void audio::playMusic()
             Mix_PauseMusic();
         }
     }
+}
+
+void audio::pauseMusic()
+{
+    Mix_PauseMusic();
+}
+
+void audio::resumeMusic()
+{
+    Mix_ResumeMusic();
+}
+
+void audio::stopMusic()
+{
+    Mix_HaltMusic();
 }
