@@ -250,6 +250,7 @@ void chapter::freeBGTextures()
     for(int i = 0; i < TOTAL_PAGES; i++)
     {
         chapter1BG[i].free();
+        chapter2BG[i].free();
     }
     dialogBox.free();
 	menuBar.free();
@@ -262,6 +263,15 @@ void chapter::freeBGTextures()
             scriptTexture[j][i].free();
         }
     }
+
+    ch2Pg7Fore.freeParallaxTexture();
+    ch2Pg7Mid.freeParallaxTexture();
+    ch2Pg7Back.freeParallaxTexture();
+
+    ch2Pg8Fore.freeParallaxTexture();
+    ch2Pg8Mid.freeParallaxTexture();
+    ch2Pg8AnteriorMid.freeParallaxTexture();
+    ch2Pg8Back.freeParallaxTexture();
 
 }
 

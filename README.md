@@ -48,3 +48,5 @@ it looks a lot better.
 program, so I'll be trying to figure that one out, I'm guessing I'm not freeing up a texture or something.  other than that, I can't think of
 much else to do before release of demo 2 besides maybe adding an animation or two to some of the middle pages of chapter 2 since the art on those
 pages is a little meh.
+
+2/27/23 - created images and added animation to page 5 of chapter 2.  

@@ -5,10 +5,33 @@ animations::animations()
     aniFrame=0;
     aniFrame2=0;
     aniFrame3=0;
+    aniFrame4=0;
     aniCountUp=true;
     animationTimer.start();
     animationTimer2.start();
     animationTimer3.start();
+    animationTimer4.start();
+    animationTimer5.start();
+    animationTimer6.start();
+    animationTimer7.start();
+
+    //initialize x & y of blackstar animations 1 - 4.
+    bsX1=rand() % 200;
+    bsY1=rand()% 350;
+
+    bsX2=rand() % 200;
+    bsX2+=200;
+    bsY2=rand()% 350;
+
+    bsX3=rand() % 200;
+    bsX3+=400;
+    bsY3=rand()% 350;
+
+    bsX4=rand() % 200;
+    bsX4+=550;
+    bsY4=rand()% 350;
+
+
 }
 
 animations::~animations()
@@ -45,6 +68,14 @@ bool animations::setAnimationTextures(SDL_Renderer* renderer)
         std::string str = ss.str();
         success = toaster2[i].loadFromFile(str,renderer);
     }
+    for(int i = 0; i<BLACKSTAR_ANIMATION_FRAMES;i++)
+    {
+        int a = i+1;
+        std::stringstream ss;
+        ss << "images/animations/blackstar/blackstar" << a << ".png";
+        std::string str = ss.str();
+        success = blackstar[i].loadFromFile(str,renderer);
+    }
 
     return success;
 }
@@ -63,6 +94,10 @@ void animations::freeAnimationTextures()
     for(int i=0;i<TOASTER2_ANIMATION_FRAMES;i++)
     {
         toaster2[i].free();
+    }
+    for(int i=0;i<BLACKSTAR_ANIMATION_FRAMES;i++)
+    {
+        blackstar[i].free();
     }
 }
 
@@ -128,6 +163,90 @@ void animations::renderToaster2(SDL_Renderer* renderer)
     }
 }
 
+void animations::renderBlackstar(SDL_Renderer* renderer)
+{
+    switch(aniFrame4){
+        case 0:blackstar[0].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:blackstar[1].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:blackstar[2].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:blackstar[3].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:blackstar[4].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:blackstar[5].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:blackstar[6].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:blackstar[7].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:blackstar[8].render(bsX1,bsY1,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+    switch(aniFrame5){
+        case 0:blackstar[0].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:blackstar[1].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:blackstar[2].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:blackstar[3].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:blackstar[4].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:blackstar[5].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:blackstar[6].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:blackstar[7].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:blackstar[8].render(bsX2,bsY2,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+    switch(aniFrame6){
+        case 0:blackstar[0].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:blackstar[1].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:blackstar[2].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:blackstar[3].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:blackstar[4].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:blackstar[5].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:blackstar[6].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:blackstar[7].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:blackstar[8].render(bsX3,bsY3,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+    switch(aniFrame7){
+        case 0:blackstar[0].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:blackstar[1].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:blackstar[2].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:blackstar[3].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:blackstar[4].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:blackstar[5].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:blackstar[6].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:blackstar[7].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:blackstar[8].render(bsX4,bsY4,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+}
+
 void animations::cycleAnimations()
 {
     if( aniFrame >= TAO_ANIMATION_FRAMES )
@@ -142,6 +261,33 @@ void animations::cycleAnimations()
     if( aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
     {
         aniCountUp = false;
+    }
+    if( aniFrame4 >= BLACKSTAR_ANIMATION_FRAMES)
+    {
+        aniFrame4 = 0;
+        bsX1=rand() % 200;
+        bsY1=rand()% 350;
+    }
+    if( aniFrame5 >= BLACKSTAR_ANIMATION_FRAMES)
+    {
+        aniFrame5 = 0;
+        bsX2=rand() % 200;
+        bsX2+=200;
+        bsY2=rand()% 350;
+    }
+    if( aniFrame6 >= BLACKSTAR_ANIMATION_FRAMES)
+    {
+        aniFrame6 = 0;
+        bsX3=rand() % 200;
+        bsX3+=400;
+        bsY3=rand()% 350;
+    }
+    if( aniFrame7 >= BLACKSTAR_ANIMATION_FRAMES)
+    {
+        aniFrame7 = 0;
+        bsX4=rand() % 200;
+        bsX4+=550;
+        bsY4=rand()% 350;
     }
     else if(aniFrame2 <= 0)
     {
@@ -189,4 +335,31 @@ void animations::toaster2AnimationProgress()
         animationTimer3.restart();
         //std::cout << "\n aniFrame3 = " << aniFrame3 << " \n";
     }
+}
+
+void animations::blackstarAnimationProgress()
+{
+    if(animationTimer4.getTicks() / 40 > 1)
+    {
+        aniFrame4++;
+        animationTimer4.restart();
+        //std::cout << "\n aniFrame3 = " << aniFrame3 << " \n";
+    }
+    if(animationTimer5.getTicks() / 35 > 1)
+    {
+        aniFrame5++;
+        animationTimer5.restart();
+    }
+    if(animationTimer6.getTicks() / 45 > 1)
+    {
+        aniFrame6++;
+        animationTimer6.restart();
+    }
+    if(animationTimer7.getTicks() / 30 > 1)
+    {
+        aniFrame7++;
+        animationTimer7.restart();
+    }
+
+
 }

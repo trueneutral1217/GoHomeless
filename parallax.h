@@ -49,6 +49,8 @@ class parallax
 
         void parallaxRender(SDL_Renderer* renderer);
 
+        void freeParallaxTexture();
+
     private:
 
     int paraX,paraY;

@@ -99,3 +99,9 @@ void parallax::parallaxRender(SDL_Renderer* renderer)
     parallaxTexture.render(parallaxRect2.x,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 
 }
+
+void parallax::freeParallaxTexture(){
+
+    parallaxTexture.free();
+
+}

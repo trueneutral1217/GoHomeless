@@ -228,6 +228,11 @@ void close()
 	chapter.freeBGTextures();
 	blackGround.free();
 	//audio destructor frees audio
+	music.freeAudio();
+	sound.freeAudio();
+	while(!sounds.empty()){
+        sounds.pop_back();
+	}
 	//free the font
 	TTF_CloseFont( chapter.font );
     chapter.font = NULL;
@@ -500,6 +505,10 @@ int main( int argc, char* args[] )
                         chapter.chapterTimer.start();
                     }
                     chapter.handleRendering(renderer);
+                    if(chapter.currentPage == 4)
+                    {
+                        animations.renderBlackstar(renderer);
+                    }
                 }
                 else if(gameState == 4)
                 {
@@ -544,6 +553,8 @@ int main( int argc, char* args[] )
                 animations.toasterAnimationProgress();
 
                 animations.toaster2AnimationProgress();
+
+                animations.blackstarAnimationProgress();
                 //set script line
                 chapter.setAutoScript();
 				//Cycle animation
