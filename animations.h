@@ -12,6 +12,8 @@ const int TOASTER2_ANIMATION_FRAMES = 3;
 
 const int BLACKSTAR_ANIMATION_FRAMES=9;
 
+const int PORTAL_ANIMATION_FRAMES=20;
+
 
 class animations
 {
@@ -26,13 +28,17 @@ class animations
 
         //timer for toaster the robot's animation
         timer animationTimer2;
-
+        //timer for toaster the robot's 2nd animation.
         timer animationTimer3;
 
+        //timer for black stars
         timer animationTimer4;
         timer animationTimer5;
         timer animationTimer6;
         timer animationTimer7;
+
+        //portal timer
+        timer animationTimer8;
 
         bool aniCountUp;
 
@@ -41,15 +47,20 @@ class animations
 
         //aniFrame4, 5,6,and 7 are for the blackstar animations
         int aniFrame4,aniFrame5,aniFrame6,aniFrame7;
+        //for the portal animation
+        int aniFrame8;
 
         //creating 4 blackstar animations with random x/y coords to be displayed
         int bsX1,bsX2,bsX3,bsX4,bsY1,bsY2,bsY3,bsY4;
+
+        int portalY;
 
         //animation textures
         Texture tao[TAO_ANIMATION_FRAMES];
         Texture toaster[TOASTER_ANIMATION_FRAMES];
         Texture toaster2[TOASTER2_ANIMATION_FRAMES];
         Texture blackstar[BLACKSTAR_ANIMATION_FRAMES];
+        Texture portal[PORTAL_ANIMATION_FRAMES];
 
         bool setAnimationTextures(SDL_Renderer* renderer);
         void freeAnimationTextures();
@@ -58,6 +69,7 @@ class animations
         void renderToaster(SDL_Renderer* renderer);
         void renderToaster2(SDL_Renderer* renderer);
         void renderBlackstar(SDL_Renderer* renderer);
+        void renderPortal(SDL_Renderer* renderer);
 
         void cycleAnimations();
         void oscillateCount();
@@ -66,6 +78,7 @@ class animations
         void toasterAnimationProgress();
         void toaster2AnimationProgress();
         void blackstarAnimationProgress();
+        void portalAnimationProgress();
 
     private:
 

@@ -505,9 +505,18 @@ int main( int argc, char* args[] )
                         chapter.chapterTimer.start();
                     }
                     chapter.handleRendering(renderer);
+
+
                     if(chapter.currentPage == 4)
                     {
                         animations.renderBlackstar(renderer);
+                    }
+                    if(chapter.currentPage == 5)
+                    {
+                        if(!animations.animationTimer8.isStarted()){
+                                animations.animationTimer8.start();
+                        }
+                        animations.renderPortal(renderer);
                     }
                 }
                 else if(gameState == 4)
@@ -555,6 +564,8 @@ int main( int argc, char* args[] )
                 animations.toaster2AnimationProgress();
 
                 animations.blackstarAnimationProgress();
+
+                animations.portalAnimationProgress();
                 //set script line
                 chapter.setAutoScript();
 				//Cycle animation

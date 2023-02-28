@@ -6,6 +6,10 @@ animations::animations()
     aniFrame2=0;
     aniFrame3=0;
     aniFrame4=0;
+    aniFrame5=0;
+    aniFrame6=0;
+    aniFrame7=0;
+    aniFrame8=0;
     aniCountUp=true;
     animationTimer.start();
     animationTimer2.start();
@@ -14,6 +18,7 @@ animations::animations()
     animationTimer5.start();
     animationTimer6.start();
     animationTimer7.start();
+    //animationTimer8.start();
 
     //initialize x & y of blackstar animations 1 - 4.
     bsX1=rand() % 200;
@@ -31,6 +36,7 @@ animations::animations()
     bsX4+=550;
     bsY4=rand()% 350;
 
+    portalY=30;
 
 }
 
@@ -76,6 +82,14 @@ bool animations::setAnimationTextures(SDL_Renderer* renderer)
         std::string str = ss.str();
         success = blackstar[i].loadFromFile(str,renderer);
     }
+    for(int i = 0; i<PORTAL_ANIMATION_FRAMES;i++)
+    {
+        int a = i+1;
+        std::stringstream ss;
+        ss << "images/animations/portal/portal" << a << ".png";
+        std::string str = ss.str();
+        success = portal[i].loadFromFile(str,renderer);
+    }
 
     return success;
 }
@@ -98,6 +112,10 @@ void animations::freeAnimationTextures()
     for(int i=0;i<BLACKSTAR_ANIMATION_FRAMES;i++)
     {
         blackstar[i].free();
+    }
+    for(int i=0;i<PORTAL_ANIMATION_FRAMES;i++)
+    {
+        portal[i].free();
     }
 }
 
@@ -247,6 +265,54 @@ void animations::renderBlackstar(SDL_Renderer* renderer)
     }
 }
 
+void animations::renderPortal(SDL_Renderer* renderer)
+{
+    switch(aniFrame8){
+        case 0:portal[0].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:portal[1].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:portal[2].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:portal[3].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:portal[4].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:portal[5].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:portal[6].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:portal[7].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:portal[8].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 9:portal[9].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 10:portal[10].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 11:portal[11].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 12:portal[12].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 13:portal[13].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 14:portal[14].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 15:portal[15].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 16:portal[16].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 17:portal[17].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 18:portal[18].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 19:portal[19].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 20:portal[19].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+}
+
 void animations::cycleAnimations()
 {
     if( aniFrame >= TAO_ANIMATION_FRAMES )
@@ -288,6 +354,11 @@ void animations::cycleAnimations()
         bsX4=rand() % 200;
         bsX4+=550;
         bsY4=rand()% 350;
+    }
+    if(aniFrame8 >= PORTAL_ANIMATION_FRAMES)
+    {
+        aniFrame8 = 20;
+        //std::cout << "\n reset aniFrame 3 \n";
     }
     else if(aniFrame2 <= 0)
     {
@@ -339,27 +410,41 @@ void animations::toaster2AnimationProgress()
 
 void animations::blackstarAnimationProgress()
 {
-    if(animationTimer4.getTicks() / 40 > 1)
+
+    if(animationTimer4.getTicks() / 25 > 1)
     {
         aniFrame4++;
         animationTimer4.restart();
         //std::cout << "\n aniFrame3 = " << aniFrame3 << " \n";
     }
-    if(animationTimer5.getTicks() / 35 > 1)
+    if(animationTimer5.getTicks() / 20 > 1)
     {
         aniFrame5++;
         animationTimer5.restart();
     }
-    if(animationTimer6.getTicks() / 45 > 1)
+    if(animationTimer6.getTicks() / 30 > 1)
     {
         aniFrame6++;
         animationTimer6.restart();
     }
-    if(animationTimer7.getTicks() / 30 > 1)
+    if(animationTimer7.getTicks() / 15 > 1)
     {
         aniFrame7++;
         animationTimer7.restart();
     }
+}
 
+void animations::portalAnimationProgress()
+{
 
+    if(animationTimer8.getTicks() / 60 > 1)
+    {
+        if(aniFrame8<PORTAL_ANIMATION_FRAMES)
+            aniFrame8++;
+        if(aniFrame8==20 && portalY > -400)
+            portalY-=10;
+        animationTimer8.restart();
+        //std::cout << "\n aniFrame8 = " << aniFrame8 << " \n";
+        //std::cout << "\n portalY = " << portalY << " \n";
+    }
 }
