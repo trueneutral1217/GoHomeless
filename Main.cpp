@@ -9,6 +9,8 @@
 #include "pregameui.h"
 #include "animations.h"
 #include "stage.h"
+#include "text.h"
+
 const int TOTAL_STATES = 8;
 
 //gameStates
@@ -45,11 +47,19 @@ stage stage;
 pregameui pregameui;
 //declare instance of animations
 animations animations;
+//set up text input
+text text;
+//if player is not verified they wont progress to ch 3.
+bool verified = false;
+
 //declare sound vector & load sounds into it.
 void loadSounds();
 //render particles to screen
 //tracks the state of the game for rendering etc.
 int gameState;
+
+Texture verify;
+
 //initializes audio,video, etc.
 Texture blackGround;
 bool fadeOut(int countedFrames, bool fade);
@@ -202,6 +212,9 @@ bool loadMedia()
     stage.player1.loadPlayer(renderer);
     //fade to black background
     blackGround.loadFromFile("images/Blackground.png",renderer);
+
+    verify.loadFromFile("images/verify.png",renderer);
+
     //for debugging
     if(success == false)
     {
@@ -228,6 +241,10 @@ void close()
 	//free the backgrounds, dialog box, menubar for chapters and script textures
 	chapter.freeBGTextures();
 	blackGround.free();
+    verify.free();
+    //Free Text images
+	text.noRoboTextTexture.free();
+	text.inputTextTexture.free();
 	//audio destructor frees audio
 	music.freeAudio();
 	sound.freeAudio();
@@ -269,6 +286,8 @@ int main( int argc, char* args[] )
 			bool quit = false;
 
 			bool fade=false;
+			//for noRobo verification
+			bool renderText=false;
 			//load the bg music file
 			//chapter.loadChapterStrings(renderer);
             music.loadMusic();
@@ -279,6 +298,19 @@ int main( int argc, char* args[] )
 			int countedFrames = 0;
 			//Event handler
 			SDL_Event e;
+
+			//Set text color as black
+			SDL_Color textColor = { 255, 255, 255, 0xFF };
+
+			//The current input text.
+			text.inputText.str("");
+			text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer );
+            //the text to be verified
+            text.noRobo.str("fuck capitalism");
+			text.noRoboTextTexture.loadFromRenderedText( text.noRobo.str().c_str(), textColor,chapter.font,renderer );
+			//Enable text input
+            SDL_StartTextInput();
+
 			//While application is running
 			while( !quit )
 			{
@@ -326,7 +358,15 @@ int main( int argc, char* args[] )
                         }
                         if(gameState == 8)//chapter 3
                         {
-                            gameState = chapter.progress(renderer,gameState);
+                            if(!verified)
+                            {
+
+                                verified = text.verifyNoRobo();
+                            }
+                            else
+                            {
+                                gameState = chapter.progress(renderer,gameState);
+                            }
                         }
                         if(gameState == 7)//chapter 2
                         {
@@ -342,6 +382,36 @@ int main( int argc, char* args[] )
 					//Handle key press
 					if( e.type == SDL_KEYDOWN )
 					{
+
+					    if(gameState==8 && !verified)
+                        {
+                            //Handle backspace
+                            if( e.key.keysym.sym == SDLK_BACKSPACE && text.inputText.str().length() > 0 )
+                            {
+                                //lop off character
+                                //text.inputText.str().pop_back();
+
+                                //text.inputText.str().erase(text.inputText.str().length()-1,1);
+                                text.inputText.str("");
+                                //text.foo(text.inputText.str());
+                                //text.foo.pop_back();
+                                //text.inputText.str(text.foo);
+
+                                renderText = true;
+                            }
+                            //Handle copy
+                            else if( e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL )
+                            {
+                                SDL_SetClipboardText( text.inputText.str().c_str() );
+                            }
+                            //Handle paste
+                            else if( e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL )
+                            {
+                                text.inputText.str() = SDL_GetClipboardText();
+                                renderText = true;
+                            }
+                        }
+
 						switch( e.key.keysym.sym )
 						{
                             case SDLK_SPACE:
@@ -380,6 +450,21 @@ int main( int argc, char* args[] )
 							break;
 						}
 					}
+					else if( gameState == 8 && verified==false && e.type == SDL_TEXTINPUT )
+                    {
+                        //Not copy or pasting
+						if( !( SDL_GetModState() & KMOD_CTRL && ( e.text.text[ 0 ] == 'c' || e.text.text[ 0 ] == 'C' || e.text.text[ 0 ] == 'v' || e.text.text[ 0 ] == 'V' ) ) )
+						{
+							//Append character
+							//text.inputText(text.inputText.str(), ios_base::app | ios_base::out);
+                            text.inputText << e.text.text;
+							//text.inputText.str() += e.text.text;
+							renderText = true;
+							std::cout << "\n inputText: " << text.inputText.str();
+                            std::cout << "\n noRobo: " << text.noRobo.str();
+						}
+						verified = text.verifyNoRobo();
+                    }
 					//Handle button events when in pregame ui or stage 1.
 					if(gameState <5 || gameState==6)
                     {
@@ -469,13 +554,43 @@ int main( int argc, char* args[] )
                     }
                     if(gameState == 8)
                     {
-                        //handles button presses for chapter 2.
-                        gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
-                        if(gameState==0){
-                            music.stopMusic();
-                            music.loadMusic();
-                            music.playMusic();
+                        if(!verified)
+                        {/*
+                            //Rerender text if needed
+                            if( renderText )
+                            {
+                                //Set text color as black
+                                SDL_Color textColor = { 255, 255, 255, 0xFF };
+                                //Text is not empty
+                                if( text.inputText != "" )
+                                {
+                                    //Render new text
+                                    text.inputTextTexture.loadFromRenderedText( text.inputText.c_str(), textColor,chapter.font,renderer );
+                                }
+                                //Text is empty
+                                else
+                                {
+                                    //Render space texture
+                                    text.inputTextTexture.loadFromRenderedText( " ", textColor,chapter.font,renderer );
+                                }
+                            }
+                            //Render text textures
+                            text.noRoboTextTexture.render( ( SCREEN_WIDTH - text.noRoboTextTexture.getWidth() ) / 2, 0 );
+                            text.inputTextTexture.render( ( SCREEN_WIDTH - text.inputTextTexture.getWidth() ) / 2, text.noRoboTextTexture.getHeight() );
+*/
                         }
+                        else
+                        {
+                            //handles button presses for chapter 2.
+                            gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
+                            if(gameState==0)
+                            {
+                                music.stopMusic();
+                                music.loadMusic();
+                                music.playMusic();
+                            }
+                        }
+
                     }
 					//if wasd are pressed player will be moved.
 					stage.player1.handleEvent(e);
@@ -555,16 +670,65 @@ int main( int argc, char* args[] )
                         animations.portalY = 30;
                     }
                 }
-                else if(gameState == 8)
+                else if(gameState == 8)//render chapter 3 no robo verification, if passed, render chapter 3
                 {
-                    if(!chapter.chapterTimer.isStarted())
+                    if(!verified)
                     {
-                        chapter.chapterTimer.start();
+                        verify.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        //Rerender text if needed
+                        if( renderText )
+                        {
+                            //Set text color as
+                            SDL_Color textColor = { 255, 255, 255 };
+                            //Text is not empty
+                            if( text.inputText.str() != "" )
+                            {
+                                //Render new text
+                                //text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer );
+
+                            if( !text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer ) )
+                                {
+                                    printf( "\n Unable to render input text to texture!\n" );
+                                }
+
+                            }
+                            //Text is empty
+                            else
+                            {
+                                //Render space texture
+                                //text.inputTextTexture.loadFromRenderedText( " ", textColor,chapter.font,renderer );
+
+                                if( !text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer ) )
+                                {
+                                    printf( "\n Unable to render input text to texture!\n" );
+                                }
+                            }
+                        }
+
+                        //Clear screen
+                        //SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
+                        //SDL_RenderClear( renderer );
+                        //Render text textures
+                        //text.noRoboTextTexture.render( ( SCREEN_WIDTH - text.noRoboTextTexture.getWidth() ) / 2, 0 );
+
+                        //text.inputTextTexture.render( ( SCREEN_WIDTH - text.inputTextTexture.getWidth() ) / 2, text.noRoboTextTexture.getHeight() );
+                        text.noRoboTextTexture.render(150,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        text.inputTextTexture.render(150,370,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                        //std::cout << "\n verified: " << std::to_string( verified );
+                        //std::cout << "\n inputText: " << text.inputText.str();
+                        //std::cout << "\n noRobo: " << text.noRobo.str();
                     }
-                    //Chapter rendering (buttons and backgrounds and text.
-                    chapter.handleRendering(renderer);
-                    //render tao animation
-                    //animations.renderTao(renderer);
+                    else
+                    {
+                        if(!chapter.chapterTimer.isStarted())
+                        {
+                            chapter.chapterTimer.start();
+                        }
+                        //Chapter rendering (buttons and backgrounds and text.
+                        chapter.handleRendering(renderer);
+                        //render tao animation
+                        //animations.renderTao(renderer);
+                    }
                 }
                 else if(gameState == 4)
                 {
@@ -618,6 +782,9 @@ int main( int argc, char* args[] )
 				//Cycle animation
 				animations.cycleAnimations();
 			}
+
+			//Disable text input
+			SDL_StopTextInput();
 		}
 	}
 	//Free resources and close SDL

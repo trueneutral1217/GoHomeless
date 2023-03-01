@@ -5,7 +5,7 @@
 1677630606 c:\gohomeless\gohomeless\button.h
 	"Texture.h"
 
-1677539041 c:\gohomeless\gohomeless\texture.h
+1677707082 c:\gohomeless\gohomeless\texture.h
 	"SDL.h"
 	<SDL_ttf.h>
 	"string"
@@ -425,7 +425,7 @@
 1659382236 c:\gohomeless\gohomeless\timer.h
 	"Texture.h"
 
-1677631086 source:c:\gohomeless\gohomeless\main.cpp
+1677707752 source:c:\gohomeless\gohomeless\main.cpp
 	"audio.h"
 	"button.h"
 	"Texture.h"
@@ -436,6 +436,7 @@
 	"pregameui.h"
 	"animations.h"
 	"stage.h"
+	"text.h"
 
 1540994418 c:\mingw_dev_lib\sdl2_mixer-2.0.4\x86_64-w64-mingw32\include\sdl2\sdl_mixer.h
 	"SDL_stdinc.h"
@@ -460,7 +461,7 @@
 1677619387 source:c:\gohomeless\gohomeless\savegame.cpp
 	"saveGame.h"
 
-1677630756 source:c:\gohomeless\gohomeless\audio.cpp
+1677631801 source:c:\gohomeless\gohomeless\audio.cpp
 	"audio.h"
 
 1677630756 c:\gohomeless\gohomeless\audio.h
@@ -898,4 +899,10 @@
 
 1677107590 source:c:\gohomeless\gohomeless\parallax.cpp
 	"parallax.h"
+
+1677707494 c:\gohomeless\gohomeless\text.h
+	"texture.h"
+
+1677710443 source:c:\gohomeless\gohomeless\text.cpp
+	"text.h"
 

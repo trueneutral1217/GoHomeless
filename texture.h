@@ -4,12 +4,15 @@
 #include "SDL.h"
 #include <SDL_ttf.h>
 #include "string"
+//#include "string.h"
 #include "stdio.h"
 #include "sstream"
 #include "SDL_image.h"
 #include <cmath>
 #include <stddef.h>
 #include <iostream>
+//#include <istream>
+
 #include <assert.h>
 #include <vector>
 #include "cstdlib"
