@@ -4,6 +4,7 @@ chapter::chapter()
 {
     currentChapter = 0;
     chapter1Complete = false;
+    chapter2Complete = false;
     currentPage = 0;
     currentScript = 0;
     autoText = true;
@@ -67,7 +68,10 @@ void chapter::backPage()
 void chapter::completeChapter(SDL_Renderer* renderer)
 {
     resetPages();
-    chapter1Complete=true;
+    if(currentChapter==0)
+        chapter1Complete=true;
+    if(currentChapter==1)
+        chapter2Complete=true;
     currentChapter += 1;
     testSaveVariables();
 }
@@ -85,6 +89,7 @@ void chapter::resetChapters(SDL_Renderer* renderer)
     currentChapter=0;
     resetPages();
     chapter1Complete = false;
+    chapter2Complete = false;
     loadChapterStrings(renderer);
     testSaveVariables();
 }
@@ -240,6 +245,82 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[7][5].str("Why have I been treated less than equal?");
         scriptString[7][6].str("If I die tomorrow will it matter to you?");
         scriptString[7][7].str(" *End of Chapter 2* Press LMB or Enter to return to select screen.");
+
+    }
+
+    if(currentChapter==2)
+    {
+        scriptString[0][0].str("1");
+        scriptString[0][1].str("2");
+        scriptString[0][2].str("3");
+        scriptString[0][3].str("4");
+        scriptString[0][4].str("5");
+        scriptString[0][5].str("6");
+        scriptString[0][6].str("7");
+        scriptString[0][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[1][0].str("1");
+        scriptString[1][1].str("2");
+        scriptString[1][2].str("3");
+        scriptString[1][3].str("4");
+        scriptString[1][4].str("5");
+        scriptString[1][5].str("6");
+        scriptString[1][6].str("7");
+        scriptString[1][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[2][0].str("1");
+        scriptString[2][1].str("2");
+        scriptString[2][2].str("3");
+        scriptString[2][3].str("4");
+        scriptString[2][4].str("5");
+        scriptString[2][5].str("6");
+        scriptString[2][6].str("7");
+        scriptString[2][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[3][0].str("1");
+        scriptString[3][1].str("2");
+        scriptString[3][2].str("3");
+        scriptString[3][3].str("4");
+        scriptString[3][4].str("5");
+        scriptString[3][5].str("6");
+        scriptString[3][6].str("7");
+        scriptString[3][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[4][0].str("1");
+        scriptString[4][1].str("2");
+        scriptString[4][2].str("3");
+        scriptString[4][3].str("4");
+        scriptString[4][4].str("5");
+        scriptString[4][5].str("6");
+        scriptString[4][6].str("7");
+        scriptString[4][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[5][0].str("1");
+        scriptString[5][1].str("2");
+        scriptString[5][2].str("3");
+        scriptString[5][3].str("4");
+        scriptString[5][4].str("5");
+        scriptString[5][5].str("6");
+        scriptString[5][6].str("7");
+        scriptString[5][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[6][0].str("1");
+        scriptString[6][1].str("2");
+        scriptString[6][2].str("3");
+        scriptString[6][3].str("4");
+        scriptString[6][4].str("5");
+        scriptString[6][5].str("6");
+        scriptString[6][6].str("7");
+        scriptString[6][7].str("                                Press LMB or Enter to continue...");
+
+        scriptString[7][0].str("1");
+        scriptString[7][1].str("2");
+        scriptString[7][2].str("3");
+        scriptString[7][3].str("4");
+        scriptString[7][4].str("5");
+        scriptString[7][5].str("6");
+        scriptString[7][6].str("7");
+        scriptString[7][7].str("                                Press LMB or Enter to continue...");
     }
 
     setScriptTextures(renderer);
@@ -251,6 +332,7 @@ void chapter::freeBGTextures()
     {
         chapter1BG[i].free();
         chapter2BG[i].free();
+        chapter3BG[i].free();
     }
     dialogBox.free();
 	menuBar.free();
@@ -294,6 +376,15 @@ void chapter::setFileNames()
     bgFileName2[5] = "images/treadonyou.png";
     bgFileName2[6] = "images/blackground.png";
     bgFileName2[7] = "images/blackground.png";
+
+    bgFileName3[0] = "images/blackground.png";
+    bgFileName3[1] = "images/blackground.png";
+    bgFileName3[2] = "images/blackground.png";
+    bgFileName3[3] = "images/blackground.png";
+    bgFileName3[4] = "images/blackground.png";
+    bgFileName3[5] = "images/blackground.png";
+    bgFileName3[6] = "images/blackground.png";
+    bgFileName3[7] = "images/blackground.png";
 }
 
 bool chapter::setChapterTextures(SDL_Renderer* renderer){
@@ -321,6 +412,13 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer){
         success = ch2Pg8AnteriorMid.parallaxTexture.loadFromFile("images/road.png",renderer);
         success = ch2Pg8Mid.parallaxTexture.loadFromFile("images/cityscape.png",renderer);
         success = ch2Pg8Back.parallaxTexture.loadFromFile("images/citystars.png",renderer);
+    }
+    else if(currentChapter == 2)
+    {
+        for(int i = 0; i<TOTAL_PAGES;i++)
+        {
+            success = chapter3BG[i].loadFromFile( bgFileName3[i],renderer );
+        }
     }
 
        //load dialog box image
@@ -401,6 +499,7 @@ void chapter::testSaveVariables()
     std::cout << "\n currentPage: " << std::to_string( currentPage );
     std::cout << "\n currentScript: " << std::to_string( currentScript );
     std::cout << "\n chapter1Complete: " << std::to_string(chapter1Complete);
+    std::cout << "\n chapter2Complete: " << std::to_string(chapter2Complete);
 }
 
 void chapter::loadFont()
@@ -428,6 +527,13 @@ int chapter::progress(SDL_Renderer* renderer,int gameState)
         pageIncrement();
         chapterTimer.restart();
     }
+    /*
+    if(currentChapter==1 && currentPage==5 && currentScript==TOTAL_SCRIPTS-1)
+    {//if leaving ch2 pg6, reset animation (maybe function this out since it's used in save & exit button press area
+        animationTimer8.stop();
+        aniFrame8 = 0;
+        portalY = 30;
+    }*/
     return gameState;
 }
 
@@ -517,12 +623,13 @@ void chapter::freeButtons()
     }
 }
 
-void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3)
+void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4)
 {
     currentChapter=data0;
     currentPage=data1;
     currentScript=data2;
     chapter1Complete=data3;
+    chapter2Complete=data4;
     //this needs to be fixed at the source.
 }
 
@@ -581,6 +688,13 @@ int chapter::handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* 
         if(i==7)
         {//save and exit button
             gameState=buttons[i].handleEvent(gameState,buttons[i].buttonName,e,window,renderer);
+            /*
+            if(currentChapter==1 && currentPage==5 && currentScript==TOTAL_SCRIPTS-1)
+            {//if leaving ch2 pg6, reset animation.  this is also used in chapter progress function, create reset animation variables function.
+                animationTimer8.stop();
+                aniFrame8 = 0;
+                portalY = 30;
+            }*/
         }
     }
     return gameState;
@@ -740,6 +854,36 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
             ch2Pg8handleParallax(renderer);
 
+        break;
+        }
+    }
+    else if(currentChapter == 2)
+    {
+        switch(currentPage %TOTAL_PAGES)
+        {
+        case 0:
+            chapter3BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 1:
+            chapter3BG[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 2:
+            chapter3BG[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 3:
+            chapter3BG[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 4:
+            chapter3BG[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 5:
+            chapter3BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 6:
+            chapter3BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        break;
+        case 7:
+            chapter3BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         break;
         }
     }

@@ -17,6 +17,7 @@ class audio
         void loadMusic();
         void loadChapter1Music();
         void loadChapter2Music();
+        void loadChapter3Music();
         void loadSound(int soundNum);
         void playMusic();
         void pauseMusic();

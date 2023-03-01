@@ -38,7 +38,7 @@ void saveGame::readFile()
     }
 }
 
-void saveGame::writeFile(int currentChapter,int currentPage, int currentScript,bool chapter1Complete)
+void saveGame::writeFile(int currentChapter,int currentPage, int currentScript,bool chapter1Complete,bool chapter2Complete)
 {
 
     SDL_RWops* file = SDL_RWFromFile( "savegame/save.gsf", "w+b" );
@@ -49,6 +49,7 @@ void saveGame::writeFile(int currentChapter,int currentPage, int currentScript,b
         data[1] = currentPage;
         data[2] = currentScript;
         data[3] = chapter1Complete;
+        data[4] = chapter2Complete;
         //testSaveVariables();
         for( int i = 0; i < TOTAL_DATA; ++i )
         {

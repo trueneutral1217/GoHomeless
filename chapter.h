@@ -7,6 +7,7 @@
 #include "button.h"
 #include "parallax.h"
 
+
 //number of dialog lines for chapter 1.
 const int TOTAL_SCRIPTS = 8;
 //number of dialog pages for chapter 1.
@@ -34,6 +35,7 @@ class chapter
         int currentPage;
         int currentChapter;
         bool chapter1Complete;
+        bool chapter2Complete;
         bool autoText;
         int autoTextSpeed;
 
@@ -45,6 +47,7 @@ class chapter
         Texture scriptTexture[TOTAL_PAGES][TOTAL_SCRIPTS];
         Texture chapter1BG[TOTAL_PAGES];
         Texture chapter2BG[TOTAL_PAGES];
+        Texture chapter3BG[TOTAL_PAGES];
         Texture dialogBox;
         Texture menuBar;
 
@@ -80,6 +83,8 @@ class chapter
         //
         std::string bgFileName[TOTAL_PAGES];
         std::string bgFileName2[TOTAL_PAGES];
+        std::string bgFileName3[TOTAL_PAGES];
+
         void freeBGTextures();
         //sets file names for page backgrounds
         void setFileNames();
@@ -119,7 +124,7 @@ class chapter
         //handles pretty much all rendering except animation in chapter 1
         void handleRendering(SDL_Renderer* renderer);
         //load savegame data into chapter variables
-        void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3);
+        void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4);
 
         int handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
 

@@ -50,3 +50,5 @@ much else to do before release of demo 2 besides maybe adding an animation or tw
 pages is a little meh.
 
 2/27/23 - created images and added animation to page 5 of chapter 2.  Did the same for page 6.
+
+2/28/23 - bug fixes, chapter 3 framework up: placeholder background images, music, placeholder script, chapter 3 button.

@@ -11,8 +11,8 @@ const int BUTTON_HEIGHT = 120;
 
 //buttons in the menubar plus save & quit button .
 const static int TOTAL_CHAPTER_BUTTONS=8;
-//new game, load game, options, credits, back button, and fullscreen on/off button.
-const static int TOTAL_PREGAME_BUTTONS = 9;
+//new game, load game, options, credits, back button, chapters 1,2,3, and fullscreen on/off button.
+const static int TOTAL_PREGAME_BUTTONS = 10;
 //gamestate=6, stage1 buttons
 const static int TOTAL_STAGE_BUTTONS = 1;
 

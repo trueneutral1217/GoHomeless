@@ -22,9 +22,10 @@ bool pregameui::setPreGameButtonTextures(SDL_Renderer* renderer, bool success)
     }
     buttons[0].setPosition(600,20);
     buttons[5].setPosition(20,20);
-    buttons[6].setPosition(20,100);
-    buttons[7].setPosition(20,150);
-    buttons[8].setPosition(20,200);
+    buttons[6].setPosition(20,100);//chapter 1 button
+    buttons[7].setPosition(20,150);//stage 1 button
+    buttons[8].setPosition(20,200);//chapter 2 button
+    buttons[9].setPosition(20,300);//chapter 3 button
     return success;
 }
 
@@ -57,7 +58,7 @@ void pregameui::handleCreditsScreenRendering(SDL_Renderer* renderer)
     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
 
-void pregameui::handleLoadGameScreenRendering(SDL_Renderer* renderer, bool chapter1Complete)
+void pregameui::handleLoadGameScreenRendering(SDL_Renderer* renderer, bool chapter1Complete,bool chapter2Complete)
 {
     //chapter select screen
     chapterSelectTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
@@ -66,6 +67,13 @@ void pregameui::handleLoadGameScreenRendering(SDL_Renderer* renderer, bool chapt
     {
         //render chapter 2 button
         buttons[8].buttonTexture.render(buttons[8].getPositionX(),buttons[8].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        //render stage 1 button
+        //buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    }
+    if(chapter2Complete)
+    {
+        //render chapter 2 button
+        buttons[9].buttonTexture.render(buttons[9].getPositionX(),buttons[9].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         //render stage 1 button
         //buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     }

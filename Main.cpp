@@ -9,7 +9,7 @@
 #include "pregameui.h"
 #include "animations.h"
 #include "stage.h"
-const int TOTAL_STATES = 7;
+const int TOTAL_STATES = 8;
 
 //gameStates
 //gameState = 0 pregameui
@@ -20,6 +20,7 @@ const int TOTAL_STATES = 7;
 //gameState = 5 chapter 1
 //gameState = 6 stage 1
 //gameState = 7 chapter 2
+//gameState = 8 chapter 3
 
 //Starts up SDL and creates window
 bool init();
@@ -176,7 +177,7 @@ bool loadMedia()
     //load saved game
 	savegame.readFile();
 	//set chapter variables based on savegame data.
-	chapter.loadSavedVariables(savegame.data[0],savegame.data[1],savegame.data[2],savegame.data[3]);
+	chapter.loadSavedVariables(savegame.data[0],savegame.data[1],savegame.data[2],savegame.data[3],savegame.data[4]);
 	//test the variables after loading
     chapter.testSaveVariables();
     //load animations textures
@@ -212,7 +213,7 @@ bool loadMedia()
 void close()
 {
     //save progress
-    savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete);
+    savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete,chapter.chapter2Complete);
     chapter.testSaveVariables();
     //free the button textures
     chapter.freeButtons();
@@ -323,6 +324,10 @@ int main( int argc, char* args[] )
                                 }
                             }
                         }
+                        if(gameState == 8)//chapter 3
+                        {
+                            gameState = chapter.progress(renderer,gameState);
+                        }
                         if(gameState == 7)//chapter 2
                         {
                             gameState = chapter.progress(renderer,gameState);
@@ -340,7 +345,7 @@ int main( int argc, char* args[] )
 						switch( e.key.keysym.sym )
 						{
                             case SDLK_SPACE:
-                                if(gameState == 5)
+                                if(gameState == 5 || gameState == 7 || gameState ==8)
                                 {
                                     //update script line, page, end chapter
                                     gameState = chapter.progress2(renderer,gameState);
@@ -412,6 +417,20 @@ int main( int argc, char* args[] )
                             chapter.loadChapterStrings(renderer);
                             chapter.testSaveVariables();
                         }
+                        if(gameState == 8)
+                        {
+                            if(chapter.currentChapter!=2)
+                            {
+                                chapter.currentChapter =2;
+                                chapter.resetPages();
+                            }
+                            music.stopMusic();
+                            music.loadChapter3Music();
+                            music.playMusic();
+                            chapter.setChapterTextures(renderer);
+                            chapter.loadChapterStrings(renderer);
+                            chapter.testSaveVariables();
+                        }
                         if(gameState != oldGameState)
                         {
                             int newGameState = gameState;
@@ -439,6 +458,16 @@ int main( int argc, char* args[] )
                         }
                     }
                     if(gameState == 7)
+                    {
+                        //handles button presses for chapter 2.
+                        gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
+                        if(gameState==0){
+                            music.stopMusic();
+                            music.loadMusic();
+                            music.playMusic();
+                        }
+                    }
+                    if(gameState == 8)
                     {
                         //handles button presses for chapter 2.
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
@@ -476,7 +505,7 @@ int main( int argc, char* args[] )
                     chapter.chapterTimer.stop();
 
                     //handles the buttons and background rendering
-                    pregameui.handleLoadGameScreenRendering(renderer,chapter.chapter1Complete);
+                    pregameui.handleLoadGameScreenRendering(renderer,chapter.chapter1Complete,chapter.chapter2Complete);
 
 
                 }
@@ -492,7 +521,7 @@ int main( int argc, char* args[] )
                     {
                         chapter.chapterTimer.start();
                     }
-                    //Chapter 1 rendering (buttons and backgrounds and text.
+                    //Chapter rendering (buttons and backgrounds and text.
                     chapter.handleRendering(renderer);
                     //render tao animation
                     animations.renderTao(renderer);
@@ -518,6 +547,24 @@ int main( int argc, char* args[] )
                         }
                         animations.renderPortal(renderer);
                     }
+                    if(chapter.currentPage == 6)
+                    {
+                        //this is an ugly way of resetting the animation on pg 5, but, whatever
+                        animations.animationTimer8.stop();
+                        animations.aniFrame8 = 0;
+                        animations.portalY = 30;
+                    }
+                }
+                else if(gameState == 8)
+                {
+                    if(!chapter.chapterTimer.isStarted())
+                    {
+                        chapter.chapterTimer.start();
+                    }
+                    //Chapter rendering (buttons and backgrounds and text.
+                    chapter.handleRendering(renderer);
+                    //render tao animation
+                    //animations.renderTao(renderer);
                 }
                 else if(gameState == 4)
                 {

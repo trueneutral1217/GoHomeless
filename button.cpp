@@ -16,6 +16,7 @@ button::button()
 	pregameButtonNames[6]="fullScreenOff";
 	pregameButtonNames[7]="stage1";
 	pregameButtonNames[8]="chapter2";
+	pregameButtonNames[9]="chapter3";
 	//move buttons 8-15 to chapter
 	chapterButtonNames[0]="backPage";
 	chapterButtonNames[1]="backLine";
@@ -173,6 +174,11 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n chapter 2 button pressed \n \n");
                             gameState = 7;
                         }
+                        else if(buttonName=="chapter3")
+                        {
+                            printf("\n \n chapter 3 button pressed \n \n");
+                            gameState = 8;
+                        }
                         else if(buttonName=="fullScreenOff" && gameState==3)
                         {
                             printf("\n \n fullScreenOff button pressed \n \n");
@@ -187,42 +193,42 @@ int button::handleEvent(int gameState, std::string buttonName, SDL_Event* e, SDL
                             printf("\n \n Stage 1 button pressed \n \n");
                             gameState = 6;
                         }
-                        else if(buttonName=="backPage" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="backPage" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n backPage button pressed \n \n");
                             gameState=-1;
                         }
-                        else if(buttonName=="backLine" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="backLine" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n backLine button pressed \n \n");
                             gameState=-1;
                         }
-                        else if(buttonName=="autoOn" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="autoOn" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n autotexton button pressed \n \n");
                             gameState=1;
                         }
-                        else if(buttonName=="autoOff" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="autoOff" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n autotextoff button pressed \n \n");
                             gameState=0;
                         }
-                        else if(buttonName=="autoSpeed1" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="autoSpeed1" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n autospeed1 button pressed \n \n");
                             gameState=0;
                         }
-                        else if(buttonName=="autoSpeed2" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="autoSpeed2" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n autospeed2 button pressed \n \n");
                             gameState=1;
                         }
-                        else if(buttonName=="autoSpeed3" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="autoSpeed3" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n autospeed3 button pressed \n \n");
                             gameState=2;
                         }
-                        else if(buttonName=="saveAndExit" && (gameState==5 || gameState ==7))
+                        else if(buttonName=="saveAndExit" && (gameState==5 || gameState ==7 || gameState==8))
                         {
                             printf("\n \n saveAndExit button pressed \n \n");
                             gameState=0;

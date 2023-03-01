@@ -16,7 +16,7 @@ audio::~audio()
 
 void audio::loadMusic()
 {
-    music = Mix_LoadMUS( "music/Radioactive Rain.mp3" );
+    music = Mix_LoadMUS( "music/openingsequence.mp3" );
 }
 
 void audio::loadChapter1Music()
@@ -27,6 +27,11 @@ void audio::loadChapter1Music()
 void audio::loadChapter2Music()
 {
     music = Mix_LoadMUS("music/Tiki Jungle.mp3");
+}
+
+void audio::loadChapter3Music()
+{
+    music = Mix_LoadMUS("music/Radioactive Rain.mp3");
 }
 
 void audio::loadSound(int soundNum)

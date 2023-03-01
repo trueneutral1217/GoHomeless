@@ -40,7 +40,7 @@ public:
 
     void handleCreditsScreenRendering(SDL_Renderer* renderer);
 
-    void handleLoadGameScreenRendering(SDL_Renderer* renderer,bool chapter1Complete);
+    void handleLoadGameScreenRendering(SDL_Renderer* renderer,bool chapter1Complete,bool chapter2Complete);
 
     void handleNewGameScreenRendering(SDL_Renderer* renderer);
 
