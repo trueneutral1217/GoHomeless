@@ -299,17 +299,7 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			//Set text color as black
-			SDL_Color textColor = { 255, 255, 255, 0xFF };
-
-			//The current input text.
-			text.inputText.str("");
-			text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer );
-            //the text to be verified
-            text.noRobo.str("fuck capitalism");
-			text.noRoboTextTexture.loadFromRenderedText( text.noRobo.str().c_str(), textColor,chapter.font,renderer );
-			//Enable text input
-            SDL_StartTextInput();
+			text.loadText(chapter.font,renderer);
 
 			//While application is running
 			while( !quit )

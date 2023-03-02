@@ -55,3 +55,4 @@ pages is a little meh.
 
 3/1/23 - no robo verification added to start of chapter 3.
 
+3/2/23 - chapter 3 dialog is written.  title?  probably going to go with 'Logic over Common Sense'.

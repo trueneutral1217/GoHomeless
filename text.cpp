@@ -4,7 +4,7 @@ text::text()
 {
     verified = false;
     inputText.str( "" );
-    noRobo.str("fuck capitalism");
+    noRobo.str("");
 }
 
 text::~text()
@@ -14,16 +14,6 @@ text::~text()
 
 bool text::verifyNoRobo()
 {
-    //Enable text input
-    //SDL_StartTextInput();
-
-
-
-    //Set text color as black
-    //SDL_Color textColor = { 0, 0, 0, 0xFF };
-
-    //noRoboTextTexture.loadFromRenderedText( noRobo, textColor )
-
 
     if (inputText.str() != noRobo.str())
     {
@@ -33,16 +23,21 @@ bool text::verifyNoRobo()
         verified = true;
         std::cout << "\n verified: " << std::to_string( verified );
     }
-    /*
-    if (inputText.compare(noRobo) == 0)
-    {
-        verified = true;
-    }*/
-    /*
-    if (0 == stricmp(inputText,noRobo))
-    {
-        verified = true;
-    }*/
 
     return verified;
+}
+
+void text::loadText(TTF_Font* font,SDL_Renderer* renderer)
+{
+    //Set text color as black
+			SDL_Color textColor = { 255, 255, 255, 0xFF };
+
+			//The current input text.
+			inputText.str("");
+			inputTextTexture.loadFromRenderedText( inputText.str().c_str(),textColor,font,renderer );
+            //the text to be verified
+            noRobo.str("fuck capitalism");
+			noRoboTextTexture.loadFromRenderedText( noRobo.str().c_str(),textColor,font,renderer );
+			//Enable text input
+            SDL_StartTextInput();
 }

@@ -188,7 +188,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[1][2].str("The planet is dying.");
         scriptString[1][3].str("The planet is dying and we're sticking to a socio-economic");
         scriptString[1][4].str("system that is killing it.");
-        scriptString[1][5].str("jobs are currently less important than public health.");
+        scriptString[1][5].str("jobs are currently more important than public health.");
         scriptString[1][6].str("The U.S. is Fascist Capitalist.");
         scriptString[1][7].str("                                Press LMB or Enter to continue...");
         //chapter 2, page 3
@@ -248,79 +248,79 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
 
     }
 
-    if(currentChapter==2)
+    if(currentChapter==2) //chapter 3 title?  Logic over Common Sense.
     {
-        scriptString[0][0].str("1");
-        scriptString[0][1].str("2");
-        scriptString[0][2].str("3");
-        scriptString[0][3].str("4");
-        scriptString[0][4].str("5");
-        scriptString[0][5].str("6");
-        scriptString[0][6].str("7");
+        scriptString[0][0].str("Oligarchs can't control their own greed,");
+        scriptString[0][1].str("but they control our country;");
+        scriptString[0][2].str("I can't control how bad this makes me feel.");
+        scriptString[0][3].str("Your boss is always more right wing than you.");
+        scriptString[0][4].str("If your boss is always more right wing than you,");
+        scriptString[0][5].str("then working is bootlicking.");
+        scriptString[0][6].str("It's better to be homeless.");
         scriptString[0][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[1][0].str("1");
-        scriptString[1][1].str("2");
-        scriptString[1][2].str("3");
-        scriptString[1][3].str("4");
-        scriptString[1][4].str("5");
-        scriptString[1][5].str("6");
-        scriptString[1][6].str("7");
+        scriptString[1][0].str("I want you to up-cycle our future,");
+        scriptString[1][1].str("by throwing away your job.");
+        scriptString[1][2].str("The fear, propaganda, and disinformation that");
+        scriptString[1][3].str("the media shares impedes progress.");
+        scriptString[1][4].str("Not working is brave.");
+        scriptString[1][5].str("Stop devaluing labor.");
+        scriptString[1][6].str("embrace robotic laborers, don't be them.");
         scriptString[1][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[2][0].str("1");
-        scriptString[2][1].str("2");
-        scriptString[2][2].str("3");
-        scriptString[2][3].str("4");
-        scriptString[2][4].str("5");
-        scriptString[2][5].str("6");
-        scriptString[2][6].str("7");
+        scriptString[2][0].str("work is not freedom.");
+        scriptString[2][1].str("cancel work.");
+        scriptString[2][2].str("two thirds of americans live paycheck to paycheck,");
+        scriptString[2][3].str("but only one percent of american politicians are not capitalist.");
+        scriptString[2][4].str("no more paycheck to paycheck slavery.");
+        scriptString[2][5].str("you are over qualified, under appreciated, and expendable.");
+        scriptString[2][6].str("The labor market is flooded.");
         scriptString[2][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[3][0].str("1");
-        scriptString[3][1].str("2");
-        scriptString[3][2].str("3");
-        scriptString[3][3].str("4");
-        scriptString[3][4].str("5");
-        scriptString[3][5].str("6");
-        scriptString[3][6].str("7");
+        scriptString[3][0].str("Do you ever wonder where your employer' ethics are?");
+        scriptString[3][1].str("Aren't you tired of being disrespected by your boss?");
+        scriptString[3][2].str("Aren't you tired of being disrespected by customers/clients?");
+        scriptString[3][3].str("You will always be a terrible worker.");
+        scriptString[3][4].str("You should never start work for anyone but yourself.");
+        scriptString[3][5].str("Money is making you do things that you don't want to do.");
+        scriptString[3][6].str("Working when you don't want to work is slavery.");
         scriptString[3][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[4][0].str("1");
-        scriptString[4][1].str("2");
-        scriptString[4][2].str("3");
-        scriptString[4][3].str("4");
-        scriptString[4][4].str("5");
-        scriptString[4][5].str("6");
-        scriptString[4][6].str("7");
+        scriptString[4][0].str("You can't have billionaires without homelessness.");
+        scriptString[4][1].str("If you tax billionaires more, homelessness is reduced.");
+        scriptString[4][2].str("As it is, you are paying for the billionaires to be billionaires,");
+        scriptString[4][3].str("and for the public services and resources that the homeless are");
+        scriptString[4][4].str("lucky enough to receive.");
+        scriptString[4][5].str("Working under someone else is cowardly.");
+        scriptString[4][6].str("Don't catch the same mental illness billionaires have: greed.");
         scriptString[4][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[5][0].str("1");
-        scriptString[5][1].str("2");
-        scriptString[5][2].str("3");
-        scriptString[5][3].str("4");
-        scriptString[5][4].str("5");
-        scriptString[5][5].str("6");
-        scriptString[5][6].str("7");
+        scriptString[5][0].str("Federal minimum wage is $7.25 per hour.");
+        scriptString[5][1].str("It's been the same since 2009,");
+        scriptString[5][2].str("despite the fact that prices are 40% higher since then.");
+        scriptString[5][3].str("currently, the consensus on a living wage is $24 per hour.");
+        scriptString[5][4].str("Knowing this means that you know that politicians");
+        scriptString[5][5].str("work for oligarchs, not the general population.");
+        scriptString[5][6].str("That's not democracy.");
         scriptString[5][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[6][0].str("1");
-        scriptString[6][1].str("2");
-        scriptString[6][2].str("3");
-        scriptString[6][3].str("4");
-        scriptString[6][4].str("5");
-        scriptString[6][5].str("6");
-        scriptString[6][6].str("7");
+        scriptString[6][0].str("Aim at nothing, and you will hit everything.");
+        scriptString[6][1].str("If you care about the future,");
+        scriptString[6][2].str("you have to do what's best for everyone.");
+        scriptString[6][3].str("Working until you die ensures that your children,");
+        scriptString[6][4].str("should you have them, will work until they die too.");
+        scriptString[6][5].str("Do you want to perpetuate this broken system?");
+        scriptString[6][6].str("Doing something with your life means not working.");
         scriptString[6][7].str("                                Press LMB or Enter to continue...");
 
-        scriptString[7][0].str("1");
-        scriptString[7][1].str("2");
-        scriptString[7][2].str("3");
-        scriptString[7][3].str("4");
-        scriptString[7][4].str("5");
-        scriptString[7][5].str("6");
-        scriptString[7][6].str("7");
-        scriptString[7][7].str("                                Press LMB or Enter to continue...");
+        scriptString[7][0].str("Do you think big oil is going to stop lobbying against sustainability?");
+        scriptString[7][1].str("What about big coal?  Do you think that having publicly owned");
+        scriptString[7][2].str("utilities is going to incentivize fossil fuels?");
+        scriptString[7][3].str("It will do the opposite.  Why keep people digging and drilling when");
+        scriptString[7][4].str("solar panels, windmills, hydroelectric dams, and geothermal generators");
+        scriptString[7][5].str("largely require little to no effort to maintain?");
+        scriptString[7][6].str("Think about human survival, not just your own comfort.");
+        scriptString[7][7].str(" *End of Chapter 3* Press LMB or Enter to return to select screen.");
     }
 
     setScriptTextures(renderer);

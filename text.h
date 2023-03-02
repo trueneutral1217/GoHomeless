@@ -22,6 +22,7 @@ class text
 
         std::stringstream noRobo;
 
+        void loadText(TTF_Font* font,SDL_Renderer* renderer);
 
         bool verifyNoRobo();
 
