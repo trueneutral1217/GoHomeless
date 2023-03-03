@@ -6,7 +6,7 @@
 #include "timer.h"
 #include "button.h"
 #include "parallax.h"
-
+#include "audio.h"
 
 //number of dialog lines for chapter 1.
 const int TOTAL_SCRIPTS = 8;
@@ -28,6 +28,8 @@ class chapter
         //timer for dialog for chapters
         timer chapterTimer;
 
+        audio voice;
+
         button buttons[TOTAL_CHAPTER_BUTTONS];
 
         //tracks chapter progress.  used to save/load and display properly
@@ -38,6 +40,9 @@ class chapter
         bool chapter2Complete;
         bool autoText;
         int autoTextSpeed;
+
+        //used to make sure text/voice is only loaded once.
+        int loadedScript;
 
         //user presses 'h' to hide the dialogbox, or dialog box & text, or neither.
         bool hideDialogBox = false;

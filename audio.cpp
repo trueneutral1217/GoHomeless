@@ -4,14 +4,17 @@ audio::audio()
 {
     music = NULL;
     sound = NULL;
+    voice = NULL;
 }
 audio::~audio()
 {
     //
     Mix_FreeMusic( music );
     Mix_FreeChunk( sound );
+    Mix_FreeChunk( voice );
     sound=NULL;
     music=NULL;
+    voice=NULL;
 }
 
 void audio::loadMusic()
@@ -51,12 +54,34 @@ void audio::loadSound(int soundNum)
             sound = Mix_LoadWAV( "sounds/titleitemselect4.wav" );
         break;
     }
+}
+
+void audio::loadVoice(int chapter,int page,int line)
+{
+    std::cout << "\n loadvoice: ";
+
+    std::string voiceString = "sounds/voice acting/chapter"+std::to_string(chapter + 1)+"/c"+std::to_string(chapter+1)+"p"+std::to_string(page+1)+"l"+std::to_string(line+1)+".mp3";
+
+    std::cout << "\n " << voiceString;
+
+    voice = Mix_LoadWAV( voiceString.c_str() );
 
 }
+
+void audio::stopVoice()
+{
+    //Mix_PlayChannel(-1,voice,0);
+    Mix_HaltChannel(-1);
+}
+
 void audio::freeAudio()
 {
     Mix_FreeChunk( sound );
     sound = NULL;
+
+    Mix_FreeChunk( voice );
+    voice = NULL;
+
     Mix_FreeMusic( music );
 	music = NULL;
 }
@@ -64,6 +89,12 @@ void audio::freeAudio()
 void audio::playSound()
 {
     Mix_PlayChannel( -1, sound, 0 );
+}
+
+void audio::playVoice()
+{
+    Mix_PlayChannel(-1,voice,0);
+    std::cout << "\n playvoice ";
 }
 
 void audio::playMusic()
