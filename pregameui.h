@@ -53,6 +53,10 @@ public:
 
     void createParticles(SDL_Renderer* renderer);
 
+    bool loadPregameUI(SDL_Renderer* renderer,bool success);
+
+    void free();
+
 private:
 
 };

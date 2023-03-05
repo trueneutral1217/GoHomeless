@@ -51,15 +51,11 @@ animations animations;
 text text;
 //if player is not verified they wont progress to ch 3.
 bool verified = false;
-
 //declare sound vector & load sounds into it.
 void loadSounds();
 //render particles to screen
 //tracks the state of the game for rendering etc.
 int gameState;
-
-Texture verify;
-
 //initializes audio,video, etc.
 Texture blackGround;
 bool fadeOut(int countedFrames, bool fade);
@@ -68,40 +64,25 @@ bool fadeIn(int countedFrames,bool fade);
 
 bool fadeIn(int countedFrames, bool fade)
 {
-//this stuff is still experimental.  gonna have to figure something out for this system.
-
-    //std::cout << "fade in function is triggered\n";
-
-
-        Uint32 alpha = 255-(countedFrames%256);
-        blackGround.setAlpha(alpha);
-        //std::cout << "\n alpha: " << alpha;
-
+    Uint32 alpha = 255-(countedFrames%256);
+    blackGround.setAlpha(alpha);
     if(countedFrames%256>254)
     {
         fade=false;
-        std::cout <<"fade In counted Frames:" << countedFrames << " \n";
     }
-
     return fade;
 }
 
 bool fadeOut(int countedFrames, bool fade)
 {
-
-       if(countedFrames%256 < 255)
-            {  //fades in the go homeless title
-                blackGround.setAlpha(countedFrames);
-
-            }
-
-
+   if(countedFrames%256 < 255)
+    {  //fades in the go homeless title
+        blackGround.setAlpha(countedFrames);
+    }
     if(countedFrames%256>=255)
     {
         fade=false;
-        std::cout <<"fade out counted Frames:" << countedFrames << " \n";
     }
-
 return fade;
 }
 
@@ -180,41 +161,22 @@ void loadSounds()
 bool loadMedia()
 {
 	bool success = true;
-	//set button names
-    pregameui.setButtonNames();
-    chapter.setButtonNames();
-    stage.setButtonNames();
     //load saved game
 	savegame.readFile();
-	//set chapter variables based on savegame data.
-	chapter.loadSavedVariables(savegame.data[0],savegame.data[1],savegame.data[2],savegame.data[3],savegame.data[4]);
-	//test the variables after loading
-    chapter.testSaveVariables();
+	//pre-game chapter set up.
+	success = chapter.loadChapters(savegame.data[0],savegame.data[1],savegame.data[2],savegame.data[3],savegame.data[4],renderer,success);
     //load animations textures
     success = animations.setAnimationTextures(renderer);
-    //set button positions & image textures
-    success = pregameui.setPreGameButtonTextures(renderer, success);
-    //load titlescreen textures, credit screen textures, etc.
-    success = pregameui.setPGUITextures(renderer);
-    //sets up button textures and positions for chapter buttons
-    success = chapter.setChapterButtonTextures(renderer,success);
-    //load chapter 1 background textures
-    success = chapter.setChapterTextures(renderer);
-    //load stage button textures and positions
-    success = stage.setStageButtonTextures(renderer,success);
-    //set stage bg texture
-    success = stage.setStageTextures(renderer);
-    //load font
-	chapter.loadFont();
+    //sets up pregame ui button names, button textures, and bg textures.
+    success = pregameui.loadPregameUI(renderer,success);
+    //loads stage textures, button names, and button textures
+    success = stage.loadStage(renderer,success);
 	//load sound effects
 	loadSounds();
-    //load player texture
-    stage.player1.loadPlayer(renderer);
     //fade to black background
     blackGround.loadFromFile("images/Blackground.png",renderer);
-
-    verify.loadFromFile("images/verify.png",renderer);
-
+    //sets strings for verification page, loads those strings into their textures,loads verification page bg
+    text.loadText(chapter.font,renderer);
     //for debugging
     if(success == false)
     {
@@ -227,33 +189,25 @@ void close()
 {
     //save progress
     savegame.writeFile(chapter.currentChapter,chapter.currentPage,chapter.currentScript,chapter.chapter1Complete,chapter.chapter2Complete);
-    chapter.testSaveVariables();
-    //free the button textures
-    chapter.freeButtons();
-    pregameui.freeButtons();
-    stage.freeButtons();
-    stage.freeBGTextures();
-    stage.player1.freePlayer();
+    //free chapter resources
+    chapter.free();
+    //free pregame ui resouces
+    pregameui.free();
+    //free stage resources
+    stage.free();
     //free animation textures
     animations.freeAnimationTextures();
-    //free pregame ui textures
-    pregameui.freePGUITextures();
-	//free the backgrounds, dialog box, menubar for chapters and script textures
-	chapter.freeBGTextures();
+    //free the background used to fade in / out from black
 	blackGround.free();
-    verify.free();
-    //Free Text images
-	text.noRoboTextTexture.free();
-	text.inputTextTexture.free();
+	//free text resources
+	text.free();
 	//audio destructor frees audio
 	music.freeAudio();
 	sound.freeAudio();
 	while(!sounds.empty()){
         sounds.pop_back();
 	}
-	//free the font
-	TTF_CloseFont( chapter.font );
-    chapter.font = NULL;
+
 	//Destroy window
 	SDL_DestroyRenderer( renderer );
 	SDL_DestroyWindow( window );
@@ -284,12 +238,8 @@ int main( int argc, char* args[] )
 		{
 			//Main loop flag
 			bool quit = false;
-
 			bool fade=false;
-			//for noRobo verification
-			bool renderText=false;
 			//load the bg music file
-			//chapter.loadChapterStrings(renderer);
             music.loadMusic();
             music.playMusic();
 			//The frames per second cap timer
@@ -299,7 +249,6 @@ int main( int argc, char* args[] )
 			//Event handler
 			SDL_Event e;
 
-			text.loadText(chapter.font,renderer);
 
 			//While application is running
 			while( !quit )
@@ -320,17 +269,13 @@ int main( int argc, char* args[] )
                         {
                             //fade = true;
                         }
-
                         if(gameState == 1)//new game chapter select
                         {
                             //chapters get reset here, but I may have the actual chapter 1 button on this screen determine the reset.
                             chapter.resetChapters(renderer);
                         }
-                        if(gameState == 2){//load game chapter select
-                                //fade = true;
-                                //fade = fadeIn(countedFrames,fade);
-                        //std::cout << "mouse down in gameState = 2";
-                                //correction for the mousedown event that increments even when button press on back button happening.
+                        if(gameState == 2)
+                        {//load game chapter select
                             if(chapter.currentPage<TOTAL_PAGES-1)
                             {
                                 if(chapter.currentPage!=0)
@@ -350,7 +295,6 @@ int main( int argc, char* args[] )
                         {
                             if(!verified)
                             {
-
                                 verified = text.verifyNoRobo();
                             }
                             else
@@ -378,16 +322,7 @@ int main( int argc, char* args[] )
                             //Handle backspace
                             if( e.key.keysym.sym == SDLK_BACKSPACE && text.inputText.str().length() > 0 )
                             {
-                                //lop off character
-                                //text.inputText.str().pop_back();
-
-                                //text.inputText.str().erase(text.inputText.str().length()-1,1);
                                 text.inputText.str("");
-                                //text.foo(text.inputText.str());
-                                //text.foo.pop_back();
-                                //text.inputText.str(text.foo);
-
-                                renderText = true;
                             }
                             //Handle copy
                             else if( e.key.keysym.sym == SDLK_c && SDL_GetModState() & KMOD_CTRL )
@@ -398,7 +333,6 @@ int main( int argc, char* args[] )
                             else if( e.key.keysym.sym == SDLK_v && SDL_GetModState() & KMOD_CTRL )
                             {
                                 text.inputText.str() = SDL_GetClipboardText();
-                                renderText = true;
                             }
                         }
 
@@ -445,13 +379,7 @@ int main( int argc, char* args[] )
                         //Not copy or pasting
 						if( !( SDL_GetModState() & KMOD_CTRL && ( e.text.text[ 0 ] == 'c' || e.text.text[ 0 ] == 'C' || e.text.text[ 0 ] == 'v' || e.text.text[ 0 ] == 'V' ) ) )
 						{
-							//Append character
-							//text.inputText(text.inputText.str(), ios_base::app | ios_base::out);
                             text.inputText << e.text.text;
-							//text.inputText.str() += e.text.text;
-							renderText = true;
-							std::cout << "\n inputText: " << text.inputText.str();
-                            std::cout << "\n noRobo: " << text.noRobo.str();
 						}
 						verified = text.verifyNoRobo();
                     }
@@ -463,7 +391,6 @@ int main( int argc, char* args[] )
                         {
                             gameState = pregameui.buttons[ i ].handleEvent(gameState,pregameui.buttons[i].buttonName, &e, window,renderer );
                         }
-                        //printf("gameState = ", gameState);
                         if(gameState == 5)
                         {
                             if(chapter.currentChapter != 0)
@@ -471,12 +398,8 @@ int main( int argc, char* args[] )
                                 chapter.currentChapter = 0;
                                 chapter.resetPages();
                             }
-                            music.stopMusic();
-                            music.loadChapter1Music();
-                            music.playMusic();
-                            chapter.setChapterTextures(renderer);
-                            chapter.loadChapterStrings(renderer);
-                            chapter.testSaveVariables();
+                            music.resetChapter1Music();
+                            chapter.loadChapter(renderer);
                         }
                         if(gameState == 7)
                         {
@@ -485,12 +408,8 @@ int main( int argc, char* args[] )
                                 chapter.currentChapter =1;
                                 chapter.resetPages();
                             }
-                            music.stopMusic();
-                            music.loadChapter2Music();
-                            music.playMusic();
-                            chapter.setChapterTextures(renderer);
-                            chapter.loadChapterStrings(renderer);
-                            chapter.testSaveVariables();
+                            music.resetChapter2Music();
+                            chapter.loadChapter(renderer);
                         }
                         if(gameState == 8)
                         {
@@ -499,26 +418,16 @@ int main( int argc, char* args[] )
                                 chapter.currentChapter =2;
                                 chapter.resetPages();
                             }
-                            music.stopMusic();
-                            music.loadChapter3Music();
-                            music.playMusic();
-                            chapter.setChapterTextures(renderer);
-                            chapter.loadChapterStrings(renderer);
-                            chapter.testSaveVariables();
+                            music.resetChapter3Music();
+                            chapter.loadChapter(renderer);
                         }
                         if(gameState != oldGameState)
                         {
                             int newGameState = gameState;
                             gameState = oldGameState;
                             fade=true;
-                            //if(countedFrames%256 < 255)
-                            //{
-
                             fade=fadeOut(countedFrames,fade);
-                            //}
-                            //if(!fade)
                             gameState=newGameState;
-
                         }
                     }
 
@@ -526,48 +435,24 @@ int main( int argc, char* args[] )
                     {
                         //handles button presses in chapter 1 (autospeed changes, backpage, etc).
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer );
-                        if(gameState==0){
-                            music.stopMusic();
-                            music.loadMusic();
-                            music.playMusic();
+                        if(gameState==0)
+                        {
+                            music.resetMusic();
                         }
                     }
                     if(gameState == 7)
                     {
                         //handles button presses for chapter 2.
                         gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
-                        if(gameState==0){
-                            music.stopMusic();
-                            music.loadMusic();
-                            music.playMusic();
+                        if(gameState==0)
+                        {
+                            music.resetMusic();
                         }
                     }
                     if(gameState == 8)
                     {
                         if(!verified)
-                        {/*
-                            //Rerender text if needed
-                            if( renderText )
-                            {
-                                //Set text color as black
-                                SDL_Color textColor = { 255, 255, 255, 0xFF };
-                                //Text is not empty
-                                if( text.inputText != "" )
-                                {
-                                    //Render new text
-                                    text.inputTextTexture.loadFromRenderedText( text.inputText.c_str(), textColor,chapter.font,renderer );
-                                }
-                                //Text is empty
-                                else
-                                {
-                                    //Render space texture
-                                    text.inputTextTexture.loadFromRenderedText( " ", textColor,chapter.font,renderer );
-                                }
-                            }
-                            //Render text textures
-                            text.noRoboTextTexture.render( ( SCREEN_WIDTH - text.noRoboTextTexture.getWidth() ) / 2, 0 );
-                            text.inputTextTexture.render( ( SCREEN_WIDTH - text.inputTextTexture.getWidth() ) / 2, text.noRoboTextTexture.getHeight() );
-*/
+                        {
                         }
                         else
                         {
@@ -575,12 +460,9 @@ int main( int argc, char* args[] )
                             gameState = chapter.handleChapterButtonPresses(gameState,&e,window,renderer);
                             if(gameState==0)
                             {
-                                music.stopMusic();
-                                music.loadMusic();
-                                music.playMusic();
+                                music.resetMusic();
                             }
                         }
-
                     }
 					//if wasd are pressed player will be moved.
 					stage.player1.handleEvent(e);
@@ -591,13 +473,11 @@ int main( int argc, char* args[] )
 				SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 				SDL_RenderClear( renderer );
                 //Title Screen rendering
-
                 if(gameState == 0)
                 {
                     chapter.chapterTimer.stop();
                     //renders buttons, bg, title image, and handles particle effect.
                     pregameui.handleTitleScreenRendering(renderer);
-
                 }
                 else if(gameState == 1)
                 {//new game chapter select screen
@@ -606,13 +486,9 @@ int main( int argc, char* args[] )
                 }
                 else if(gameState == 2)
                 {//load game chapter/stage select screen
-
                     chapter.chapterTimer.stop();
-
                     //handles the buttons and background rendering
                     pregameui.handleLoadGameScreenRendering(renderer,chapter.chapter1Complete,chapter.chapter2Complete);
-
-
                 }
                 else if(gameState == 3)
                 {
@@ -622,10 +498,6 @@ int main( int argc, char* args[] )
                 //chapter 1 is in effect
                 else if(gameState == 5)
                 {
-                    if(!chapter.chapterTimer.isStarted())
-                    {
-                        chapter.chapterTimer.start();
-                    }
                     //Chapter rendering (buttons and backgrounds and text.
                     chapter.handleRendering(renderer);
                     //render tao animation
@@ -634,90 +506,38 @@ int main( int argc, char* args[] )
                 //if chapter 2 is in effect
                 else if(gameState == 7)
                 {
-                    if(!chapter.chapterTimer.isStarted())
-                    {
-                        chapter.chapterTimer.start();
-                    }
                     chapter.handleRendering(renderer);
-
-
+                    if(chapter.currentPage == 3)
+                    {
+                        animations.renderToaster2(renderer);
+                    }
+                    else
+                    {
+                        animations.resetToaster2();
+                    }
                     if(chapter.currentPage == 4)
                     {
                         animations.renderBlackstar(renderer);
                     }
                     if(chapter.currentPage == 5)
                     {
-                        if(!animations.animationTimer8.isStarted()){
-                                animations.animationTimer8.start();
-                        }
                         animations.renderPortal(renderer);
                     }
-                    if(chapter.currentPage == 6)
+                    else
                     {
-                        //this is an ugly way of resetting the animation on pg 5, but, whatever
-                        animations.animationTimer8.stop();
-                        animations.aniFrame8 = 0;
-                        animations.portalY = 30;
+                        animations.resetPortal();
                     }
                 }
                 else if(gameState == 8)//render chapter 3 no robo verification, if passed, render chapter 3
                 {
                     if(!verified)
                     {
-                        verify.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        //Rerender text if needed
-                        if( renderText )
-                        {
-                            //Set text color as
-                            SDL_Color textColor = { 255, 255, 255 };
-                            //Text is not empty
-                            if( text.inputText.str() != "" )
-                            {
-                                //Render new text
-                                //text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer );
-
-                            if( !text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer ) )
-                                {
-                                    printf( "\n Unable to render input text to texture!\n" );
-                                }
-
-                            }
-                            //Text is empty
-                            else
-                            {
-                                //Render space texture
-                                //text.inputTextTexture.loadFromRenderedText( " ", textColor,chapter.font,renderer );
-
-                                if( !text.inputTextTexture.loadFromRenderedText( text.inputText.str().c_str(), textColor,chapter.font,renderer ) )
-                                {
-                                    printf( "\n Unable to render input text to texture!\n" );
-                                }
-                            }
-                        }
-
-                        //Clear screen
-                        //SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
-                        //SDL_RenderClear( renderer );
-                        //Render text textures
-                        //text.noRoboTextTexture.render( ( SCREEN_WIDTH - text.noRoboTextTexture.getWidth() ) / 2, 0 );
-
-                        //text.inputTextTexture.render( ( SCREEN_WIDTH - text.inputTextTexture.getWidth() ) / 2, text.noRoboTextTexture.getHeight() );
-                        text.noRoboTextTexture.render(150,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        text.inputTextTexture.render(150,370,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                        //std::cout << "\n verified: " << std::to_string( verified );
-                        //std::cout << "\n inputText: " << text.inputText.str();
-                        //std::cout << "\n noRobo: " << text.noRobo.str();
+                        text.renderVerification(chapter.font,renderer);
                     }
                     else
                     {
-                        if(!chapter.chapterTimer.isStarted())
-                        {
-                            chapter.chapterTimer.start();
-                        }
                         //Chapter rendering (buttons and backgrounds and text.
                         chapter.handleRendering(renderer);
-                        //render tao animation
-                        //animations.renderTao(renderer);
                     }
                 }
                 else if(gameState == 4)
@@ -730,18 +550,14 @@ int main( int argc, char* args[] )
                 }
                 else if(gameState == 6)
                 {
-                    //temporary texture until I get the tiles working on this gamestate
-                    //this stuff should all be part of stage class eventually.
-                    stage.stage1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-                    stage.player1.render(renderer);
-                    stage.buttons[0].buttonTexture.render(stage.buttons[0].getPositionX(),stage.buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+                    //renders bg, stage ui buttons and player
+                    stage.renderStage1(renderer);
                 }
                 if(fade)
                 {
                     fade = fadeIn(countedFrames,fade);
                     blackGround.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
                 }
-
 				//Update screen
 				SDL_RenderPresent( renderer );
 				++countedFrames;
@@ -749,7 +565,6 @@ int main( int argc, char* args[] )
                 {  //fades in the go homeless title
                     pregameui.title.setAlpha(countedFrames);
                 }
-
 				//If frame finished early
 				int frameTicks = capTimer.getTicks();
 				if( frameTicks < SCREEN_TICK_PER_FRAME )
@@ -757,22 +572,11 @@ int main( int argc, char* args[] )
 					//Wait remaining time
 					SDL_Delay( SCREEN_TICK_PER_FRAME - frameTicks );
 				}
-				//the tao animation timer
-				animations.taoAnimationProgress();
-                //the timer for toaster the robot's animation
-                animations.toasterAnimationProgress();
-
-                animations.toaster2AnimationProgress();
-
-                animations.blackstarAnimationProgress();
-
-                animations.portalAnimationProgress();
+				//increments frames for animations
+				animations.progress();
                 //set script line
                 chapter.setAutoScript();
-				//Cycle animation
-				animations.cycleAnimations();
 			}
-
 			//Disable text input
 			SDL_StopTextInput();
 		}
@@ -781,4 +585,3 @@ int main( int argc, char* args[] )
 	close();
 	return 0;
 }
-

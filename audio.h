@@ -32,8 +32,12 @@ class audio
         void playVoice();
         void stopVoice();
         void freeAudio();
-
-
+        //resets pregame music
+        void resetMusic();
+        //resets music for the individual chapters
+        void resetChapter1Music();
+        void resetChapter2Music();
+        void resetChapter3Music();
 
     private:
 

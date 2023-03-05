@@ -444,7 +444,7 @@ void chapter::loadLineText(SDL_Renderer* renderer)
         {
             printf( "\n Unable to render current line text to texture!\n" );
         }
-        if(currentPage < 7)
+        if(currentPage < 8)
         {
             voice.loadVoice(currentChapter,currentPage,currentScript);
             voice.playVoice();
@@ -538,13 +538,6 @@ int chapter::progress(SDL_Renderer* renderer,int gameState)
         pageIncrement();
         chapterTimer.restart();
     }
-    /*
-    if(currentChapter==1 && currentPage==5 && currentScript==TOTAL_SCRIPTS-1)
-    {//if leaving ch2 pg6, reset animation (maybe function this out since it's used in save & exit button press area
-        animationTimer8.stop();
-        aniFrame8 = 0;
-        portalY = 30;
-    }*/
     return gameState;
 }
 
@@ -646,6 +639,7 @@ void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 
 
 int chapter::handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
 {
+    bool inside = false;
     for(int i = 0; i<TOTAL_CHAPTER_BUTTONS; ++i)
     {
         //if player presses backpage button, ugly af, but it works somewhat
@@ -654,65 +648,73 @@ int chapter::handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* 
             if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == -1)
             {
                 handleBackPagePress();
+                inside = true;
             }
         }
         //if player presses backline button, ugly af, but it works somewhat
-        if(i==1)
+        else if(i==1)
         {
             if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == -1)
             {
                 handleBackLinePress();
+                inside = true;
             }
         }
         //player presses auto Text on (resumes progress of chapters if stopped).
-        if(i==2)
+        else if(i==2)
         {
             if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer )==1)
             {
                 autoText=true;
+                inside = true;
             }
         }
         //player presses auto text off (stops progress of chapters)
-        if(i==3)
+        else if(i==3)
         {
             if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer )==0)
             {
                 autoText=false;
+                inside = true;
             }
         }
         //auto text speed slow button is pressed.
-        if(i==4 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 0)
+        else if(i==4 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 0)
         {
             autoTextSpeed = 0;
+            inside = true;
         }
         //auto text speed medium button is pressed.
-        if(i==5 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 1)
+        else if(i==5 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 1)
         {
             autoTextSpeed = 1;
+            inside = true;
         }
         //auto text speed fast button is pressed.
-        if(i==6 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 2)
+        else if(i==6 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 2)
         {
             autoTextSpeed = 2;
-            //chapter.autoTextSpeed=2;
+            inside = true;
         }
-        if(i==7)
+        else if(i==7)
         {//save and exit button
             gameState=buttons[i].handleEvent(gameState,buttons[i].buttonName,e,window,renderer);
-            /*
-            if(currentChapter==1 && currentPage==5 && currentScript==TOTAL_SCRIPTS-1)
-            {//if leaving ch2 pg6, reset animation.  this is also used in chapter progress function, create reset animation variables function.
-                animationTimer8.stop();
-                aniFrame8 = 0;
-                portalY = 30;
-            }*/
+            inside = true;
         }
+    }
+    if(!inside)
+    {
+        //progress(renderer,gameState);
     }
     return gameState;
 }
 
 void chapter::handleRendering(SDL_Renderer* renderer)
 {
+    if(!chapterTimer.isStarted())
+    {
+        chapterTimer.start();
+    }
     for(int j = 0; j<TOTAL_PAGES;j++)
     {
         //render background & dialog box before script lines
@@ -720,7 +722,6 @@ void chapter::handleRendering(SDL_Renderer* renderer)
         //these two lines may not actually be necessary.
         buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         buttons[1].buttonTexture.render(buttons[1].getPositionX(),buttons[1].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-
         if(autoText)
         {
             //render auto texture on button (hightlights auto text on in menubar)
@@ -763,7 +764,6 @@ void chapter::handleRendering(SDL_Renderer* renderer)
 
 bool chapter::setChapterButtonTextures(SDL_Renderer* renderer, bool success)
 {
-
     for( int i = 0; i < TOTAL_CHAPTER_BUTTONS; ++i )
     {
         std::stringstream ss;
@@ -903,7 +903,6 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 
 void chapter::setAutoScript()
 {
-
         if(chapterTimer.getTicks()/3000 > 1 && autoTextSpeed==0 && autoText)
         {//implement timer auto script option. Slow / default speed
             if(currentScript<TOTAL_SCRIPTS-1)
@@ -973,4 +972,38 @@ void chapter::ch2Pg8handleParallax(SDL_Renderer* renderer){
     ch2Pg8Mid.incrementMid();
     ch2Pg8Back.incrementBack();
 
+}
+
+void chapter::loadChapter(SDL_Renderer* renderer)
+{
+    setChapterTextures(renderer);
+    loadChapterStrings(renderer);
+    testSaveVariables();
+}
+
+bool chapter::loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,SDL_Renderer* renderer,bool success)
+{
+    setButtonNames();
+	//set chapter variables based on savegame data.
+	loadSavedVariables(data0,data1,data2,data3,data4);
+	//test the variables after loading
+    testSaveVariables();
+    //load font
+	loadFont();
+    //sets up button textures and positions for chapter buttons
+    success = setChapterButtonTextures(renderer,success);
+    //load chapter 1 background textures
+    success = setChapterTextures(renderer);
+    return success;
+}
+
+void chapter::free()
+{
+    //free the button textures
+    freeButtons();
+    //free the backgrounds, dialog box, menubar for chapters and script textures
+	freeBGTextures();
+	//free the font
+	TTF_CloseFont( font );
+    font = NULL;
 }

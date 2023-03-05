@@ -53,7 +53,9 @@ class animations
         //creating 4 blackstar animations with random x/y coords to be displayed
         int bsX1,bsX2,bsX3,bsX4,bsY1,bsY2,bsY3,bsY4;
 
+        //variable coordinates for animations
         int portalY;
+        int toaster2X;
 
         //animation textures
         Texture tao[TAO_ANIMATION_FRAMES];
@@ -74,11 +76,19 @@ class animations
         void cycleAnimations();
         void oscillateCount();
 
+
         void taoAnimationProgress();
         void toasterAnimationProgress();
         void toaster2AnimationProgress();
         void blackstarAnimationProgress();
         void portalAnimationProgress();
+
+        //consolidates executing progress & cycle animations functions
+        void progress();
+
+        //reset animations when player leaves the page that animation is on.
+        void resetPortal();
+        void resetToaster2();
 
     private:
 

@@ -62,3 +62,29 @@ void stage::freeBGTextures()
 {
     stage1BG[0].free();
 }
+
+bool stage::loadStage(SDL_Renderer* renderer, bool success)
+{
+    setButtonNames();
+    //load stage button textures and positions
+    success = setStageButtonTextures(renderer,success);
+    //set stage bg texture
+    success = setStageTextures(renderer);
+    //load player texture
+    player1.loadPlayer(renderer);
+    return success;
+}
+
+void stage::free()
+{
+    freeButtons();
+    freeBGTextures();
+    player1.freePlayer();
+}
+
+void stage::renderStage1(SDL_Renderer* renderer)
+{
+    stage1BG[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    player1.render(renderer);
+    buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}

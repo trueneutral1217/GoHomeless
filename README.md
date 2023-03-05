@@ -59,3 +59,5 @@ pages is a little meh.
 
 3/3/23 - voice acting recorded and added to chapters 1 through 3.  haven't created a voice toggle yet, but
 I probably will soon.
+
+3/4/23 - code cleanup, bug fixes, commentation, etc.

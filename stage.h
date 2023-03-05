@@ -40,6 +40,12 @@ class stage
         //declare player
         player player1;
 
+        bool loadStage(SDL_Renderer* renderer, bool success);
+
+        void free();
+
+        void renderStage1(SDL_Renderer* renderer);
+
     private:
 
 };

@@ -12,9 +12,11 @@ class text
         ~text();
 
         bool verified;
-
+        //verification passphrase & inputted text texture
         Texture noRoboTextTexture;
         Texture inputTextTexture;
+        //verification bg texture
+        Texture verify;
 
         std::string foo;
 
@@ -25,6 +27,10 @@ class text
         void loadText(TTF_Font* font,SDL_Renderer* renderer);
 
         bool verifyNoRobo();
+
+        void renderVerification(TTF_Font* font,SDL_Renderer* renderer);
+
+        void free();
 
 
     private:

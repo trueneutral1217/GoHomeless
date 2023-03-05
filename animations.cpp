@@ -37,6 +37,7 @@ animations::animations()
     bsY4=rand()% 350;
 
     portalY=30;
+    toaster2X=-50;
 
 }
 
@@ -166,16 +167,17 @@ void animations::renderToaster(SDL_Renderer* renderer)
 
 void animations::renderToaster2(SDL_Renderer* renderer)
 {
+    if(!animationTimer3.isStarted())
+    {
+        animationTimer3.start();
+    }
     switch(aniFrame3)
     {
-    case 0:toaster2[0].render(500,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-        //std::cout << "\n rendering toaster2[0] texture \n";
+    case 0:toaster2[0].render(toaster2X,250,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         break;
-    case 1:toaster2[1].render(500,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    //std::cout << "\n rendering toaster2[1] texture \n";
+    case 1:toaster2[1].render(toaster2X,250,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         break;
-    case 2:toaster2[2].render(500,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    //std::cout << "\n rendering toaster2[2] texture \n";
+    case 2:toaster2[2].render(toaster2X,250,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         break;
 
     }
@@ -267,6 +269,10 @@ void animations::renderBlackstar(SDL_Renderer* renderer)
 
 void animations::renderPortal(SDL_Renderer* renderer)
 {
+    if(!animationTimer8.isStarted())
+    {
+        animationTimer8.start();
+    }
     switch(aniFrame8){
         case 0:portal[0].render(300,portalY,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     break;
@@ -322,7 +328,6 @@ void animations::cycleAnimations()
     if(aniFrame3 >= TOASTER2_ANIMATION_FRAMES)
     {
         aniFrame3 = 0;
-        //std::cout << "\n reset aniFrame 3 \n";
     }
     if( aniFrame2 >= TOASTER_ANIMATION_FRAMES-1 )
     {
@@ -358,14 +363,11 @@ void animations::cycleAnimations()
     if(aniFrame8 >= PORTAL_ANIMATION_FRAMES)
     {
         aniFrame8 = 20;
-        //std::cout << "\n reset aniFrame 3 \n";
     }
     else if(aniFrame2 <= 0)
     {
         aniCountUp = true;
     }
-
-
 }
 
 void animations::oscillateCount()
@@ -402,9 +404,19 @@ void animations::toaster2AnimationProgress()
 {
     if(animationTimer3.getTicks() / 60 > 1)
     {
-        aniFrame3++;
+        if(aniFrame3<TOASTER2_ANIMATION_FRAMES)
+        {
+            aniFrame3++;
+        }
+        if(toaster2X < 800)
+        {
+            toaster2X++;
+        }
+        else
+        {
+            toaster2X=-50;
+        }
         animationTimer3.restart();
-        //std::cout << "\n aniFrame3 = " << aniFrame3 << " \n";
     }
 }
 
@@ -415,7 +427,6 @@ void animations::blackstarAnimationProgress()
     {
         aniFrame4++;
         animationTimer4.restart();
-        //std::cout << "\n aniFrame3 = " << aniFrame3 << " \n";
     }
     if(animationTimer5.getTicks() / 20 > 1)
     {
@@ -444,7 +455,35 @@ void animations::portalAnimationProgress()
         if(aniFrame8==20 && portalY > -400)
             portalY-=10;
         animationTimer8.restart();
-        //std::cout << "\n aniFrame8 = " << aniFrame8 << " \n";
-        //std::cout << "\n portalY = " << portalY << " \n";
     }
+}
+
+void animations::resetPortal()
+{
+    animationTimer8.stop();
+    aniFrame8 = 0;
+    portalY = 30;
+}
+
+void animations::resetToaster2()
+{
+    animationTimer3.stop();
+    aniFrame3 = 0;
+    toaster2X = -50;
+}
+
+void animations::progress()
+{
+    //the tao animation timer
+    taoAnimationProgress();
+    //the timer for toaster the robot's animation
+    toasterAnimationProgress();
+
+    toaster2AnimationProgress();
+
+    blackstarAnimationProgress();
+
+    portalAnimationProgress();
+    //Cycle animation
+    cycleAnimations();
 }

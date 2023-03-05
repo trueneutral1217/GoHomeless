@@ -58,14 +58,8 @@ void audio::loadSound(int soundNum)
 
 void audio::loadVoice(int chapter,int page,int line)
 {
-    std::cout << "\n loadvoice: ";
-
     std::string voiceString = "sounds/voice acting/chapter"+std::to_string(chapter + 1)+"/c"+std::to_string(chapter+1)+"p"+std::to_string(page+1)+"l"+std::to_string(line+1)+".mp3";
-
-    std::cout << "\n " << voiceString;
-
     voice = Mix_LoadWAV( voiceString.c_str() );
-
 }
 
 void audio::stopVoice()
@@ -78,10 +72,8 @@ void audio::freeAudio()
 {
     Mix_FreeChunk( sound );
     sound = NULL;
-
     Mix_FreeChunk( voice );
     voice = NULL;
-
     Mix_FreeMusic( music );
 	music = NULL;
 }
@@ -135,4 +127,32 @@ void audio::resumeMusic()
 void audio::stopMusic()
 {
     Mix_HaltMusic();
+}
+
+void audio::resetMusic()
+{
+    stopMusic();
+    loadMusic();
+    playMusic();
+}
+
+void audio::resetChapter1Music()
+{
+    stopMusic();
+    loadChapter1Music();
+    playMusic();
+}
+
+void audio::resetChapter2Music()
+{
+    stopMusic();
+    loadChapter2Music();
+    playMusic();
+}
+
+void audio::resetChapter3Music()
+{
+    stopMusic();
+    loadChapter3Music();
+    playMusic();
 }

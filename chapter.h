@@ -132,6 +132,12 @@ class chapter
         void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4);
 
         int handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+        //loads chapter from savegame as well as sets up button names, the font, and textures
+        bool loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,SDL_Renderer* renderer, bool success);
+        //loads an individual chapter into memory
+        void loadChapter(SDL_Renderer* renderer);
+        //frees up all the chapter resources
+        void free();
 
     private:
 

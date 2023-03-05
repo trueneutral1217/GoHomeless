@@ -164,3 +164,21 @@ void pregameui::freePGUITextures()
 	creditsTexture.free();
     //thanksTexture.free();
 }
+
+bool pregameui::loadPregameUI(SDL_Renderer* renderer,bool success)
+{
+    //set button names
+    setButtonNames();
+    //set button positions & image textures
+    success = setPreGameButtonTextures(renderer, success);
+    //load titlescreen textures, credit screen textures, etc.
+    success = setPGUITextures(renderer);
+    return success;
+}
+
+void pregameui::free()
+{
+    freeButtons();
+    //free pregame ui textures
+    freePGUITextures();
+}
