@@ -9,7 +9,8 @@ chapter::chapter()
     exitChapter = false;
     currentPage = 0;
     currentScript = 0;
-    loadedScript = 0;
+    //loadedScript has to not equal currentScript in order to play first line of first chapter.
+    loadedScript = -1;
     autoText = true;
     autoTextSpeed = 1;
     for(int j =0; j <TOTAL_PAGES; j++)
@@ -455,7 +456,7 @@ void chapter::loadLineText(SDL_Renderer* renderer)
     {
         voice.stopVoice();
         lineText.str( "" );
-        lineText << "" << currentScript + 1;
+        lineText << currentScript + 1;
         SDL_Color textColor = {0,0,0};//black
         if( !curLineTextTexture.loadFromRenderedText( lineText.str().c_str(), textColor,font,renderer ) )
         {
@@ -615,7 +616,7 @@ void chapter::handleBackPagePress()
     if(currentPage>0)
     {
         currentPage--;
-        currentScript=6;
+        currentScript=7;
     }
 }
 
@@ -647,6 +648,10 @@ void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 
 
 void chapter::handleChapterButtonPresses(int buttonClicked,SDL_Renderer* renderer)
 {
+    if(buttonClicked==1)
+    {//player clicked save & exit
+        voice.stopVoice();
+    }
     if(buttonClicked==2)
     {
         handleBackPagePress();
@@ -696,9 +701,6 @@ void chapter::handleRendering(SDL_Renderer* renderer)
     {
         //render background & dialog box before script lines
         renderBackgrounds(renderer,j);
-        //these two lines may not actually be necessary.
-        buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-        buttons[1].buttonTexture.render(buttons[1].getPositionX(),buttons[1].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         if(autoText)
         {
             //render auto texture on button (hightlights auto text on in menubar)

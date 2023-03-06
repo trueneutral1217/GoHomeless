@@ -29,8 +29,8 @@ void text::loadText(TTF_Font* font,SDL_Renderer* renderer)
     SDL_Color textColor = { 255, 255, 255, 0xFF };
 
     //The current input text.
-    inputText.str("");
-    inputTextTexture.loadFromRenderedText( inputText.str().c_str(),textColor,font,renderer );
+    //inputText.str("");
+    //inputTextTexture.loadFromRenderedText( inputText.str().c_str(),textColor,font,renderer );
     //the text to be verified
     noRobo.str("fuck capitalism");
     noRoboTextTexture.loadFromRenderedText( noRobo.str().c_str(),textColor,font,renderer );
@@ -44,13 +44,13 @@ void text::renderVerification(TTF_Font* font,SDL_Renderer* renderer)
     SDL_Color textColor = { 255, 255, 255 };
     if(inputText.str()!="")
     {
-        if(!inputTextTexture.loadFromRenderedText( inputText.str().c_str(), textColor,font,renderer ) )
-        {
-            printf( "\n Unable to render input text to texture!\n" );
-        }
+        inputTextTexture.loadFromRenderedText( inputText.str().c_str(), textColor,font,renderer );
     }
     noRoboTextTexture.render(150,350,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
-    inputTextTexture.render(150,370,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    if(inputText.str() != "")
+    {
+        inputTextTexture.render(150,370,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    }
 }
 
 void text::free()

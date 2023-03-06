@@ -331,11 +331,38 @@ int main( int argc, char* args[] )
                                 gameState = pregameui.buttons[ i ].handlePGUIEvent(gameState,pregameui.buttons[i].buttonName, &e, window,renderer );
                             }
                             if(gameState==1)
-                            {//character clicks the newGame button
+                            {//user clicks the newGame button
                                 chapter.resetChapters(renderer);
                             }
+                            if(gameState==3)
+                            {//user toggles music on or off
+                                if(pregameui.buttons[10].musicOn)
+                                {
+                                    music.musicOn = true;
+                                    if(!music.isPlaying())
+                                    {
+                                        music.playMusic();
+                                    }
+                                }
+                                else
+                                {
+                                    music.musicOn = false;
+                                    if(music.isPlaying())
+                                    {
+                                        music.stopMusic();
+                                    }
+                                }
+                                if(pregameui.buttons[11].voiceOn)
+                                {
+                                    chapter.voice.voiceOn = true;
+                                }
+                                else
+                                {
+                                    chapter.voice.voiceOn = false;
+                                }
+                            }
                             if(gameState == 5)
-                            {
+                            {//user clicks chapter 1 button
                                 if(chapter.currentChapter != 0)
                                 {
                                     chapter.currentChapter = 0;
@@ -345,7 +372,7 @@ int main( int argc, char* args[] )
                                 chapter.loadChapter(renderer);
                             }
                             else if(gameState == 7)
-                            {
+                            {//user clicks chapter 2 button
                                 if(chapter.currentChapter!=1)
                                 {
                                     chapter.currentChapter =1;
@@ -355,7 +382,7 @@ int main( int argc, char* args[] )
                                 chapter.loadChapter(renderer);
                             }
                             else if(gameState == 8)
-                            {
+                            {//user clicks chapter 3 button
                                 if(chapter.currentChapter!=2)
                                 {
                                     chapter.currentChapter =2;
@@ -377,7 +404,6 @@ int main( int argc, char* args[] )
 					//Handle key press
 					if( e.type == SDL_KEYDOWN )
 					{
-
 					    if(gameState==8 && !verified)
                         {
                             //Handle backspace
@@ -468,6 +494,10 @@ int main( int argc, char* args[] )
                             text.inputText << e.text.text;
 						}
 						verified = text.verifyNoRobo();
+						if(verified)
+                        {//somehow currentScript was greater than 0 without this
+                            chapter.currentScript = 0;
+                        }
                     }
 					//if wasd are pressed player will be moved.
 					stage.player1.handleEvent(e);

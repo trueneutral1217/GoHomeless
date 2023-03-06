@@ -5,6 +5,8 @@ audio::audio()
     music = NULL;
     sound = NULL;
     voice = NULL;
+    musicOn = true;
+    voiceOn = true;
 }
 audio::~audio()
 {
@@ -85,33 +87,39 @@ void audio::playSound()
 
 void audio::playVoice()
 {
-    Mix_PlayChannel(-1,voice,0);
-    //std::cout << "\n playvoice ";
+    if(voiceOn)
+    {
+        Mix_PlayChannel(-1,voice,0);
+    }
 }
 
 void audio::playMusic()
 {
-    if( Mix_PlayingMusic() == 0 )
+    if(musicOn)
     {
-        //Play the music
-        Mix_PlayMusic( music, -1 );
-    }
-    //If music is being played
-    else
-    {
-        //If the music is paused
-        if( Mix_PausedMusic() == 1 )
+        if( Mix_PlayingMusic() == 0 )
         {
-            //Resume the music
-            Mix_ResumeMusic();
+            //Play the music
+            Mix_PlayMusic( music, -1 );
         }
-        //If the music is playing
+        //If music is being played
         else
         {
-            //Pause the music
-            Mix_PauseMusic();
+            //If the music is paused
+            if( Mix_PausedMusic() == 1 )
+            {
+                //Resume the music
+                Mix_ResumeMusic();
+            }
+            //If the music is playing
+            else
+            {
+                //Pause the music
+                Mix_PauseMusic();
+            }
         }
     }
+
 }
 
 void audio::pauseMusic()
@@ -121,7 +129,10 @@ void audio::pauseMusic()
 
 void audio::resumeMusic()
 {
-    Mix_ResumeMusic();
+    if(musicOn)
+    {
+        Mix_ResumeMusic();
+    }
 }
 
 void audio::stopMusic()
@@ -134,6 +145,11 @@ void audio::resetMusic()
     stopMusic();
     loadMusic();
     playMusic();
+}
+
+bool audio::isPlaying()
+{
+    return Mix_PlayingMusic();
 }
 
 void audio::resetChapter1Music()

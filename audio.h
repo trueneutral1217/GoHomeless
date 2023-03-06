@@ -15,6 +15,10 @@ class audio
         Mix_Chunk *voice;
         audio();
         ~audio();
+        //if musicOn or voiceOn == false, no voice or music will be played.
+        bool voiceOn;
+        bool musicOn;
+
         //music
         void loadMusic();
         void loadChapter1Music();
@@ -28,6 +32,7 @@ class audio
         void pauseMusic();
         void resumeMusic();
         void stopMusic();
+        bool isPlaying();
         void playSound();
         void playVoice();
         void stopVoice();

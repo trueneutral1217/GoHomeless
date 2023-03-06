@@ -6,6 +6,8 @@ button::button()
 	position.y = 0;
     buttonName = "";
     fullScreen=false;
+    musicOn=true;
+    voiceOn=true;
     //move buttons 0-7 to pregameui
     pregameButtonNames[0]="back";
 	pregameButtonNames[1]="new";
@@ -17,6 +19,8 @@ button::button()
 	pregameButtonNames[7]="stage1";
 	pregameButtonNames[8]="chapter2";
 	pregameButtonNames[9]="chapter3";
+	pregameButtonNames[10]="musicOn";
+	pregameButtonNames[11]="voiceOn";
 	//move buttons 8-15 to chapter
 	chapterButtonNames[0]="backPage";
 	chapterButtonNames[1]="backLine";
@@ -52,6 +56,34 @@ void button::fullScreenButtonTextureToggle(SDL_Renderer* renderer)
     buttonTexture.render(getPositionX(),getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
 }
 
+void button::musicButtonTextureToggle(SDL_Renderer* renderer)
+{
+    buttonTexture.free();
+    if(musicOn)
+    {
+        buttonTexture.loadFromFile("images/buttons/musicOn.png", renderer);
+    }
+    else
+    {
+        buttonTexture.loadFromFile("images/buttons/musicOff.png", renderer);
+    }
+    buttonTexture.render(getPositionX(),getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}
+
+void button::voiceButtonTextureToggle(SDL_Renderer* renderer)
+{
+    buttonTexture.free();
+    if(voiceOn)
+    {
+        buttonTexture.loadFromFile("images/buttons/voiceOn.png", renderer);
+    }
+    else
+    {
+        buttonTexture.loadFromFile("images/buttons/voiceOff.png", renderer);
+    }
+    buttonTexture.render(getPositionX(),getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+}
+
 void button::setPosition( int x, int y )
 {
 	position.x = x;
@@ -79,6 +111,30 @@ bool button::setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer)
     fullScreen = false;
     SDL_SetWindowFullscreen( window, SDL_FALSE );
     return fullScreen;
+}
+
+bool button::setMusicOn()
+{
+    musicOn = true;
+    return musicOn;
+}
+
+bool button::setMusicOff()
+{
+    musicOn=false;
+    return musicOn;
+}
+
+bool button::setVoiceOn()
+{
+    voiceOn = true;
+    return voiceOn;
+}
+
+bool button::setVoiceOff()
+{
+    voiceOn = false;
+    return voiceOn;
 }
 
 void button::setChapterButtonName(int i)
@@ -141,7 +197,7 @@ int button::handlePGUIEvent(int gameState, std::string buttonName, SDL_Event* e,
                 {
                     case SDL_MOUSEBUTTONDOWN:
                         if(gameState==0)
-                        {
+                        {//button pressed in main screen
                             if(buttonName=="new")
                             {
                                 printf("\n \n new game button pressed \n \n");
@@ -163,34 +219,84 @@ int button::handlePGUIEvent(int gameState, std::string buttonName, SDL_Event* e,
                                 gameState = 4;
                             }
                         }
-
-                        //gamestate0 - 4 is pregameui area
-                        else if(buttonName=="back" && (gameState < 5 || gameState==6) ){
-                            printf("\n \n back button pressed \n \n");
-                            gameState = 0;
+                        else if(gameState==1)
+                        {//button pressed in newgame screen
+                            if(buttonName=="back")
+                            {
+                                printf("\n \n back button pressed from newgame \n \n");
+                                gameState = 0;
+                            }
+                            else if(buttonName=="chapter1")
+                            {
+                                printf("\n \n chapter 1 button pressed from newgame \n \n");
+                                gameState = 5;
+                            }
                         }
-                        else if(buttonName=="chapter1"){
-                            printf("\n \n chapter 1 button pressed \n \n");
-                            gameState = 5;
+                        else if(gameState==2)
+                        {//button pressed in loadgame screen
+                            if(buttonName=="back")
+                            {
+                                printf("\n \n back button pressed from loadgame \n \n");
+                                gameState = 0;
+                            }
+                            else if(buttonName=="chapter1")
+                            {
+                                printf("\n \n chapter 1 button pressed from loadgame \n \n");
+                                gameState = 5;
+                            }
+                            else if(buttonName=="chapter2")
+                            {
+                                printf("\n \n chapter 2 button pressed from loadgame \n \n");
+                                gameState = 7;
+                            }
+                            else if(buttonName=="chapter3")
+                            {
+                                printf("\n \n chapter 3 button pressed from loadgame \n \n");
+                                gameState = 8;
+                            }
                         }
-                        else if(buttonName=="chapter2")
+                        else if(gameState==3)
                         {
-                            printf("\n \n chapter 2 button pressed \n \n");
-                            gameState = 7;
+                            if(buttonName=="back")
+                            {
+                                printf("\n \n back button pressed from options \n \n");
+                                gameState = 0;
+                            }
+                            else if(buttonName=="fullScreenOff")
+                            {
+                                printf("\n \n fullScreenOff button pressed \n \n");
+                                if(!fullScreen)
+                                    setFullScreenOn(window,renderer);
+                                else
+                                    setFullScreenOff(window,renderer);
+                                gameState = 3;
+                            }
+                            else if(buttonName=="musicOn")
+                            {
+                                printf("\n \n musicOn button pressed \n \n");
+                                if(!musicOn)
+                                    setMusicOn();
+                                else
+                                    setMusicOff();
+                                gameState = 3;
+                            }
+                            else if(buttonName=="voiceOn")
+                            {
+                                printf("\n \n voiceOn button pressed \n \n");
+                                if(!voiceOn)
+                                    setVoiceOn();
+                                else
+                                    setVoiceOff();
+                                gameState = 3;
+                            }
                         }
-                        else if(buttonName=="chapter3")
+                        else if(gameState==4)
                         {
-                            printf("\n \n chapter 3 button pressed \n \n");
-                            gameState = 8;
-                        }
-                        else if(buttonName=="fullScreenOff" && gameState==3)
-                        {
-                            printf("\n \n fullScreenOff button pressed \n \n");
-                            if(!fullScreen)
-                                setFullScreenOn(window,renderer);
-                            else
-                                setFullScreenOff(window,renderer);
-                            gameState = 3;
+                            if(buttonName=="back")
+                            {
+                                printf("\n \n back button pressed from credits \n \n");
+                                gameState = 0;
+                            }
                         }
                         break;
                 }

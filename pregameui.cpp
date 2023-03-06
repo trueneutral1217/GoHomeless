@@ -21,11 +21,13 @@ bool pregameui::setPreGameButtonTextures(SDL_Renderer* renderer, bool success)
         buttons[ i ].setPosition( ((i*160)-80), SCREEN_HEIGHT - 140 );
     }
     buttons[0].setPosition(600,20);
-    buttons[5].setPosition(20,20);
-    buttons[6].setPosition(20,100);//chapter 1 button
+    buttons[5].setPosition(20,20);//chapter 1 button
+    buttons[6].setPosition(20,100);//fullscreen button
     buttons[7].setPosition(20,150);//stage 1 button
     buttons[8].setPosition(20,200);//chapter 2 button
     buttons[9].setPosition(20,300);//chapter 3 button
+    buttons[10].setPosition(20,200);//musicOn button
+    buttons[11].setPosition(20,300);//voiceOn button
     return success;
 }
 
@@ -50,6 +52,8 @@ void pregameui::handleOptionsScreenRendering(SDL_Renderer* renderer)
     optionsTexture.render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     buttons[0].buttonTexture.render(buttons[0].getPositionX(),buttons[0].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     buttons[6].fullScreenButtonTextureToggle(renderer);
+    buttons[10].musicButtonTextureToggle(renderer);
+    buttons[11].voiceButtonTextureToggle(renderer);
 }
 
 void pregameui::handleCreditsScreenRendering(SDL_Renderer* renderer)

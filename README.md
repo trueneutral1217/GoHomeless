@@ -64,3 +64,5 @@ I probably will soon.
 
 3/5/23 - more code cleanup, bug fixes and commentation.  it's starting to get comprehensible.
 still some testing and debugging to do.  
+
+3/5/23 - fixed some bugs, added toggles for voice and music in options screen

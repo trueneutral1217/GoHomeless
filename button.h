@@ -12,7 +12,7 @@ const int BUTTON_HEIGHT = 120;
 //buttons in the menubar plus save & quit button .
 const static int TOTAL_CHAPTER_BUTTONS=9;
 //new game, load game, options, credits, back button, chapters 1,2,3, and fullscreen on/off button.
-const static int TOTAL_PREGAME_BUTTONS = 10;
+const static int TOTAL_PREGAME_BUTTONS = 12;
 //gamestate=6, stage1 buttons
 const static int TOTAL_STAGE_BUTTONS = 1;
 
@@ -28,6 +28,8 @@ class button
 		int getPositionX();
 		int getPositionY();
 		bool fullScreen;
+		bool musicOn;
+		bool voiceOn;
 
 		//Handles pre-game user interface mouse events (mainly button clicks, like new game, load game, options, credits, etc)
 		int handlePGUIEvent( int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
@@ -42,6 +44,12 @@ class button
         bool setFullScreenOn(SDL_Window* window,SDL_Renderer* renderer);
         bool setFullScreenOff(SDL_Window* window,SDL_Renderer* renderer);
 
+        bool setMusicOn();
+        bool setMusicOff();
+
+        bool setVoiceOn();
+        bool setVoiceOff();
+
 
 		std::string buttonName;
 
@@ -54,7 +62,8 @@ class button
 		void setStageButtonName(int i);
 		//determines which texture to show in options screen, red or green.
 		void fullScreenButtonTextureToggle(SDL_Renderer* renderer);
-
+        void musicButtonTextureToggle(SDL_Renderer* renderer);
+        void voiceButtonTextureToggle(SDL_Renderer* renderer);
 
 	private:
 		//Top left point of button image location
