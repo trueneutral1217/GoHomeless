@@ -86,7 +86,7 @@ void audio::playSound()
 void audio::playVoice()
 {
     Mix_PlayChannel(-1,voice,0);
-    std::cout << "\n playvoice ";
+    //std::cout << "\n playvoice ";
 }
 
 void audio::playMusic()

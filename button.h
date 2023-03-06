@@ -10,7 +10,7 @@ const int BUTTON_WIDTH = 160;
 const int BUTTON_HEIGHT = 120;
 
 //buttons in the menubar plus save & quit button .
-const static int TOTAL_CHAPTER_BUTTONS=8;
+const static int TOTAL_CHAPTER_BUTTONS=9;
 //new game, load game, options, credits, back button, chapters 1,2,3, and fullscreen on/off button.
 const static int TOTAL_PREGAME_BUTTONS = 10;
 //gamestate=6, stage1 buttons
@@ -29,8 +29,13 @@ class button
 		int getPositionY();
 		bool fullScreen;
 
-		//Handles mouse event
-		int handleEvent( int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+		//Handles pre-game user interface mouse events (mainly button clicks, like new game, load game, options, credits, etc)
+		int handlePGUIEvent( int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+        //handles buttons while player is in a chapter (menu bar buttons like backline, backpage, auto text speed, auto text toggle, and save + exit button
+		int handleChapterEvent( std::string buttonName, SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+        //handles mouse events in stages (currently not in use.
+		int handleStageEvent( int gameState, std::string buttonName, SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+
 
         Texture buttonTexture;
 

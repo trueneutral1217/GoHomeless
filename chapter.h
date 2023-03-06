@@ -38,6 +38,10 @@ class chapter
         int currentChapter;
         bool chapter1Complete;
         bool chapter2Complete;
+        bool chapter3Complete;
+        //if player finished a chapter, need a flag independent of chapter completion status to exit chapter.
+        bool exitChapter;
+
         bool autoText;
         int autoTextSpeed;
 
@@ -81,6 +85,7 @@ class chapter
         void resetChapters(SDL_Renderer* renderer);
         void resetPages();
         void resetScripts();
+        void nextPage();
 
         void loadLineText(SDL_Renderer* renderer);
         void loadPageText(SDL_Renderer* renderer);
@@ -106,10 +111,10 @@ class chapter
 
         void setAutoScript();
 
-        //player clicks mouse button
-        int progress(SDL_Renderer* renderer,int gameState);
+        //player clicks mouse button outside of chapter buttons
+        void progress(SDL_Renderer* renderer);
         //player presses spacebar
-        int progress2(SDL_Renderer* renderer,int gameState);
+        void progress2(SDL_Renderer* renderer);
         //player presses h button
         void handleDialogVisability();
         //renders correct state of the visibility of dialog, dialog box.
@@ -129,11 +134,11 @@ class chapter
         //handles pretty much all rendering except animation in chapter 1
         void handleRendering(SDL_Renderer* renderer);
         //load savegame data into chapter variables
-        void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4);
+        void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,Sint32 data5);
 
-        int handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window,SDL_Renderer* renderer );
+        void handleChapterButtonPresses(int gameState,SDL_Renderer* renderer);
         //loads chapter from savegame as well as sets up button names, the font, and textures
-        bool loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,SDL_Renderer* renderer, bool success);
+        bool loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,Sint32 data5,SDL_Renderer* renderer, bool success);
         //loads an individual chapter into memory
         void loadChapter(SDL_Renderer* renderer);
         //frees up all the chapter resources

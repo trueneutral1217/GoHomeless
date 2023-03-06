@@ -5,6 +5,8 @@ chapter::chapter()
     currentChapter = 0;
     chapter1Complete = false;
     chapter2Complete = false;
+    chapter3Complete = false;
+    exitChapter = false;
     currentPage = 0;
     currentScript = 0;
     loadedScript = 0;
@@ -18,13 +20,6 @@ chapter::chapter()
         }
     }
 
-    for(int j =0; j <TOTAL_PAGES; j++)
-    {
-        for(int i = 0; i<TOTAL_SCRIPTS; i++)
-        {
-            //scriptTexture[j][i] = NULL;
-        }
-    }
     font = NULL;
     pageText.str( "" );
     lineText.str( "" );
@@ -36,53 +31,76 @@ chapter::~chapter()
     {
         for(int j = 0; j < TOTAL_SCRIPTS;j++)
         {
-            //scriptString[i][j].free();
+            scriptString[i][j].str("");
         }
     }
 }
 
 void chapter::scriptIncrement()
-{
+{//next line of script is prompted to show
     currentScript++;
-
 }
 void chapter::pageIncrement()
-{
+{//player finished previous page, starts at first script line of new page
     currentPage++;
     currentScript=0;
 }
 void chapter::backScript()
-{
+{//current line of script is removed if player is past first line
     if(0 < currentScript)
     {
         currentScript--;
     }
 }
 void chapter::backPage()
-{
+{//player clicks backPage button in menubar in chapter.
     if(0 < currentPage)
-    {
+    {//player is sent to last line of previous page.
         currentPage--;
         currentScript=7;
     }
 }
+
+void chapter::nextPage()
+{//player clicks nextPage button in menubar in chapter.
+    if(currentPage < TOTAL_PAGES-1)
+    {//player is sent to first line of next page.
+        currentPage++;
+        currentScript=0;
+    }
+}
+
 void chapter::completeChapter(SDL_Renderer* renderer)
-{
+{//when a player reaches the end of a chapter, page, script line need to be reset, chapter complete flagged, chapter is incremented.
     resetPages();
+    //flag chapter complete
     if(currentChapter==0)
+    {
         chapter1Complete=true;
-    if(currentChapter==1)
+    }
+    else if(currentChapter==1)
+    {
         chapter2Complete=true;
+    }
+    else if(currentChapter==2)
+    {
+        chapter3Complete=true;
+    }
+
+    exitChapter = true;
+
+    //incrementing chapter may not be necessary.  might be better to set current chapter when player enters chapter.
     currentChapter += 1;
+    //print currentpage, chapter, script line, and chapter completed flags to console.
     testSaveVariables();
 }
 void chapter::resetPages()
-{
+{//if a chapter is completed, or a new game is started, currentPage needs to be reset, as does script line on that page
     currentPage=0;
     resetScripts();
 }
 void chapter::resetScripts()
-{
+{//current line of script is returned to 0, effectively making next chapter page opened start from beginning
     currentScript=0;
 }
 void chapter::resetChapters(SDL_Renderer* renderer)
@@ -91,6 +109,7 @@ void chapter::resetChapters(SDL_Renderer* renderer)
     resetPages();
     chapter1Complete = false;
     chapter2Complete = false;
+    chapter3Complete = false;
     loadChapterStrings(renderer);
     testSaveVariables();
 }
@@ -171,7 +190,6 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[7][6].str("online surveys for market research.");
         scriptString[7][7].str(" *End of Chapter 1* Press LMB or Enter to return to select screen.");
     }
-
     if(currentChapter==1)
     {
         //chapter 2 page 1
@@ -246,11 +264,10 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[7][5].str("Why have I been treated less than equal?");
         scriptString[7][6].str("If I die tomorrow will it matter to you?");
         scriptString[7][7].str(" *End of Chapter 2* Press LMB or Enter to return to select screen.");
-
     }
-
     if(currentChapter==2) //chapter 3 title?  Logic over Common Sense.
     {
+        //chapter 3, page 1
         scriptString[0][0].str("Oligarchs can't control their own greed,");
         scriptString[0][1].str("but they control our country;");
         scriptString[0][2].str("I can't control how bad this makes me feel.");
@@ -259,7 +276,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[0][5].str("then working is bootlicking.");
         scriptString[0][6].str("It's better to be homeless.");
         scriptString[0][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 2
         scriptString[1][0].str("I want you to up-cycle our future,");
         scriptString[1][1].str("by throwing away your job.");
         scriptString[1][2].str("The fear, propaganda, and disinformation that");
@@ -268,7 +285,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[1][5].str("Stop devaluing labor.");
         scriptString[1][6].str("embrace robotic laborers, don't be them.");
         scriptString[1][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 3
         scriptString[2][0].str("work is not freedom.");
         scriptString[2][1].str("cancel work.");
         scriptString[2][2].str("two thirds of Americans live paycheck to paycheck,");
@@ -277,7 +294,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[2][5].str("you are over qualified, under appreciated, and expendable.");
         scriptString[2][6].str("The labor market is flooded.");
         scriptString[2][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 4
         scriptString[3][0].str("Do you ever wonder where your employer' ethics are?");
         scriptString[3][1].str("Aren't you tired of being disrespected by your boss?");
         scriptString[3][2].str("Aren't you tired of being disrespected by customers/clients?");
@@ -286,7 +303,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[3][5].str("Money is making you do things that you don't want to do.");
         scriptString[3][6].str("Working when you don't want to work is slavery.");
         scriptString[3][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 5
         scriptString[4][0].str("You can't have billionaires without homelessness.");
         scriptString[4][1].str("If you tax billionaires more, homelessness is reduced.");
         scriptString[4][2].str("As it is, you are paying for the billionaires to be billionaires,");
@@ -295,7 +312,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[4][5].str("Working under someone else is cowardly.");
         scriptString[4][6].str("Don't catch the same mental illness billionaires have: greed.");
         scriptString[4][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 6
         scriptString[5][0].str("Federal minimum wage is $7.25 per hour.");
         scriptString[5][1].str("It's been the same since 2009,");
         scriptString[5][2].str("despite the fact that prices are 40% higher since then.");
@@ -304,7 +321,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[5][5].str("work for oligarchs, not the general population.");
         scriptString[5][6].str("That's not democracy.");
         scriptString[5][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 7
         scriptString[6][0].str("Aim at nothing, and you will hit everything.");
         scriptString[6][1].str("If you care about the future,");
         scriptString[6][2].str("you have to do what's best for everyone.");
@@ -313,7 +330,7 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[6][5].str("Do you want to perpetuate this broken system?");
         scriptString[6][6].str("Doing something with your life means not working.");
         scriptString[6][7].str("                                Press LMB or Enter to continue...");
-
+        //chapter 3, page 8
         scriptString[7][0].str("Do you think big oil is going to stop lobbying against sustainability?");
         scriptString[7][1].str("What about big coal?  Do you think that having publicly owned");
         scriptString[7][2].str("utilities is going to incentivize fossil fuels?");
@@ -323,21 +340,23 @@ void chapter::loadChapterStrings(SDL_Renderer* renderer)
         scriptString[7][6].str("Think about human survival, not just your own comfort.");
         scriptString[7][7].str(" *End of Chapter 3* Press LMB or Enter to return to select screen.");
     }
-
+    //loads strings into textures
     setScriptTextures(renderer);
 }
 
 void chapter::freeBGTextures()
 {
+    //frees background textures for each chapter
     for(int i = 0; i < TOTAL_PAGES; i++)
     {
         chapter1BG[i].free();
         chapter2BG[i].free();
         chapter3BG[i].free();
     }
+    //frees dialog box and menubar textures
     dialogBox.free();
+    //menubar is background for backpage, backline, autotext speed/toggle buttons
 	menuBar.free();
-
 	//free the script textures
     for(int j = 0; j < TOTAL_PAGES; j++)
     {
@@ -346,20 +365,20 @@ void chapter::freeBGTextures()
             scriptTexture[j][i].free();
         }
     }
-
+    //frees ch2 pg 7 parallax background textures
     ch2Pg7Fore.freeParallaxTexture();
     ch2Pg7Mid.freeParallaxTexture();
     ch2Pg7Back.freeParallaxTexture();
-
+    //free ch2 pg 8 parallax background textures
     ch2Pg8Fore.freeParallaxTexture();
     ch2Pg8Mid.freeParallaxTexture();
     ch2Pg8AnteriorMid.freeParallaxTexture();
     ch2Pg8Back.freeParallaxTexture();
-
 }
 
 void chapter::setFileNames()
 {
+    //chapter1 background file names
     bgFileName[0] = "images/signflying800x600.png";
     bgFileName[1] = "images/parkbench.png";
     bgFileName[2] = "images/bluewave.png";
@@ -368,7 +387,7 @@ void chapter::setFileNames()
     bgFileName[5] = "images/America2.png";
     bgFileName[6] = "images/darknight.png";
     bgFileName[7] = "images/forest.png";
-
+    //chapter2 background file names
     bgFileName2[0] = "images/bubbleparty.png";
     bgFileName2[1] = "images/randomcolors.png";
     bgFileName2[2] = "images/angryright.png";
@@ -377,7 +396,7 @@ void chapter::setFileNames()
     bgFileName2[5] = "images/treadonyou.png";
     bgFileName2[6] = "images/blackground.png";
     bgFileName2[7] = "images/blackground.png";
-
+    //chapter 3 background file names
     bgFileName3[0] = "images/blackground.png";
     bgFileName3[1] = "images/blackground.png";
     bgFileName3[2] = "images/blackground.png";
@@ -388,7 +407,8 @@ void chapter::setFileNames()
     bgFileName3[7] = "images/blackground.png";
 }
 
-bool chapter::setChapterTextures(SDL_Renderer* renderer){
+bool chapter::setChapterTextures(SDL_Renderer* renderer)
+{
     bool success = true;
     setFileNames();
     if(currentChapter==0)
@@ -401,14 +421,14 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer){
     else if(currentChapter == 1)
     {
         for(int i = 0; i<TOTAL_PAGES;i++)
-        {
+        {//load chapter 2 background images
             success = chapter2BG[i].loadFromFile( bgFileName2[i],renderer );
         }
-
+        //load pg 7 parallax background textures
         success = ch2Pg7Fore.parallaxTexture.loadFromFile("images/starlaxfore.png",renderer);
         success = ch2Pg7Mid.parallaxTexture.loadFromFile("images/starlaxmid.png",renderer);
         success = ch2Pg7Back.parallaxTexture.loadFromFile("images/starlaxback.png",renderer);
-
+        //load pg 8 parallax background textures
         success = ch2Pg8Fore.parallaxTexture.loadFromFile("images/dusk.png",renderer);
         success = ch2Pg8AnteriorMid.parallaxTexture.loadFromFile("images/road.png",renderer);
         success = ch2Pg8Mid.parallaxTexture.loadFromFile("images/cityscape.png",renderer);
@@ -417,12 +437,11 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer){
     else if(currentChapter == 2)
     {
         for(int i = 0; i<TOTAL_PAGES;i++)
-        {
+        {//load chapter 3 background images
             success = chapter3BG[i].loadFromFile( bgFileName3[i],renderer );
         }
     }
-
-       //load dialog box image
+    //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
 	success = menuBar.loadFromFile("images/menuBar.png",renderer);
     //set dialog box alpha (about 75% opaque @ 192)
@@ -437,9 +456,7 @@ void chapter::loadLineText(SDL_Renderer* renderer)
         voice.stopVoice();
         lineText.str( "" );
         lineText << "" << currentScript + 1;
-        //set text color to black
-        SDL_Color textColor = {0,0,0};
-
+        SDL_Color textColor = {0,0,0};//black
         if( !curLineTextTexture.loadFromRenderedText( lineText.str().c_str(), textColor,font,renderer ) )
         {
             printf( "\n Unable to render current line text to texture!\n" );
@@ -457,16 +474,15 @@ void chapter::loadPageText(SDL_Renderer* renderer)
 {
     pageText.str( "" );
     pageText << "" << currentPage + 1;
-    //set text color to black
-    SDL_Color textColor = {0,0,0};
-
+    SDL_Color textColor = {0,0,0};//black
     if( !curPageTextTexture.loadFromRenderedText( pageText.str().c_str(), textColor,font,renderer ) )
     {
         printf( "\n Unable to render current page text to texture!\n" );
     }
 }
 
-bool chapter::setScriptTextures(SDL_Renderer* renderer){
+bool chapter::setScriptTextures(SDL_Renderer* renderer)
+{
     bool success = true;
     //Render text
     SDL_Color textColor;
@@ -476,21 +492,16 @@ bool chapter::setScriptTextures(SDL_Renderer* renderer){
         textColor = {55,55,55};
         if(j==0)//was testing page 1 dialog color here
         {
-            //green
-            //textColor = {0,255,0};
-
-            //pink
-            //textColor = {255,0,255};
+            //textColor = {0,255,0};//green
+            //textColor = {255,0,255};//pink
         }
         if(j==3 || j==4 || j==6)//pages 4,5, and 7 have dialog color white.
         {
-            //white
-            textColor = {255,255,255};
+            textColor = {255,255,255};//white
         }
         if(j==5)//page 6 has red dialog
         {
-            //red
-            textColor = {255,0,0};
+            textColor = {255,0,0};//red
         }
         for(int i=0;i<TOTAL_SCRIPTS;i++){
 
@@ -511,6 +522,7 @@ void chapter::testSaveVariables()
     std::cout << "\n currentScript: " << std::to_string( currentScript );
     std::cout << "\n chapter1Complete: " << std::to_string(chapter1Complete);
     std::cout << "\n chapter2Complete: " << std::to_string(chapter2Complete);
+    std::cout << "\n chapter3Complete: " << std::to_string(chapter3Complete);
 }
 
 void chapter::loadFont()
@@ -519,12 +531,11 @@ void chapter::loadFont()
 	font = TTF_OpenFont( "fonts/Tapeworm.ttf", 16 );
 }
 
-int chapter::progress(SDL_Renderer* renderer,int gameState)
+void chapter::progress(SDL_Renderer* renderer)
 {
     //end of chapter, should send user back to load game screen
     if(currentPage==TOTAL_PAGES-1 && currentScript==TOTAL_SCRIPTS-1){
         completeChapter(renderer);
-        gameState=2;
         chapterTimer.stop();
     }
     //increments line of script displayed
@@ -538,11 +549,10 @@ int chapter::progress(SDL_Renderer* renderer,int gameState)
         pageIncrement();
         chapterTimer.restart();
     }
-    return gameState;
 }
 
-int chapter::progress2(SDL_Renderer* renderer,int gameState)
-{
+void chapter::progress2(SDL_Renderer* renderer)
+{//increments script, page, chapter based on spacebar presses
     if(currentScript<TOTAL_SCRIPTS-1)
     {
         scriptIncrement();
@@ -557,11 +567,9 @@ int chapter::progress2(SDL_Renderer* renderer,int gameState)
         }
         else
         {
-            gameState = 2;
             completeChapter(renderer);
         }
     }
-    return gameState;
 }
 
 void chapter::handleDialogVisability()
@@ -627,86 +635,55 @@ void chapter::freeButtons()
     }
 }
 
-void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4)
+void chapter::loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,Sint32 data5)
 {
     currentChapter=data0;
     currentPage=data1;
     currentScript=data2;
     chapter1Complete=data3;
     chapter2Complete=data4;
-    //this needs to be fixed at the source.
+    chapter3Complete=data5;
 }
 
-int chapter::handleChapterButtonPresses(int gameState,SDL_Event* e, SDL_Window* window, SDL_Renderer* renderer )
+void chapter::handleChapterButtonPresses(int buttonClicked,SDL_Renderer* renderer)
 {
-    bool inside = false;
-    for(int i = 0; i<TOTAL_CHAPTER_BUTTONS; ++i)
+    if(buttonClicked==2)
     {
-        //if player presses backpage button, ugly af, but it works somewhat
-        if(i==0)
-        {
-            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == -1)
-            {
-                handleBackPagePress();
-                inside = true;
-            }
-        }
-        //if player presses backline button, ugly af, but it works somewhat
-        else if(i==1)
-        {
-            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == -1)
-            {
-                handleBackLinePress();
-                inside = true;
-            }
-        }
-        //player presses auto Text on (resumes progress of chapters if stopped).
-        else if(i==2)
-        {
-            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer )==1)
-            {
-                autoText=true;
-                inside = true;
-            }
-        }
-        //player presses auto text off (stops progress of chapters)
-        else if(i==3)
-        {
-            if(buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer )==0)
-            {
-                autoText=false;
-                inside = true;
-            }
-        }
-        //auto text speed slow button is pressed.
-        else if(i==4 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 0)
-        {
-            autoTextSpeed = 0;
-            inside = true;
-        }
-        //auto text speed medium button is pressed.
-        else if(i==5 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 1)
-        {
-            autoTextSpeed = 1;
-            inside = true;
-        }
-        //auto text speed fast button is pressed.
-        else if(i==6 && buttons[ i ].handleEvent(gameState,buttons[i].buttonName, e, window,renderer ) == 2)
-        {
-            autoTextSpeed = 2;
-            inside = true;
-        }
-        else if(i==7)
-        {//save and exit button
-            gameState=buttons[i].handleEvent(gameState,buttons[i].buttonName,e,window,renderer);
-            inside = true;
-        }
+        handleBackPagePress();
     }
-    if(!inside)
+    else if(buttonClicked==3)
     {
-        //progress(renderer,gameState);
+        handleBackLinePress();
     }
-    return gameState;
+    else if(buttonClicked==4)
+    {
+        autoText=true;
+    }
+    else if(buttonClicked==5)
+    {
+        autoText=false;
+    }
+    else if(buttonClicked==6)
+    {
+        autoTextSpeed = 0;
+    }
+    else if(buttonClicked==7)
+    {
+        autoTextSpeed = 1;
+    }
+    else if(buttonClicked==8)
+    {
+        autoTextSpeed = 2;
+    }
+    else if(buttonClicked==9)
+    {
+        nextPage();
+    }
+    else if(buttonClicked==0)
+    {
+        //mouse click was not on a button
+        progress(renderer);
+    }
 }
 
 void chapter::handleRendering(SDL_Renderer* renderer)
@@ -756,7 +733,6 @@ void chapter::handleRendering(SDL_Renderer* renderer)
         curLineTextTexture.render(130,374,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         //if the state of the dialog box visibility gets changed, this handles the rendering or not rendering.
         handleDialogRendering(renderer);
-
     }
     //render save & exit button
     buttons[7].buttonTexture.render(buttons[7].getPositionX(),buttons[7].getPositionY(),NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
@@ -784,24 +760,21 @@ bool chapter::setChapterButtonTextures(SDL_Renderer* renderer, bool success)
     buttons[6].setPosition(292,365);
     //save and exit
     buttons[7].setPosition(600,20);
+    //next page
+    buttons[8].setPosition(308,350);
     return success;
 }
 
 void chapter::handleBackLinePress()
-{
+{//player presses backline button in chapter menubar
     if(currentScript>0)
-    {
-       currentScript-=2;
-    }
-    if(currentScript>=6)
-    {
-        currentPage--;
-        currentScript=6;
+    {//if script line isn't first, line is reduced
+       currentScript--;
     }
 }
 
 void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
-{
+{//depending on the chapter and the page, background is rendered.
     if(currentChapter == 0)
     {
         switch(currentPage %TOTAL_PAGES)
@@ -902,7 +875,7 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
 }
 
 void chapter::setAutoScript()
-{
+{//after player presses autoscript speed buttons in chapter menubar, this code adjusts the speed at which script lines are incremented.
         if(chapterTimer.getTicks()/3000 > 1 && autoTextSpeed==0 && autoText)
         {//implement timer auto script option. Slow / default speed
             if(currentScript<TOTAL_SCRIPTS-1)
@@ -942,50 +915,47 @@ void chapter::setAutoScript()
 }
 
 
-void chapter::ch2Pg7handleParallax(SDL_Renderer* renderer){
-
-//slows down the animation of the parallax backgrounds
+void chapter::ch2Pg7handleParallax(SDL_Renderer* renderer)
+{
+    //slows down the animation of the parallax backgrounds
     SDL_Delay(10);
-
+    //pg 7 parallax rendering
     ch2Pg7Back.parallaxRender(renderer);
     ch2Pg7Mid.parallaxRender(renderer);
     ch2Pg7Fore.parallaxRender(renderer);
-
+    //pg 7 parallax incrementation
     ch2Pg7Fore.incrementFore();
     ch2Pg7Mid.incrementMid();
     ch2Pg7Back.incrementBack();
-
 }
 
 void chapter::ch2Pg8handleParallax(SDL_Renderer* renderer){
 
     SDL_Delay(10);
-
+    //pg 8 parallax rendering
     ch2Pg8Back.parallaxRender(renderer);
     ch2Pg8Mid.parallaxRender(renderer);
     ch2Pg8AnteriorMid.parallaxRender(renderer);
     ch2Pg8Fore.parallaxRender(renderer);
-
-    //ch2Pg8Fore.incrementFore();
+    //pg 8 parallax incrementation
     ch2Pg8Fore.specialIncrementFore();
     ch2Pg8AnteriorMid.incrementAnteriorMid();
     ch2Pg8Mid.incrementMid();
     ch2Pg8Back.incrementBack();
-
 }
 
 void chapter::loadChapter(SDL_Renderer* renderer)
-{
+{//loads chapter background textures/parallax backgrounds, also loads script strings / textures. also outputs currentScript, page, chapter, and chapter completed flags to console.
     setChapterTextures(renderer);
     loadChapterStrings(renderer);
     testSaveVariables();
 }
 
-bool chapter::loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,SDL_Renderer* renderer,bool success)
-{
+bool chapter::loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,Sint32 data5,SDL_Renderer* renderer,bool success)
+{//when game loads, this handles a lot of the setup for chapters.
     setButtonNames();
 	//set chapter variables based on savegame data.
-	loadSavedVariables(data0,data1,data2,data3,data4);
+	loadSavedVariables(data0,data1,data2,data3,data4,data5);
 	//test the variables after loading
     testSaveVariables();
     //load font
@@ -994,6 +964,7 @@ bool chapter::loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,
     success = setChapterButtonTextures(renderer,success);
     //load chapter 1 background textures
     success = setChapterTextures(renderer);
+    //if textures were successfully created, returns true.  else a flag will be thrown to console.
     return success;
 }
 

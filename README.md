@@ -61,3 +61,6 @@ pages is a little meh.
 I probably will soon.
 
 3/4/23 - code cleanup, bug fixes, commentation, etc.
+
+3/5/23 - more code cleanup, bug fixes and commentation.  it's starting to get comprehensible.
+still some testing and debugging to do.  

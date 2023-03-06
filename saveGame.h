@@ -3,8 +3,8 @@
 
 #include "Texture.h"
 
-//total save game data point
-const int TOTAL_DATA = 5;
+//total save game data points
+const int TOTAL_DATA = 6;
 
 class saveGame
 {
@@ -15,7 +15,7 @@ class saveGame
     SDL_RWops* file = SDL_RWFromFile( "savegame/save.gsf", "r+b" );
 
     void readFile();
-    void writeFile(int currentChapter,int currentPage,int currentScript, bool chapter1Complete, bool chapter2Complete);
+    void writeFile(int currentChapter,int currentPage,int currentScript, bool chapter1Complete, bool chapter2Complete, bool chapter3Complete);
 
 
     private:
