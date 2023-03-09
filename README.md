@@ -66,3 +66,5 @@ I probably will soon.
 still some testing and debugging to do.  
 
 3/5/23 - fixed some bugs, added toggles for voice and music in options screen
+
+3/8/23 - rat animation in bottom right corner of dialog box.

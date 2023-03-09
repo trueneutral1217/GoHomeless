@@ -10,6 +10,7 @@ animations::animations()
     aniFrame6=0;
     aniFrame7=0;
     aniFrame8=0;
+    aniFrame9=0;
     aniCountUp=true;
     animationTimer.start();
     animationTimer2.start();
@@ -18,6 +19,7 @@ animations::animations()
     animationTimer5.start();
     animationTimer6.start();
     animationTimer7.start();
+    animationTimer9.start();
     //animationTimer8.start();
 
     //initialize x & y of blackstar animations 1 - 4.
@@ -91,7 +93,14 @@ bool animations::setAnimationTextures(SDL_Renderer* renderer)
         std::string str = ss.str();
         success = portal[i].loadFromFile(str,renderer);
     }
-
+    for(int i = 0; i<RAT_ANIMATION_FRAMES;i++)
+    {
+        int a = i+1;
+        std::stringstream ss;
+        ss << "images/animations/rat/rat" << a << ".png";
+        std::string str = ss.str();
+        success = rat[i].loadFromFile(str,renderer);
+    }
     return success;
 }
 
@@ -117,6 +126,10 @@ void animations::freeAnimationTextures()
     for(int i=0;i<PORTAL_ANIMATION_FRAMES;i++)
     {
         portal[i].free();
+    }
+    for(int i = 0; i < RAT_ANIMATION_FRAMES;i++)
+    {
+        rat[i].free();
     }
 }
 
@@ -319,6 +332,32 @@ void animations::renderPortal(SDL_Renderer* renderer)
     }
 }
 
+void animations::renderRat(SDL_Renderer* renderer)
+{
+    switch(aniFrame9){
+        case 0:rat[0].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:rat[1].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:rat[2].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:rat[3].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:rat[4].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:rat[5].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:rat[6].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:rat[7].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:rat[8].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 9:rat[9].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+}
+
 void animations::cycleAnimations()
 {
     if( aniFrame >= TAO_ANIMATION_FRAMES )
@@ -367,6 +406,10 @@ void animations::cycleAnimations()
     else if(aniFrame2 <= 0)
     {
         aniCountUp = true;
+    }
+    if( aniFrame9 >= RAT_ANIMATION_FRAMES )
+    {
+        aniFrame9 = 0;
     }
 }
 
@@ -458,6 +501,15 @@ void animations::portalAnimationProgress()
     }
 }
 
+void animations::ratAnimationProgress()
+{
+    if(animationTimer9.getTicks() / 100 > 1)
+    {
+        ++aniFrame9;
+        animationTimer9.restart();
+    }
+}
+
 void animations::resetPortal()
 {
     animationTimer8.stop();
@@ -484,6 +536,8 @@ void animations::progress()
     blackstarAnimationProgress();
 
     portalAnimationProgress();
+
+    ratAnimationProgress();
     //Cycle animation
     cycleAnimations();
 }

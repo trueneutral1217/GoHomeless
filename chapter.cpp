@@ -398,14 +398,14 @@ void chapter::setFileNames()
     bgFileName2[6] = "images/blackground.png";
     bgFileName2[7] = "images/blackground.png";
     //chapter 3 background file names
-    bgFileName3[0] = "images/blackground.png";
-    bgFileName3[1] = "images/blackground.png";
-    bgFileName3[2] = "images/blackground.png";
-    bgFileName3[3] = "images/blackground.png";
-    bgFileName3[4] = "images/blackground.png";
-    bgFileName3[5] = "images/blackground.png";
-    bgFileName3[6] = "images/blackground.png";
-    bgFileName3[7] = "images/blackground.png";
+    bgFileName3[0] = "images/groundsleeper.png";
+    bgFileName3[1] = "images/emptypockets.png";
+    bgFileName3[2] = "images/kindnesshelps.png";
+    bgFileName3[3] = "images/poorperson.png";
+    bgFileName3[4] = "images/realdemocracy.png";
+    bgFileName3[5] = "images/purepoverty.png";
+    bgFileName3[6] = "images/trailer.png";
+    bgFileName3[7] = "images/badsign.png";
 }
 
 bool chapter::setChapterTextures(SDL_Renderer* renderer)

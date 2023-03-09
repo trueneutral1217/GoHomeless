@@ -537,11 +537,15 @@ int main( int argc, char* args[] )
                     chapter.handleRendering(renderer);
                     //render tao animation
                     animations.renderTao(renderer);
+                    //render rat animation
+                    animations.renderRat(renderer);
                 }
                 //if chapter 2 is in effect
                 else if(gameState == 7)
                 {
                     chapter.handleRendering(renderer);
+                    //rat animation rendered after chapter background, dialog box are rendered.
+                    animations.renderRat(renderer);
                     if(chapter.currentPage == 3)
                     {
                         animations.renderToaster2(renderer);
@@ -573,6 +577,8 @@ int main( int argc, char* args[] )
                     {
                         //Chapter rendering (buttons and backgrounds and text.
                         chapter.handleRendering(renderer);
+                        //rat is rendered on top of dialog box in lower right hand corner. (after verification)
+                        animations.renderRat(renderer);
                     }
                 }
                 else if(gameState == 4)
