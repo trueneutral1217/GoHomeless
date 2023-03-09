@@ -51,7 +51,6 @@ animations::~animations()
 bool animations::setAnimationTextures(SDL_Renderer* renderer)
 {
     bool success = true;
-
     //load tao animation images
     for(int i = 0; i<TAO_ANIMATION_FRAMES;i++)
     {
@@ -354,6 +353,8 @@ void animations::renderRat(SDL_Renderer* renderer)
         case 8:rat[8].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     break;
         case 9:rat[9].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 10:rat[10].render(750,555,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     break;
     }
 }

@@ -68,3 +68,7 @@ still some testing and debugging to do.
 3/5/23 - fixed some bugs, added toggles for voice and music in options screen
 
 3/8/23 - rat animation in bottom right corner of dialog box.
+
+3/9/23 - one of the background images in chapter 3 was throwing a weird warning to the console,
+found the offending image and corrected the problem (reexported it using different color profile).
+also added a little tin can image to the lower left of the dialog box.

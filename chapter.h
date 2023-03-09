@@ -59,6 +59,7 @@ class chapter
         Texture chapter3BG[TOTAL_PAGES];
         Texture dialogBox;
         Texture menuBar;
+        Texture tinCan;
 
         parallax ch2Pg7Fore;
         parallax ch2Pg7Mid;

@@ -14,7 +14,7 @@ const int BLACKSTAR_ANIMATION_FRAMES=9;
 
 const int PORTAL_ANIMATION_FRAMES=20;
 
-const int RAT_ANIMATION_FRAMES=10;
+const int RAT_ANIMATION_FRAMES=11;
 
 
 class animations

@@ -358,6 +358,8 @@ void chapter::freeBGTextures()
     dialogBox.free();
     //menubar is background for backpage, backline, autotext speed/toggle buttons
 	menuBar.free();
+	//little tincan image.
+	tinCan.free();
 	//free the script textures
     for(int j = 0; j < TOTAL_PAGES; j++)
     {
@@ -437,16 +439,19 @@ bool chapter::setChapterTextures(SDL_Renderer* renderer)
     }
     else if(currentChapter == 2)
     {
+
         for(int i = 0; i<TOTAL_PAGES;i++)
         {//load chapter 3 background images
             success = chapter3BG[i].loadFromFile( bgFileName3[i],renderer );
         }
+
     }
     //load dialog box image
 	success = dialogBox.loadFromFile( "images/dialogbox1.png",renderer );
 	success = menuBar.loadFromFile("images/menuBar.png",renderer);
+	success = tinCan.loadFromFile("images/tincan.png",renderer);
     //set dialog box alpha (about 75% opaque @ 192)
-    dialogBox.setAlpha(255);
+    dialogBox.setAlpha(215);
     return success;
 }
 
@@ -598,6 +603,7 @@ void chapter::handleDialogRendering(SDL_Renderer* renderer)
     if(hideDialogBox == false)
     {
         dialogBox.render(0,400,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+        tinCan.render(16,565,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
     }
     if(hideDialogAndBox==false){
         for(int i = 0; i<TOTAL_SCRIPTS;i++)
@@ -965,7 +971,7 @@ bool chapter::loadChapters(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,
     //sets up button textures and positions for chapter buttons
     success = setChapterButtonTextures(renderer,success);
     //load chapter 1 background textures
-    success = setChapterTextures(renderer);
+    success = setChapterTextures(renderer);//this function is throwing a warning to console.
     //if textures were successfully created, returns true.  else a flag will be thrown to console.
     return success;
 }
