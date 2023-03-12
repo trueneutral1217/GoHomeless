@@ -132,7 +132,7 @@ class chapter
         void setButtonNames();
         //free button textures at close time
         void freeButtons();
-        //handles pretty much all rendering except animation in chapter 1
+        //handles pretty much all rendering except animation in chapters
         void handleRendering(SDL_Renderer* renderer);
         //load savegame data into chapter variables
         void loadSavedVariables(Sint32 data0, Sint32 data1,Sint32 data2,Sint32 data3,Sint32 data4,Sint32 data5);

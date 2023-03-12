@@ -11,6 +11,7 @@ animations::animations()
     aniFrame7=0;
     aniFrame8=0;
     aniFrame9=0;
+    aniFrame10=0;
     aniCountUp=true;
     animationTimer.start();
     animationTimer2.start();
@@ -20,6 +21,7 @@ animations::animations()
     animationTimer6.start();
     animationTimer7.start();
     animationTimer9.start();
+    animationTimer10.start();
     //animationTimer8.start();
 
     //initialize x & y of blackstar animations 1 - 4.
@@ -100,6 +102,14 @@ bool animations::setAnimationTextures(SDL_Renderer* renderer)
         std::string str = ss.str();
         success = rat[i].loadFromFile(str,renderer);
     }
+    for(int i = 0; i<TRAILER_ANIMATION_FRAMES;i++)
+    {
+        int a = i+1;
+        std::stringstream ss;
+        ss << "images/animations/trailer/trailer" << a << ".png";
+        std::string str = ss.str();
+        success = trailer[i].loadFromFile(str,renderer);
+    }
     return success;
 }
 
@@ -129,6 +139,10 @@ void animations::freeAnimationTextures()
     for(int i = 0; i < RAT_ANIMATION_FRAMES;i++)
     {
         rat[i].free();
+    }
+    for(int i = 0; i < TRAILER_ANIMATION_FRAMES;i++)
+    {
+        trailer[i].free();
     }
 }
 
@@ -359,6 +373,44 @@ void animations::renderRat(SDL_Renderer* renderer)
     }
 }
 
+void animations::renderTrailer(SDL_Renderer* renderer)
+{
+    switch(aniFrame10){
+        case 0:trailer[0].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 1:trailer[1].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 2:trailer[2].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 3:trailer[3].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 4:trailer[4].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 5:trailer[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 6:trailer[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 7:trailer[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 8:trailer[8].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 9:trailer[9].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 10:trailer[10].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 11:trailer[11].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 12:trailer[12].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 13:trailer[13].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 14:trailer[14].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+        case 15:trailer[15].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+    break;
+    }
+}
+
 void animations::cycleAnimations()
 {
     if( aniFrame >= TAO_ANIMATION_FRAMES )
@@ -411,6 +463,10 @@ void animations::cycleAnimations()
     if( aniFrame9 >= RAT_ANIMATION_FRAMES )
     {
         aniFrame9 = 0;
+    }
+    if( aniFrame10 >= TRAILER_ANIMATION_FRAMES )
+    {
+        aniFrame10 = 0;
     }
 }
 
@@ -511,6 +567,15 @@ void animations::ratAnimationProgress()
     }
 }
 
+void animations::trailerAnimationProgress()
+{
+    if(animationTimer10.getTicks() / 16 > 1)
+    {
+        ++aniFrame10;
+        animationTimer10.restart();
+    }
+}
+
 void animations::resetPortal()
 {
     animationTimer8.stop();
@@ -539,6 +604,8 @@ void animations::progress()
     portalAnimationProgress();
 
     ratAnimationProgress();
+
+    trailerAnimationProgress();
     //Cycle animation
     cycleAnimations();
 }

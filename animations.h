@@ -16,6 +16,8 @@ const int PORTAL_ANIMATION_FRAMES=20;
 
 const int RAT_ANIMATION_FRAMES=11;
 
+const int TRAILER_ANIMATION_FRAMES=16;
+
 
 class animations
 {
@@ -43,6 +45,8 @@ class animations
         timer animationTimer8;
         //rat animationTimer
         timer animationTimer9;
+        //trailer animationTimer
+        timer animationTimer10;
 
         bool aniCountUp;
 
@@ -55,6 +59,8 @@ class animations
         int aniFrame8;
         //keeps track of frame for rat animation
         int aniFrame9;
+        //track trailer frame
+        int aniFrame10;
         //creating 4 blackstar animations with random x/y coords to be displayed
         int bsX1,bsX2,bsX3,bsX4,bsY1,bsY2,bsY3,bsY4;
 
@@ -69,6 +75,7 @@ class animations
         Texture blackstar[BLACKSTAR_ANIMATION_FRAMES];
         Texture portal[PORTAL_ANIMATION_FRAMES];
         Texture rat[RAT_ANIMATION_FRAMES];
+        Texture trailer[TRAILER_ANIMATION_FRAMES];
 
         bool setAnimationTextures(SDL_Renderer* renderer);
         void freeAnimationTextures();
@@ -79,6 +86,7 @@ class animations
         void renderBlackstar(SDL_Renderer* renderer);
         void renderPortal(SDL_Renderer* renderer);
         void renderRat(SDL_Renderer* renderer);
+        void renderTrailer(SDL_Renderer* renderer);
 
         void cycleAnimations();
         void oscillateCount();
@@ -90,6 +98,7 @@ class animations
         void blackstarAnimationProgress();
         void portalAnimationProgress();
         void ratAnimationProgress();
+        void trailerAnimationProgress();
 
         //consolidates executing progress & cycle animations functions
         void progress();

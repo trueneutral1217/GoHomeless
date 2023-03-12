@@ -873,7 +873,7 @@ void chapter::renderBackgrounds(SDL_Renderer* renderer,int j)
             chapter3BG[5].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         break;
         case 6:
-            chapter3BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
+            //chapter3BG[6].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);
         break;
         case 7:
             chapter3BG[7].render(0,0,NULL,0.0,NULL,SDL_FLIP_NONE,renderer);

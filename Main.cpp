@@ -575,6 +575,10 @@ int main( int argc, char* args[] )
                     }
                     else
                     {
+                        if(chapter.currentPage == 6)
+                        {
+                            animations.renderTrailer(renderer);
+                        }
                         //Chapter rendering (buttons and backgrounds and text.
                         chapter.handleRendering(renderer);
                         //rat is rendered on top of dialog box in lower right hand corner. (after verification)

@@ -72,3 +72,7 @@ still some testing and debugging to do.
 3/9/23 - one of the background images in chapter 3 was throwing a weird warning to the console,
 found the offending image and corrected the problem (reexported it using different color profile).
 also added a little tin can image to the lower left of the dialog box.
+
+3/12/23 - played with one of the background images using gmic tool in gimp, the wind turbine now
+somewhat looks like it's spinning.  decided to drop a release version today since ch3 is written,
+the voice acting is done, and I added art and what not.
